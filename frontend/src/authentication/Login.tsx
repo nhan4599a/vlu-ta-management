@@ -13,8 +13,8 @@ const Login = () => {
         />
       </div>
       <div className="login-action">
-        <h2 className="position-relative display-4 fw-bolder">Đăng nhập</h2>
-        <Button className="btn-lg" variant="primary">Đăng nhập</Button>
+        <h2 className="position-relative display-5 fw-bolder">Đăng nhập</h2>
+        <Button className="btn-lg btn-primary" >Đăng nhập</Button>
         <p>Đăng nhập bằng tài khoản Văn Lang để bắt đầu</p>
       </div>
     </div>

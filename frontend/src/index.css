@@ -56,7 +56,8 @@ button:focus-visible {
 
 .btn-primary {
   background-color: #D14444 !important;
-  color: #fff
+  color: #fff;
+  border: none
 }
 
 .login-container {
