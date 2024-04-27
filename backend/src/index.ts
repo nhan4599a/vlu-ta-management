@@ -1,13 +1,15 @@
-import express, { Express } from 'express'
+import express, { Express, Router } from 'express'
 import dotenv from 'dotenv'
-import bodyParser from 'body-parser'
+import termController from './controllers/term'
 
 dotenv.config()
 const port = process.env.PORT || 5000
 
 const app: Express = express()
 
-app.use(bodyParser.json())
+app.use(express.json())
+app.use('/hoc-phan', termController)
+
 
 app.listen(port, () => {
     console.log(`[Server]: Server is running at http://localhost:${port}`)
