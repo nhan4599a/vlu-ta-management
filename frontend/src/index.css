@@ -140,10 +140,12 @@ button:focus-visible {
 #page-content-wrapper {
   min-width: 0;
   background-color: #f5f5f5;
+  border-top-left-radius: 30px;
+  padding: 5px 25px;
 }
 
 #sidebar-wrapper a {
-  padding: 0 20px 
+  padding: 0 20px;
 }
 
 .accordion-button:not(.collapsed) {
@@ -152,11 +154,11 @@ button:focus-visible {
 }
 
 .accordion-button::after {
-display: none
+  display: none;
 }
 
 .accordion-body a {
-  margin-bottom: 4px !important
+  margin-bottom: 4px !important;
 }
 
 .accordion-body a:hover {
