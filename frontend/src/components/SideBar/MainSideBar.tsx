@@ -27,7 +27,7 @@ const MainSideBar = () => {
           <Accordion.Header>Quản lý lớp học</Accordion.Header>
           <Accordion.Body>
             <NavLink href="">Import DS lớp học phần</NavLink>
-            <NavLink href="">Điểm danh lớp học phần</NavLink>
+            <NavLink href="../../page/ImportSectionClassList.tsx">Điểm danh lớp học phần</NavLink>
           </Accordion.Body>
         </Accordion.Item>
         <Accordion.Item eventKey="3">

@@ -25,7 +25,7 @@ const UserActions = () => {
         <NavDropdown
         align='end' 
         title={userMenu}>
-          <NavDropdown.Item href="#">
+          <NavDropdown.Item href="/">
             <svg
               width="15"
               height="15"
@@ -41,10 +41,10 @@ const UserActions = () => {
                 stroke-linejoin="round"
               />
             </svg>
-            Chỉnh sửa hồ sơ
+            Xem hồ sơ
           </NavDropdown.Item>
           <DropdownDivider />
-          <NavDropdown.Item href="#">
+          <NavDropdown.Item href="/">
             <svg
               width="15"
               height="15"
