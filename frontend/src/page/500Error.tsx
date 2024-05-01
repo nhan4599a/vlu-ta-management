@@ -1,19 +1,19 @@
 // import { Link } from "react-router-dom";
 import Image from "react-bootstrap/Image";
 
-const NotFound = () => {
+const Error500 = () => {
   return (
     <div className="text-center ">
       <div className="py-5">
         <Image
-          src={"/pngwing.com.png"}
+          src={"/500.png"}
           alt="not-found"
           style={{ width: "700px" }}
         />
       </div>
       <a href="/" className="display-6">
         <Image
-          src="/404.png"
+          src="/4d0e71c6d259566f70101baa07154e47.png"
           alt="logo"
           style={{ width: "45px", marginRight: "10px" }}
         />
@@ -23,4 +23,4 @@ const NotFound = () => {
   );
 };
 
-export default NotFound;
+export default Error500;
