@@ -14,8 +14,7 @@ const MainSideBar = () => {
             <NavLink href="">Danh sách đăng ký TA</NavLink>
             <NavLink href="">Import DSSV</NavLink>
           </Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Header>Chat</Accordion.Header>
+        </Accordion.Item>        
         <Accordion.Item eventKey="1">
           <Accordion.Header>Quản lý nhiệm vụ trợ giảng</Accordion.Header>
           <Accordion.Body>
@@ -37,6 +36,7 @@ const MainSideBar = () => {
             <NavLink href="">Thống kê</NavLink>
           </Accordion.Body>
         </Accordion.Item>
+        <Accordion.Header>Chat</Accordion.Header>
       </Accordion>
     </>
   );
