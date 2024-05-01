@@ -55,8 +55,9 @@ button:focus-visible {
 }
 
 .btn-primary {
-  background-color: #D14444 !important;
-  color: #fff
+  background-color: #d14444 !important;
+  color: #fff;
+  border: 1px solid #d14444;
 }
 
 .login-container {
@@ -64,7 +65,6 @@ button:focus-visible {
   width: 100%;
   display: flex;
   justify-content: center;
-  
 }
 .login-illustrator {
   height: 100%;
@@ -87,22 +87,90 @@ button:focus-visible {
   width: 40%;
   padding: 2rem;
   text-align: center;
-  background-color: #F5F5F5
+  background-color: #f5f5f5;
 }
 
 .login-action h2 {
   position: relative;
-  top: 20%
+  top: 20%;
 }
 
-.login-action button {
+.login-action a {
   position: relative;
-  top: 23%
+  top: 23%;
 }
 
 .login-action p {
   position: relative;
-  top: 26%
+  top: 26%;
+}
+
+.dropdown-toggle::after {
+  display: none !important;
+}
+
+.user-action a svg {
+  margin-right: 5px;
+}
+
+.sidebar div {
+  min-height: 72px;
+}
+
+.sidebar div a {
+  text-decoration: none;
+  color: #000;
+  font-size: 24px;
+}
+
+.sidebar div a:hover {
+  color: #fff;
+  background-color: #d14444;
+}
+
+#sidebar-wrapper {
+  height: 100vh;
+  -webkit-transition: margin 0.25s ease-out;
+  -moz-transition: margin 0.25s ease-out;
+  -o-transition: margin 0.25s ease-out;
+  transition: margin 0.25s ease-out;
+}
+
+#page-content-wrapper {
+  min-width: 0;
+  background-color: #f5f5f5;
+  border-top-left-radius: 30px;
+  padding: 5px 25px;
+}
+
+#sidebar-wrapper a {
+  padding: 0 20px;
+}
+
+.accordion-button:not(.collapsed) {
+  color: #fff !important;
+  background-color: #d14444 !important;
+}
+
+.accordion-button::after {
+  display: none;
+}
+
+.accordion-body a {
+  margin-bottom: 4px !important;
+}
+
+.accordion-body a:hover {
+  color: #fff;
+  background-color: #d14444;
+}
+
+.dashed-border {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 485px;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23333' stroke-width='4' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
 }
 
 @media (prefers-color-scheme: light) {
