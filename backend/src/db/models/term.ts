@@ -1,18 +1,18 @@
 import { Schema } from "mongoose";
 import { DayInWeek } from "../../constants/day.enum";
 
+export interface IScheduleDetail {
+    day: DayInWeek,
+    startLesson: number,
+    endLesson: number
+}
+
 export interface ITermClass {
     PIC: string,
     startDate: Date,
     endDate: Date,
     attendanceRecordFile: string | null,
-    schedule: [
-        {
-            day: DayInWeek,
-            lesson: number,
-            length: number
-        }
-    ]
+    schedule: IScheduleDetail[]
 }
 
 export interface ITerm {
@@ -20,7 +20,7 @@ export interface ITerm {
     code: string,
     type: string,
     credits: number,
-    classes: [ITermClass]
+    classes: ITermClass[]
 }
 
 const TermClassSchema = new Schema<ITermClass>({
@@ -31,8 +31,8 @@ const TermClassSchema = new Schema<ITermClass>({
     schedule: [
         {
             day: { type: DayInWeek, required: true },
-            lesson: { type: Number, required: true },
-            length: { type: Number, required: true }
+            startLesson: { type: Number, required: true },
+            endLesson: { type: Number, required: true }
         }
     ]
 })
