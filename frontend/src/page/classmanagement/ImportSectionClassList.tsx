@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import "../index.css";
+import "../../index.css";
 
 const ImportSectionClassList = () => {
   const inputRef = useRef<HTMLInputElement>(null);
