@@ -7,13 +7,13 @@ const Error500 = () => {
       <div className="py-5">
         <Image
           src={"/500.png"}
-          alt="not-found"
+          alt="500-server-error"
           style={{ width: "700px" }}
         />
       </div>
       <a href="/" className="display-6">
         <Image
-          src="/4d0e71c6d259566f70101baa07154e47.png"
+          src="/vlu-logo.png"
           alt="logo"
           style={{ width: "45px", marginRight: "10px" }}
         />
