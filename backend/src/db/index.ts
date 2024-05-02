@@ -6,6 +6,7 @@ import {
 } from 'mongoose'
 import { ITerm, TermSchema } from './models/term'
 import { IUser, UserSchema } from './models/user'
+import { env } from '../env'
 
 export default class DbInstance {
     #dbConnection: Connection
@@ -15,7 +16,7 @@ export default class DbInstance {
     users: Model<IUser>
 
     constructor() {
-        this.#dbConnection = createConnection('')
+        this.#dbConnection = createConnection(env.CONNECTION_STRING)
         this.terms = this.#dbConnection.model('Term', TermSchema)
         this.users = this.#dbConnection.model('User', UserSchema)
     }
