@@ -12,5 +12,5 @@ export const UserSchema = new Schema<IUser>({
     email: { type: String, required: true },
     active: { type: Boolean, required: true },
     name: { type: String, required: false },
-    roles: { type: [Role], required: true }
+    roles: { type: [Number], required: true }
 })
