@@ -10,6 +10,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import Login from "./authentication/Login";
 import NotFound from "./page/404NotFound";
 import Error500 from "./page/500Error";
+import SectionClassList from "./page/classmanagement/SectionClassList";
 // import MainSideBar from "./components/SideBar/MainSideBar";
 
 
@@ -52,6 +53,10 @@ function App() {
             </Route>
 
             <Route path="/class-management" element="">
+              <Route
+                path="class-list"
+                element={<SectionClassList />}
+              />
               <Route
                 path="import-setion-class-list"
                 element={<ImportSectionClassList />}
