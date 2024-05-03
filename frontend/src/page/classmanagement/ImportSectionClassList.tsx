@@ -1,11 +1,10 @@
-import { useRef } from "react";
 import "../../index.css";
 
 const ImportSectionClassList = () => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  // const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleUpload = () => {
-    inputRef.current?.click();
+  const handleAlert = () => {
+    alert('Upload thành công');
   };
   return (
     <div>
@@ -30,8 +29,8 @@ const ImportSectionClassList = () => {
             </svg>
           </div>
         </div>
-        <input ref={inputRef} className="d-none" type="file" />
-        <button onClick={handleUpload} className="w-100 mt-3 btn btn-primary">
+        {/* <input ref={inputRef} className="d-none" type="file" /> */}
+        <button onClick={handleAlert} className="w-100 mt-3 btn btn-primary">
           Import
         </button>
       </div>

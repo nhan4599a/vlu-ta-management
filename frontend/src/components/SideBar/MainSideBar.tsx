@@ -1,16 +1,6 @@
 import { Accordion } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import "../../index.css";
-
-type LinkItemProps = React.PropsWithChildren & {
-  to: string
-}
-
-const LinkItem = ({to, children}: LinkItemProps) => {
-  return (
-    <Link to={to} className="nav-link">{children}</Link>
-  )
-}
+import LinkItem from "../LinkItem";
 
 const MainSideBar = () => {
   return (
