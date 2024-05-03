@@ -1,4 +1,4 @@
-import { Table } from "react-bootstrap";
+import { Badge, Table } from "react-bootstrap";
 import "../../index.css";
 const SectionClassList = () => {
   return (
@@ -14,6 +14,7 @@ const SectionClassList = () => {
             <th>Loại HP</th>
             <th>Thứ</th>
             <th>Tiết học</th>
+            <th>Trạng thái</th>
           </tr>
         </thead>
         <tbody>
@@ -25,10 +26,21 @@ const SectionClassList = () => {
             <td>1</td>
             <td>1</td>
             <td>1</td>
+            <td><h5><Badge bg="info">Đã phân công TA</Badge></h5></td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>1 232_71ITSE41603_01</td>
+            <td>Thiết kế kiến trúc phần mềm</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+            <td><h5><Badge bg="secondary">Chưa có TA</Badge></h5></td>
           </tr>
           <tr>
             <td>2</td>
-            {Array.from({ length: 6 }).map((_, index) => (
+            {Array.from({ length: 7 }).map((_, index) => (
               <td key={index}>Table cell {index}</td>
             ))}
           </tr>

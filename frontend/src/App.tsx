@@ -1,4 +1,3 @@
-// import Login from './authentication/Login'
 import MainNavBar from "./components/MainNavbar/MainNavBar";
 import "./index.css";
 import { Routes, Route, Outlet } from "react-router-dom";
@@ -11,7 +10,6 @@ import Login from "./authentication/Login";
 import NotFound from "./page/404NotFound";
 import Error500 from "./page/500Error";
 import SectionClassList from "./page/classmanagement/SectionClassList";
-// import MainSideBar from "./components/SideBar/MainSideBar";
 
 
 const Layout = () => {

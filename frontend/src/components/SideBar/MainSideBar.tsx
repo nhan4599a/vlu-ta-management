@@ -22,7 +22,7 @@ const MainSideBar = () => {
             <LinkItem to="/ta-information-management/schedule">Thời khoá biểu</LinkItem>
             <LinkItem to="">Đăng ký trợ giảng</LinkItem>
             <LinkItem to="">Thông tin lớp học</LinkItem>
-            <LinkItem to="/ta-register-list">Danh sách đăng ký TA</LinkItem>
+            <LinkItem to="">Danh sách đăng ký TA</LinkItem>
             <LinkItem to="/ta-information-management/import-student-list">Import DSSV</LinkItem>
           </Accordion.Body>
         </Accordion.Item>        
