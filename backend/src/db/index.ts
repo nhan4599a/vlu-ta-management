@@ -17,8 +17,8 @@ export default class DbInstance {
 
     constructor() {
         this.#dbConnection = createConnection(env.CONNECTION_STRING)
-        this.terms = this.#dbConnection.model('Term', TermSchema)
-        this.users = this.#dbConnection.model('User', UserSchema)
+        this.terms = this.#dbConnection.model('terms', TermSchema)
+        this.users = this.#dbConnection.model('users', UserSchema)
     }
 
     async startTransaction() {
