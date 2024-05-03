@@ -37,7 +37,7 @@ const MainSideBar = () => {
           <Accordion.Header>Quản lý lớp học</Accordion.Header>
           <Accordion.Body>
             <LinkItem to="/class-management/class-list">Danh sách lớp học phần</LinkItem>
-            <LinkItem to="">Import DS lớp học phần</LinkItem>
+            <LinkItem to="/class-management/import-class-list">Import DS lớp học phần</LinkItem>
             <LinkItem to="">Điểm danh lớp học phần</LinkItem>
           </Accordion.Body>
         </Accordion.Item>

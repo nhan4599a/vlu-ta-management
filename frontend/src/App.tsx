@@ -58,7 +58,7 @@ function App() {
                 element={<SectionClassList />}
               />
               <Route
-                path="import-setion-class-list"
+                path="import-class-list"
                 element={<ImportSectionClassList />}
               />
               <Route path="attendance" element="" />
