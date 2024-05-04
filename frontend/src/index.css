@@ -175,6 +175,7 @@ button:focus-visible {
 
 
 .table-header th{
+  left: 10%;
   font-size: 18px;
   color: #fff;
   background-color: #d14444;

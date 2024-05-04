@@ -1,4 +1,3 @@
-// import Login from './authentication/Login'
 import MainNavBar from "./components/MainNavbar/MainNavBar";
 import "./index.css";
 import { Routes, Route, Outlet } from "react-router-dom";
@@ -11,7 +10,7 @@ import Login from "./authentication/Login";
 import NotFound from "./page/404NotFound";
 import Error500 from "./page/500Error";
 import SectionClassList from "./page/classmanagement/SectionClassList";
-// import MainSideBar from "./components/SideBar/MainSideBar";
+import Welcome from "./components/dashboard/Welcome";
 
 
 const Layout = () => {
@@ -37,7 +36,7 @@ function App() {
     <div>
         <Routes>
           <Route element={<Layout />}>
-            <Route path="/" element={<></>} />
+            <Route path="/" element={<Welcome />} />
             <Route path="/user-profile" element={<Profile />} />
             <Route path="/ta-information-management">
               <Route path="schedule" element="" />
@@ -58,7 +57,7 @@ function App() {
                 element={<SectionClassList />}
               />
               <Route
-                path="import-setion-class-list"
+                path="import-class-list"
                 element={<ImportSectionClassList />}
               />
               <Route path="attendance" element="" />

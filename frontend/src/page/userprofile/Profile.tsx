@@ -6,9 +6,9 @@ const Profile = () => (
     <div className="d-flex gap-4 align-items-center mb-5">
       <Image
         src={
-          "/450897a3aad953d7a7f05960a296f1e1.png"
+          "/user-avatar.png"
         }
-        alt="UserName profile image"
+        alt="User profile image"
         roundedCircle
         style={{ width: "150px" }}
       />

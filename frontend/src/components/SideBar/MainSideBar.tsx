@@ -1,16 +1,6 @@
 import { Accordion } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import "../../index.css";
-
-type LinkItemProps = React.PropsWithChildren & {
-  to: string
-}
-
-const LinkItem = ({to, children}: LinkItemProps) => {
-  return (
-    <Link to={to} className="nav-link">{children}</Link>
-  )
-}
+import LinkItem from "../LinkItem";
 
 const MainSideBar = () => {
   return (
@@ -22,7 +12,7 @@ const MainSideBar = () => {
             <LinkItem to="/ta-information-management/schedule">Thời khoá biểu</LinkItem>
             <LinkItem to="">Đăng ký trợ giảng</LinkItem>
             <LinkItem to="">Thông tin lớp học</LinkItem>
-            <LinkItem to="/ta-register-list">Danh sách đăng ký TA</LinkItem>
+            <LinkItem to="">Danh sách đăng ký TA</LinkItem>
             <LinkItem to="/ta-information-management/import-student-list">Import DSSV</LinkItem>
           </Accordion.Body>
         </Accordion.Item>        
@@ -37,7 +27,7 @@ const MainSideBar = () => {
           <Accordion.Header>Quản lý lớp học</Accordion.Header>
           <Accordion.Body>
             <LinkItem to="/class-management/class-list">Danh sách lớp học phần</LinkItem>
-            <LinkItem to="">Import DS lớp học phần</LinkItem>
+            <LinkItem to="/class-management/import-class-list">Import DS lớp học phần</LinkItem>
             <LinkItem to="">Điểm danh lớp học phần</LinkItem>
           </Accordion.Body>
         </Accordion.Item>
