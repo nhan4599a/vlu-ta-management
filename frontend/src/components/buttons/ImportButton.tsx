@@ -9,7 +9,6 @@ const ImportButton = () => {
       <Button variant="primary" className="w-100 mt-5" onClick={() => setModalShow(true)}>
         Import
       </Button>
-
       <ImportSuccessPrompt
         show={modalShow}
         onHide={() => setModalShow(false)}

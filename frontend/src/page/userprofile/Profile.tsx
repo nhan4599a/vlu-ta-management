@@ -8,7 +8,7 @@ const Profile = () => (
         src={
           "/user-avatar.png"
         }
-        alt="UserName profile image"
+        alt="User profile image"
         roundedCircle
         style={{ width: "150px" }}
       />

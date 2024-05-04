@@ -10,6 +10,7 @@ import Login from "./authentication/Login";
 import NotFound from "./page/404NotFound";
 import Error500 from "./page/500Error";
 import SectionClassList from "./page/classmanagement/SectionClassList";
+import Welcome from "./components/dashboard/Welcome";
 
 
 const Layout = () => {
@@ -35,7 +36,7 @@ function App() {
     <div>
         <Routes>
           <Route element={<Layout />}>
-            <Route path="/" element={<></>} />
+            <Route path="/" element={<Welcome />} />
             <Route path="/user-profile" element={<Profile />} />
             <Route path="/ta-information-management">
               <Route path="schedule" element="" />
