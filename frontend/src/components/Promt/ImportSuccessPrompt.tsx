@@ -1,23 +1,30 @@
-import React from "react";
 import { Button, Modal } from "react-bootstrap";
+import LinkItem from "../LinkItem";
 
-const ImportSuccessPrompt = () => {
+const ImportSuccessPrompt = (props) => {
   return (
-    <div style={{ display: "block", width: 700, padding: 30 }}>
-      <h4>React-Bootstrap Modal Component</h4>
-      <Modal.Dialog>
-        <Modal.Header closeButton>
-          <Modal.Title>Sample Modal Heading</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>This is the sample text for our Modal</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary">Close</Button>
-          <Button variant="primary">Save changes</Button>
-        </Modal.Footer>
-      </Modal.Dialog>
-    </div>
+    <Modal
+      {...props}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">Thông báo</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {/* <h4>Centered Modal</h4> */}
+        <p>Import danh sách thành công</p>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary">
+          <LinkItem to={"/class-management/class-list"}>Xem danh sách</LinkItem>
+        </Button>
+        <Button variant="primary" onClick={props.onHide}>
+          Close
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 
