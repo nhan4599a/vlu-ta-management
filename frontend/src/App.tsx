@@ -11,7 +11,7 @@ import NotFound from "./page/404NotFound";
 import Error500 from "./page/500Error";
 import SectionClassList from "./page/classmanagement/SectionClassList";
 import Welcome from "./components/dashboard/Welcome";
-
+import Loading from "./components/loading/Loading";
 
 const Layout = () => {
   return (
@@ -23,56 +23,54 @@ const Layout = () => {
             <MainSideBar />
           </Col>
           <Col xs={10} id="page-content-wrapper">
-           <Outlet /> 
+            <Loading />
+            <Outlet />
           </Col>
         </Row>
       </Container>
     </>
-  )
-}
+  );
+};
 
 function App() {
   return (
     <div>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Welcome />} />
-            <Route path="/user-profile" element={<Profile />} />
-            <Route path="/ta-information-management">
-              <Route path="schedule" element="" />
-              <Route path="ta-register" element="" />
-              <Route path="class-information" element="" />
-              <Route path="ta-register-list" element="" />
-              <Route path="import-student-list" element={<ImportStudentList />} />
-            </Route>
-
-            <Route path="/task-mission-magagement" element="">
-              <Route path="task-mission" element="" />
-              <Route path="feedbacks-ta" element="" />
-            </Route>
-
-            <Route path="/class-management" element="">
-              <Route
-                path="class-list"
-                element={<SectionClassList />}
-              />
-              <Route
-                path="import-class-list"
-                element={<ImportSectionClassList />}
-              />
-              <Route path="attendance" element="" />
-            </Route>
-
-            <Route path="/feedback-and-statistic" element="">
-              <Route path="feedbacks" element="" />
-              <Route path="statistic" element="" />
-            </Route>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Welcome />} />
+          <Route path="/user-profile" element={<Profile />} />
+          <Route path="/ta-information-management">
+            <Route path="schedule" element="" />
+            <Route path="ta-register" element="" />
+            <Route path="class-information" element="" />
+            <Route path="ta-register-list" element="" />
+            <Route path="import-student-list" element={<ImportStudentList />} />
           </Route>
-          <Route path="/login" element={<Login />} />
-          <Route path="/404" element={<NotFound />} />
-          <Route path="/500" element={<Error500 />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+
+          <Route path="/task-mission-magagement" element="">
+            <Route path="task-mission" element="" />
+            <Route path="feedbacks-ta" element="" />
+          </Route>
+
+          <Route path="/class-management" element="">
+            <Route path="class-list" element={<SectionClassList />} />
+            <Route
+              path="import-class-list"
+              element={<ImportSectionClassList />}
+            />
+            <Route path="attendance" element="" />
+          </Route>
+
+          <Route path="/feedback-and-statistic" element="">
+            <Route path="feedbacks" element="" />
+            <Route path="statistic" element="" />
+          </Route>
+        </Route>
+        <Route path="/login" element={<Login />} />
+        <Route path="/404" element={<NotFound />} />
+        <Route path="/500" element={<Error500 />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </div>
   );
 }
