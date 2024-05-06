@@ -1,78 +1,153 @@
-import readXlsxFile from 'read-excel-file/node'
 import { IScheduleDetail, ITerm, ITermClass } from '../../db/models/term'
 import moment from 'moment'
+import { readExcelFile } from '../../helper/file.helper'
+import { Row } from 'read-excel-file'
+import { ParseNumberOption, isNumber, throwValidationError } from '../../helper/validation.helper'
+import { Cell } from 'read-excel-file/types'
+import { constants } from '../../constants'
+import { DayInWeek } from '../../constants/day.enum'
 
-const parseScheduleData = (scheduleData: string): IScheduleDetail | null => {
-    const match = scheduleData.match(/[T,t]hứ (\d) \((\d)-(\d)\)/)
-
-    if (!match?.length) {
-        return null
-    }
-
-    const dayInWeek = Number(match[1]) - 2
-    const startLesson = Number(match[2])
-    const endLesson = Number(match[3])
-
-    return {
-        day: dayInWeek,
-        startLesson,
-        endLesson
-    }
+const parseNumberOptions: ParseNumberOption = {
+    allowDecimal: false,
+    allowNegative: false
 }
 
-const readTermData = async (file: Express.Multer.File): Promise<ITerm[]> => {
-    const originalRows = (await readXlsxFile(file.buffer)).slice(1)
+const parseLessonOptions: ParseNumberOption = {
+    allowDecimal: false,
+    min: 1,
+    max: 15
+}
 
-    const data: ITerm[] = originalRows.map(row => {
-        const [code, name, type, credits, sessions, ...restProps] = row
+const validateScheduleData = (scheduleData: string[]) => {
+    const result: IScheduleDetail[] = []
 
-        const [
-            classesCount,
-            classNames,
-            schedules,
-            startDate,
-            endDate,
-            maxStudentsCount,
-            PICs
-        ] = restProps
+    for (const scheduleStr of scheduleData) {
+        const match = scheduleStr.match(/((thứ [2-7])|(chủ nhật)) \((\d)-(\d)\)/i)
 
-        const classes: ITermClass[] = []
+        if (!match?.length) {
+            throwValidationError('Lịch học không hợp lệ')
+        }
+    
+        const dayInWeekStr = match![3]
+        const startLessonStr = match![5]
+        const endLessonStr = match![6]
 
-        const classesNameList = classNames.toString().split(';')
-        const picsList = PICs.toString().split(';')
-        const schedulesData = schedules.toString().split(';')
-
-        for (let i = 0; i < Number(classesCount); i++) {
-            const classSchedules = schedulesData[i].split(',')
-
-            const schedules = [...classSchedules].map(parseScheduleData)
-
-            if (schedules.some(item => item === null)) {
-                throw new Error('')
-            }
-
-            classes.push({
-                lecture: picsList[i],
-                name: classesNameList[i],
-                startDate: moment(startDate.toString(), 'dd/MM/yyyy').toDate(),
-                endDate: moment(endDate.toString(), 'dd/MM/yyyy').toDate(),
-                attendanceRecordFile: null,
-                maxStudentsCount: Number(maxStudentsCount),
-                schedule: schedules as IScheduleDetail[]
-            })
+        if (!isNumber(startLessonStr, parseLessonOptions)) {
+            throwValidationError('Số tiết không hợp lệ')
         }
 
-        return {
+        if (!isNumber(endLessonStr, parseLessonOptions)) {
+            throwValidationError('Số tiết không hợp lệ')
+        }
+
+        result.push({
+            day: Number(dayInWeekStr) ?? DayInWeek.Sunday,
+            startLesson: Number(startLessonStr),
+            endLesson: Number(endLessonStr)
+        })
+    }
+
+    return result
+}
+
+const validateTermClassesData = (cells: Cell[]) => {
+    const result: ITermClass[] = []
+
+    const [
+        classesCountStr,
+        classNames,
+        schedules,
+        startDateStr,
+        endDateStr,
+        maxStudentsCountStr,
+        PICs
+    ] = cells
+
+    if (!isNumber(classesCountStr, parseNumberOptions)) {
+        throwValidationError('Invalid classes data')
+    }
+
+    if (!isNumber(maxStudentsCountStr, parseNumberOptions)) {
+        throwValidationError('Số lượng sinh viên không hợp lệ')
+    }
+
+    const classesCount = Number(classesCountStr)
+
+    const classesNameList = classNames.toString().split(constants.DELIMETER.LIST)
+    const schedulesList = schedules.toString().split(constants.DELIMETER.LIST)
+    const picsList = PICs.toString().split(constants.DELIMETER.LIST)
+
+    if (classesCount !== classesNameList.length
+        || classesCount !== schedulesList.length
+        || classesCount !== picsList.length
+    ) {
+        throwValidationError('Invalid classes data')
+    }
+
+    const startDate = moment(startDateStr.toString(), constants.FORMAT.DATE.DEFAULT, true)
+    if (!startDate.isValid()) {
+        throwValidationError('Invalid start date')
+    }
+
+    const endDate = moment(endDateStr.toString(), constants.FORMAT.DATE.DEFAULT, true)
+    if (!endDate.isValid()) {
+        throwValidationError('Invalid end date')
+    }
+
+    for (let i = 0; i < classesCount; i++) {
+        const className = classesNameList[i]
+        const pic = picsList[i]
+
+        const scheduleData = schedulesList[i].split(constants.DELIMETER.LIST_ITEM)
+        const schedules = validateScheduleData(scheduleData)
+
+        result.push({
+            name: className,
+            lecture: pic,
+            maxStudentsCount: Number(maxStudentsCountStr),
+            attendanceRecordFile: null,
+            startDate: startDate.toDate(),
+            endDate: endDate.toDate(),
+            schedule: schedules
+        })
+    }
+
+    return result
+}
+
+const validateTermData = (rows: Row[]) => {
+    const result: ITerm[] = []
+
+    for (const row of rows) {
+        const [code, name, type, creditsStr, sessionsStr, ...restProps] = row
+
+        if (!isNumber(creditsStr)) {
+            return Promise.reject('Credits must be number')
+        }
+
+        if (!isNumber(sessionsStr)) {
+            return Promise.reject('Sessions must be number')
+        }
+
+        const termClassesData = validateTermClassesData(restProps)
+
+        result.push({
             code: code.toString(),
             name: name.toString(),
             type: type.toString(),
-            credits: Number(credits),
-            sessions: Number(sessions),
-            classes
-        }
-    })
+            credits: Number(creditsStr),
+            sessions: Number(sessionsStr),
+            classes: termClassesData
+        })
+    }
 
-    return data
+    return result
+}
+
+const readTermData = async (file: Express.Multer.File): Promise<ITerm[]> => {
+    const originalRows = await readExcelFile(file)
+
+    return validateTermData(originalRows)
 }
 
 export { readTermData }
