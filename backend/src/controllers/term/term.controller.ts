@@ -1,6 +1,6 @@
 import express from 'express'
 import { IBaseRequest } from '../../types/integration.types'
-import { uploadFileMiddleware } from '../../helper/common.helper'
+import { uploadFileMiddleware } from '../../helper/upload.helper'
 import { readTermData } from './term.service'
 
 const router = express.Router()
@@ -20,7 +20,7 @@ router.post('/', uploadFileMiddleware, async (req, res) => {
 
     await importTermRequest.db.terms.insertMany(terms)
 
-    res.send({})
+    res.json()
 })
 
 export default router
