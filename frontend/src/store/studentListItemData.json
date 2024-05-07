@@ -1,0 +1,31 @@
+[
+  {
+    "title": "Tuyển dụng sinh viên",
+    "children": [
+      { "title": "Việc làm", "path": "/jobs" },
+      { "title": "Quản lí đơn ứng tuyển", "path": "/applications" }
+    ]
+  },
+  {
+    "title": "Quản lí thông tin trợ giảng",
+    "children": [
+      { "title": "Thông tin lớp học phần", "path": "/ta-course-information" },
+      { "title": "Thời khoá biểu", "path": "/ta-schedule" }
+    ]
+  },
+  {
+    "title": "Quản lí nhiệm vụ trợ giảng",
+    "children": [
+      { "title": "Điểm danh sinh viên", "path": "/ta-attendance" },
+      { "title": "Nhiệm vụ trợ giảng", "path": "/ta-tasks" },
+      { "title": "Tài liệu", "path": "/ta-documents" }
+    ]
+  },
+  {
+    "title": "Liên lạc",
+    "children": [
+      { "title": "Chat trực tiếp với giảng viên", "path": "/live-chat-lecturer" },
+      { "title": "Gửi mail cho giảng viên", "path": "/email-lecturer" }
+    ]
+  }
+]
