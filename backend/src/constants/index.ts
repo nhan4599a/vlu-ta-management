@@ -5,7 +5,7 @@ const constants = {
     },
     FORMAT: {
         DATE: {
-            DEFAULT: 'dd/MM/yyyy'
+            DEFAULT: 'DD/MM/yyyy'
         }
     }
 }

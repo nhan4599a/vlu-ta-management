@@ -22,7 +22,7 @@ const validateScheduleData = (scheduleData: string[]) => {
     const result: IScheduleDetail[] = []
 
     for (const scheduleStr of scheduleData) {
-        const match = scheduleStr.match(/((thứ [2-7])|(chủ nhật)) \((\d)-(\d)\)/i)
+        const match = scheduleStr.match(/((thứ ([2-7]))|(chủ nhật)) \((\d)-(\d)\)/i)
 
         if (!match?.length) {
             throwValidationError('Lịch học không hợp lệ')
@@ -41,7 +41,7 @@ const validateScheduleData = (scheduleData: string[]) => {
         }
 
         result.push({
-            day: Number(dayInWeekStr) ?? DayInWeek.Sunday,
+            day: (Number(dayInWeekStr) - 2) || DayInWeek.Sunday,
             startLesson: Number(startLessonStr),
             endLesson: Number(endLessonStr)
         })
@@ -105,6 +105,7 @@ const validateTermClassesData = (cells: Cell[]) => {
             name: className,
             lecture: pic,
             maxStudentsCount: Number(maxStudentsCountStr),
+            registrationInfo: null,
             attendanceRecordFile: null,
             startDate: startDate.toDate(),
             endDate: endDate.toDate(),
@@ -122,11 +123,11 @@ const validateTermData = (rows: Row[]) => {
         const [code, name, type, creditsStr, sessionsStr, ...restProps] = row
 
         if (!isNumber(creditsStr)) {
-            return Promise.reject('Credits must be number')
+            throwValidationError('Credits must be number')
         }
 
         if (!isNumber(sessionsStr)) {
-            return Promise.reject('Sessions must be number')
+            throwValidationError('Sessions must be number')
         }
 
         const termClassesData = validateTermClassesData(restProps)
