@@ -4,28 +4,27 @@ import { Routes, Route, Outlet } from "react-router-dom";
 import Profile from "./page/userprofile/Profile";
 import ImportSectionClassList from "./page/classmanagement/ImportSectionClassList";
 import ImportStudentList from "./page/tainformationmanagement/ImportStudentList";
-import MainSideBar from "./components/SideBar/MainSideBar";
+import MainSideBar from "./components/sidebars/MainSideBar";
 import { Col, Container, Row } from "react-bootstrap";
 import Login from "./authentication/Login";
 import NotFound from "./page/404NotFound";
 import Error500 from "./page/500Error";
 import SectionClassList from "./page/classmanagement/SectionClassList";
-import Welcome from "./components/dashboard/Welcome";
-import Loading from "./components/loading/Loading";
+import Welcome from "./page/Welcome";
+// import Loading from "./components/loading/Loading";
 
 
 const Layout = () => {
   return (
     <>
       <MainNavBar />
-      <Loading />
+      {/* <Loading /> */}
       <Container fluid>
         <Row>
           <Col xs={2} id="sidebar-wrapper">
             <MainSideBar />
           </Col>
           <Col xs={10} id="page-content-wrapper">
-            
            <Outlet /> 
           </Col>
         </Row>

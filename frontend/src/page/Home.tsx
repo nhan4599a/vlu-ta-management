@@ -1,4 +1,4 @@
-import MainSideBar from "../components/SideBar/MainSideBar";
+import MainSideBar from "../components/sidebars/MainSideBar";
 import { Col, Container, Row } from "react-bootstrap";
 import "../index.css"
 // import Profile from "./userprofile/Profile";
@@ -16,7 +16,6 @@ const Home = () => {
             <MainSideBar />
           </Col>
           <Col xs={10} id="page-content-wrapper">
-            
           </Col>
         </Row>
       </Container>

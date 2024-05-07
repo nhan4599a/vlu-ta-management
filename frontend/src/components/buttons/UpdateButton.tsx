@@ -1,19 +1,19 @@
+import React, { useState } from "react";
 import { Button } from "react-bootstrap";
-import ImportSuccessPrompt from "../promts/ImportSuccessPrompt";
-import { useState } from "react";
+import UpdateInformationPromt from "../promts/UpdateInformationPromt";
 
-const ImportButton = () => {
+const UpdateButton = () => {
   const [modalShow, setModalShow] = useState(false);
   return (
     <>
       <Button
         variant="primary"
-        className="w-100 mt-5"
+        className="w-100"
         onClick={() => setModalShow(true)}
       >
-        Import
+        Cập nhật
       </Button>
-      <ImportSuccessPrompt
+      <UpdateInformationPromt
         show={modalShow}
         onHide={() => setModalShow(false)}
       />
@@ -21,4 +21,4 @@ const ImportButton = () => {
   );
 };
 
-export default ImportButton;
+export default UpdateButton;
