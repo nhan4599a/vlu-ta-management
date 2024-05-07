@@ -11,18 +11,21 @@ import NotFound from "./page/404NotFound";
 import Error500 from "./page/500Error";
 import SectionClassList from "./page/classmanagement/SectionClassList";
 import Welcome from "./components/dashboard/Welcome";
+import Loading from "./components/loading/Loading";
 
 
 const Layout = () => {
   return (
     <>
       <MainNavBar />
+      <Loading />
       <Container fluid>
         <Row>
           <Col xs={2} id="sidebar-wrapper">
             <MainSideBar />
           </Col>
           <Col xs={10} id="page-content-wrapper">
+            
            <Outlet /> 
           </Col>
         </Row>

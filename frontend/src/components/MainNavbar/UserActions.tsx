@@ -12,7 +12,7 @@ const UserActions = () => {
   const userMenu = (
     <Image
       src={
-        "https://s3-alpha-sig.figma.com/img/959e/2911/450897a3aad953d7a7f05960a296f1e1?Expires=1714953600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=MoEzjg3esONtFpIWVLObmBcvSlHppTyt6GzGlCg46mBTzBdZKGT0pp8q-FeH34S~nxTUIke83eBqUJKI9gZ6Qnc9vrkCFld4W7oy4-WfVlisbGNkBnzjmrWe0z-6DyCXn65jbkXOPIAl3qTRJX9PLYZgGWj~vowkso5hmkC3P5oHZYWo1iW6pvj68vF9UNKDpOCOAYi1j8pJcgz99ZRgHnMFPtiUGXFIDkGisDiUbFYFjpUqFQd6wlCTnn9FbrTzQRN7D-RomUz1VDTcYSTpjjaG0IKxw34RdqQ1ID~2JBkF6tW3Iddl~uX34sP-0vis4b34q6N6ALBEfTPCobiZ7A__"
+        "/user-avatar.png"
       }
       alt="UserName profile image"
       roundedCircle
