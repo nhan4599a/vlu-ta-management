@@ -1,14 +1,33 @@
-import React, { useEffect, useState } from "react";
+import { Ref, useEffect, useImperativeHandle, useRef, useState } from "react";
 import Dropzone from "dropzone";
+import  { v4 as uuidv4 } from 'uuid'
 import "../../index.css";
 
-interface DropzoneProps {
-  onFileAdded: (file: File) => void;
+export interface DropzoneComponentMethodsRef {
+  getFiles: () => File[]
 }
-const DropzoneComponent: React.FC<DropzoneProps> = ({ onFileAdded }) => {
+
+interface DropzoneProps {
+  ref: Ref<DropzoneComponentMethodsRef | undefined>
+}
+
+const DropzoneComponent = ({ ref }: DropzoneProps) => {
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
+
+  const elementIdRef = useRef(uuidv4())
+
+  const dropzoneRef = useRef<Dropzone>()
+
+  useImperativeHandle(ref, () => {
+    return {
+      getFiles() {
+        return dropzoneRef?.current?.files ?? []
+      }
+    }
+  })
+
   useEffect(() => {
-    const dropzone = new Dropzone("#my-dropzone", {
+    const dropzone = new Dropzone(elementIdRef.current, {
       acceptedFiles: ".xlsx,.xls",
       maxFiles: 1,
       autoProcessQueue: false,
@@ -18,21 +37,23 @@ const DropzoneComponent: React.FC<DropzoneProps> = ({ onFileAdded }) => {
       addRemoveLinks: true,
     });
 
-    dropzone.on("addedfile", (file) => {
-      setIsPreviewVisible(!isPreviewVisible);
-      onFileAdded(file);
+    dropzone.on("addedfile", () => {
+      setIsPreviewVisible(true);
     });
+
     dropzone.on("removedfile", () => {
-      setIsPreviewVisible(isPreviewVisible);
+      setIsPreviewVisible(dropzone.files.length !== 0);
     });
+
+    dropzoneRef.current = dropzone
 
     return () => {
       dropzone.destroy();
     };
-  }, [onFileAdded]);
+  }, []);
 
   return (
-    <div id="my-dropzone" className="dropzone">
+    <div id={elementIdRef.current} className="dropzone">
       <div
         className="dz-message text-center p-4"
         style={{ display: isPreviewVisible ? "none" : "block" }}
@@ -55,10 +76,6 @@ const DropzoneComponent: React.FC<DropzoneProps> = ({ onFileAdded }) => {
           </svg>
         </div>
       </div>
-      <div
-        className="dropzone-previews"
-        style={{ display: isPreviewVisible ? "block" : "none" }}
-      ></div>
     </div>
   );
 };
