@@ -1,4 +1,3 @@
-
 const Welcome = () => {
   return (
     <>

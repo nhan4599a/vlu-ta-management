@@ -208,6 +208,27 @@ button:focus-visible {
   -ms-transform: translate(-50%,-50%);
 }
 
+.dropzone {
+  border: 2px dashed #ccc;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.dz-message {
+  /* margin-bottom: 20px; */
+}
+
+.dz-preview .dz-image img {
+  content: url('/microsoft-excel-icon.svg');
+  width: 10%
+}
+
+.dz-success-mark,
+.dz-error-mark{
+  display: none
+} 
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
