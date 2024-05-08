@@ -208,6 +208,17 @@ button:focus-visible {
   -ms-transform: translate(-50%,-50%);
 }
 
+.dropzone {
+  border: 2px dashed #ccc;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.dz-message {
+  margin-bottom: 20px;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
