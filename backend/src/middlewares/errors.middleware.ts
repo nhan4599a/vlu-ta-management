@@ -27,8 +27,8 @@ export const globalErrorHandler = (
   const httpError: HttpError =
     err instanceof HttpError ? err : new InternalServerError(err.message);
 
-  res.status(httpError.statusCode).send({
+  res.status(httpError.statusCode).json({
     success: false,
-    message: httpError.message,
+    message: httpError.message
   });
 };

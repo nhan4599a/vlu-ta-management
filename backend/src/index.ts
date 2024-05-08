@@ -1,5 +1,6 @@
 import express, { Express } from 'express'
 import termController from './controllers/term/term.controller'
+import recruitController from './controllers/recruit/recruit.controller'
 import { IBaseRequest } from './types/integration.types'
 import { env } from './env'
 import DbInstance from './db'
@@ -19,6 +20,7 @@ app.use((req, _, next) => {
 })
 
 app.use('/hoc-phan', termController)
+app.use('/tuyen-dung', recruitController)
 
 app.use(errorLogging)
 app.use(globalErrorHandler)

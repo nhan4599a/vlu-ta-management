@@ -7,6 +7,13 @@ export interface IScheduleDetail {
     endLesson: number
 }
 
+export interface IRegistrationInfo {
+    candidatesCount: number,
+    criteria: string,
+    reason: string,
+    approved: boolean
+}
+
 export interface ITermClass {
     lecture: string,
     name: string,
@@ -14,6 +21,7 @@ export interface ITermClass {
     endDate: Date,
     attendanceRecordFile: string | null,
     maxStudentsCount: number,
+    registrationInfo: IRegistrationInfo | null,
     schedule: IScheduleDetail[]
 }
 
@@ -26,6 +34,13 @@ export interface ITerm {
     classes: ITermClass[]
 }
 
+const RegistrationInfoSchema = new Schema<IRegistrationInfo>({
+    candidatesCount: { type: Number, required: true },
+    criteria: { type: String, required: true },
+    reason: { type: String, required: true },
+    approved: { type: Boolean, required: true }
+})
+
 const TermClassSchema = new Schema<ITermClass>({
     lecture: { type: String, required: true },
     name: { type: String, required: true },
@@ -33,6 +48,7 @@ const TermClassSchema = new Schema<ITermClass>({
     endDate: { type: Date, required: true },
     attendanceRecordFile: { type: String, required: false },
     maxStudentsCount: { type: Number, required: true },
+    registrationInfo: { type: RegistrationInfoSchema, required: false },
     schedule: [
         {
             day: { type: Number, enum: DayInWeek, required: true },

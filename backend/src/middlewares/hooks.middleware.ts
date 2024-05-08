@@ -23,4 +23,6 @@ export const standardizeResponse = (_: Request, res: Response, next: NextFunctio
             })
         }
     }
+
+    next()
 }
