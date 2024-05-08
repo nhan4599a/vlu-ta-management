@@ -216,8 +216,18 @@ button:focus-visible {
 }
 
 .dz-message {
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
 }
+
+.dz-preview .dz-image img {
+  content: url('/microsoft-excel-icon.svg');
+  width: 10%
+}
+
+.dz-success-mark,
+.dz-error-mark{
+  display: none
+} 
 
 @media (prefers-color-scheme: light) {
   :root {
