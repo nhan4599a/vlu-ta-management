@@ -16,10 +16,12 @@ const SectionClassList = () => {
   useEffect(() => {
     dispatch(getTermsDataList(page))
       .then(unwrapResult)
-      .then((data) => {
-        setTerms(data.data.data);
-        setCount(data.data.count)
+      .then(({ data, count }) => {
+        setTerms(data);
+        setCount(count)
       });
+      
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   return (
