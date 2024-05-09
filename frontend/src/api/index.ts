@@ -69,7 +69,7 @@ export type NetworkRequest = {
 const get = <TResult>({ path, query }: NetworkRequest) => {
   const queryString = createQueryString(query);
 
-  return apiClient.get<TResult>(path + queryString);
+  return apiClient.get<TResult, TResult>(path + queryString);
 };
 
 const post = <TResult>({ path, query, body }: NetworkRequest) => {
@@ -78,7 +78,7 @@ const post = <TResult>({ path, query, body }: NetworkRequest) => {
   const contentType =
     body instanceof FormData ? "multipart/form-data" : "application/json";
 
-  return apiClient.post<TResult>(path + queryString, body, {
+  return apiClient.post<TResult, TResult>(path + queryString, body, {
     headers: {
       "Content-Type": contentType,
     },
