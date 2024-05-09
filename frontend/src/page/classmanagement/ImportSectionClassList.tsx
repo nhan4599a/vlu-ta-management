@@ -1,6 +1,6 @@
 import DropzoneComponent, { DropzoneComponentMethodsRef } from "../../components/dropzone/Dropzone";
 import ImportButton from "../../components/buttons/ImportButton";
-import DownloadImportTemplateLink from "../../components/buttons/DownloadImportTemplateLink";
+import DownloadImportTemplateLink from "../../components/links/DownloadImportTemplateLink";
 import { useRef } from "react";
 import "../../index.css";
 import { useAppDispatch } from "../../features/hooks";

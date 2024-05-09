@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
-import UpdateInformationPromt from "../promts/UpdateInformationPromt";
+import TARegister from "../promts/TARegister";
 
-const UpdateButton = () => {
+const TARegisterButton = () => {
   const [modalShow, setModalShow] = useState(false);
   return (
     <>
@@ -11,9 +11,9 @@ const UpdateButton = () => {
         className="w-100"
         onClick={() => setModalShow(true)}
       >
-        Cập nhật
+        Đăng ký
       </Button>
-      <UpdateInformationPromt
+      <TARegister
         show={modalShow}
         onHide={() => setModalShow(false)}
       />
@@ -21,4 +21,4 @@ const UpdateButton = () => {
   );
 };
 
-export default UpdateButton;
+export default TARegisterButton;

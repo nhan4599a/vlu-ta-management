@@ -15,11 +15,6 @@
     ]
   },
   {
-    "title": "Quản lí thông tin account",
-    "children": [
-      { "title": "Danh sách sinh viên khoa", "path": "/student-list" },
-      { "title": "Danh sách trợ giảng", "path": "/ta-list" },
-      { "title": "Danh sách giảng viên", "path": "/lecturer-list" }
-    ]
+    "title": "Quản lí thông tin account", "path": "/account-management/accounts-list" 
   }
 ]
