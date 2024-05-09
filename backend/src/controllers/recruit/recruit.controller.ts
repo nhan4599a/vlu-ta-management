@@ -4,26 +4,28 @@ import { createTypedRequest } from "../../helper/type.helper";
 
 const router = express.Router();
 
-type CreateRegistrationInfo = Omit<IRegistrationInfo, 'approved'>
+type CreateRegistrationInfo = Omit<IRegistrationInfo, "approved">;
 
 router.post("/:id", async (req, res) => {
-  const request = createTypedRequest<CreateRegistrationInfo>(req);
+  const { db, params, body } = createTypedRequest<CreateRegistrationInfo, {}>(
+    req
+  );
 
-  await request.db.terms.findOneAndUpdate(
+  await db.terms.findOneAndUpdate(
     {
-      "classes._id": request.params.id,
+      "classes._id": params.id,
     },
     {
       $set: {
         "classes.$.registrationInfo": {
-            ...request.body,
-            approved: false
+          ...body,
+          approved: false,
         },
       },
     }
   );
 
-  res.json({})
+  res.json({});
 });
 
 export default router;
