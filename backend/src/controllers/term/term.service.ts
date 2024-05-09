@@ -64,7 +64,7 @@ const validateTermClassesData = (cells: Cell[]) => {
     ] = cells
 
     if (!isNumber(classesCountStr, parseNumberOptions)) {
-        throwValidationError('Invalid classes data')
+        throwValidationError('Số lượng lớp không hợp lệ')
     }
 
     if (!isNumber(maxStudentsCountStr, parseNumberOptions)) {
@@ -81,17 +81,17 @@ const validateTermClassesData = (cells: Cell[]) => {
         || classesCount !== schedulesList.length
         || classesCount !== picsList.length
     ) {
-        throwValidationError('Invalid classes data')
+        throwValidationError('Số lượng lớp không đúng')
     }
 
     const startDate = moment(startDateStr.toString(), constants.FORMAT.DATE.DEFAULT, true)
     if (!startDate.isValid()) {
-        throwValidationError('Invalid start date')
+        throwValidationError('Ngày bắt đầu không hợp lệ')
     }
 
     const endDate = moment(endDateStr.toString(), constants.FORMAT.DATE.DEFAULT, true)
     if (!endDate.isValid()) {
-        throwValidationError('Invalid end date')
+        throwValidationError('Ngày kết thúc không hợp lệ')
     }
 
     for (let i = 0; i < classesCount; i++) {
@@ -123,11 +123,11 @@ const validateTermData = (rows: Row[]) => {
         const [code, name, type, creditsStr, sessionsStr, ...restProps] = row
 
         if (!isNumber(creditsStr)) {
-            throwValidationError('Credits must be number')
+            throwValidationError('Tín chỉ phải là số nguyên')
         }
 
         if (!isNumber(sessionsStr)) {
-            throwValidationError('Sessions must be number')
+            throwValidationError('Số tiết học phải là số nguyên')
         }
 
         const termClassesData = validateTermClassesData(restProps)
