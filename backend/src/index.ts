@@ -1,4 +1,5 @@
 import express, { Express } from 'express'
+import cors from 'cors'
 import termController from './controllers/term/term.controller'
 import recruitController from './controllers/recruit/recruit.controller'
 import { IBaseRequest } from './types/integration.types'
@@ -9,6 +10,7 @@ import { standardizeResponse } from './middlewares/hooks.middleware'
 
 const app: Express = express()
 
+app.use(cors())
 app.use(express.json())
 
 app.use(standardizeResponse)
