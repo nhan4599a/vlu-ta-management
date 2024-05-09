@@ -1,11 +1,12 @@
-import React from "react";
 import { Col, Tab, Tabs } from "react-bootstrap";
 import "../../../index.css";
 import SearchInput from "../../../components/generic/SearchInput";
 import AccountsList from "../../../components/lists/AccountsList";
-import Pagination from "../../../components/pagination/Pagination";
+import { PaginationControl } from "react-bootstrap-pagination-control";
+import { useState } from "react";
 
 const AccountMainPage = () => {
+  const [page, setPage] = useState(1);
   return (
     <>
       <h2 className="display-5 mt-2 mb-3">Quản lý tài khoản</h2>
@@ -25,7 +26,16 @@ const AccountMainPage = () => {
           </Tab>
         </Tabs>
         <div className="text-align">
-          <Pagination />
+          <PaginationControl
+            page={page}
+            between={4}
+            total={250}
+            limit={10}
+            changePage={(page) => {
+              setPage(page);
+            }}
+            ellipsis={2}
+          />
         </div>
       </div>
     </>
