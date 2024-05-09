@@ -1,4 +1,4 @@
-import { Ref, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import Dropzone from "dropzone";
 import  { v4 as uuidv4 } from 'uuid'
 import "../../index.css";
@@ -7,14 +7,10 @@ export interface DropzoneComponentMethodsRef {
   getFiles: () => File[]
 }
 
-interface DropzoneProps {
-  ref: Ref<DropzoneComponentMethodsRef | undefined>
-}
-
-const DropzoneComponent = ({ ref }: DropzoneProps) => {
+const DropzoneComponent = forwardRef<DropzoneComponentMethodsRef>((_, ref) => {
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
 
-  const elementIdRef = useRef(uuidv4())
+  const elementIdRef = useRef(`d-${uuidv4()}`)
 
   const dropzoneRef = useRef<Dropzone>()
 
@@ -27,7 +23,7 @@ const DropzoneComponent = ({ ref }: DropzoneProps) => {
   })
 
   useEffect(() => {
-    const dropzone = new Dropzone(elementIdRef.current, {
+    const dropzone = new Dropzone(`#${elementIdRef.current}`, {
       acceptedFiles: ".xlsx,.xls",
       maxFiles: 1,
       autoProcessQueue: false,
@@ -78,6 +74,6 @@ const DropzoneComponent = ({ ref }: DropzoneProps) => {
       </div>
     </div>
   );
-};
+});
 
 export default DropzoneComponent;

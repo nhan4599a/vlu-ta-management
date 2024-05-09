@@ -5,13 +5,10 @@ import {
   showLoadingDialog,
 } from "../features/slices/loading.slice";
 import { IApiResponse } from "../types/integration.type";
+import { showMessageDialog } from "../features/slices/messages.slice";
 
 const config: AxiosRequestConfig = {
   baseURL: "http://localhost:5000/",
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  },
 };
 
 const apiClient = axios.create(config);
@@ -25,13 +22,29 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-apiClient.interceptors.response.use((response) => {
-  numberOfRequests -= 1;
-  if (numberOfRequests === 0) {
-    store.dispatch(closeLoadingDialog());
+apiClient.interceptors.response.use(
+  (response) => {
+    numberOfRequests -= 1;
+    if (numberOfRequests === 0) {
+      store.dispatch(closeLoadingDialog());
+    }
+    return response.data;
+  },
+  (err: IApiResponse<unknown>) => {
+    numberOfRequests -= 1;
+    if (numberOfRequests === 0) {
+      store.dispatch(closeLoadingDialog());
+    }
+
+    if (err.error) {
+      store.dispatch(showMessageDialog(err.error));
+    } else {
+      store.dispatch(showMessageDialog("Cannot connect to server"));
+    }
+
+    return Promise.reject(err)
   }
-  return response.data;
-});
+);
 
 const createQueryString = (query?: Record<string, unknown>) => {
   if (!query) {
@@ -62,7 +75,14 @@ const get = <TResult>({ path, query }: NetworkRequest) => {
 const post = <TResult>({ path, query, body }: NetworkRequest) => {
   const queryString = createQueryString(query);
 
-  return apiClient.post<IApiResponse<TResult>>(path + queryString, body);
+  const contentType =
+    body instanceof FormData ? "multipart/form-data" : "application/json";
+
+  return apiClient.post<IApiResponse<TResult>>(path + queryString, body, {
+    headers: {
+      "Content-Type": contentType,
+    },
+  });
 };
 
 export { get, post };
