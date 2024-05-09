@@ -3,3 +3,8 @@ export interface IApiResponse<TResult> {
     result?: TResult,
     error?: string
 }
+
+export interface PaginaionResponse<TData> {
+    data: TData[],
+    count: number
+}

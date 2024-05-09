@@ -28,7 +28,7 @@ apiClient.interceptors.response.use(
     if (numberOfRequests === 0) {
       store.dispatch(closeLoadingDialog());
     }
-    return response.data;
+    return response.data.result;
   },
   (err: IApiResponse<unknown>) => {
     numberOfRequests -= 1;
@@ -69,7 +69,7 @@ export type NetworkRequest = {
 const get = <TResult>({ path, query }: NetworkRequest) => {
   const queryString = createQueryString(query);
 
-  return apiClient.get<IApiResponse<TResult>>(path + queryString);
+  return apiClient.get<TResult>(path + queryString);
 };
 
 const post = <TResult>({ path, query, body }: NetworkRequest) => {
@@ -78,7 +78,7 @@ const post = <TResult>({ path, query, body }: NetworkRequest) => {
   const contentType =
     body instanceof FormData ? "multipart/form-data" : "application/json";
 
-  return apiClient.post<IApiResponse<TResult>>(path + queryString, body, {
+  return apiClient.post<TResult>(path + queryString, body, {
     headers: {
       "Content-Type": contentType,
     },

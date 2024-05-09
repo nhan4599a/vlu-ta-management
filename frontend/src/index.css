@@ -54,6 +54,10 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+textarea {
+  resize: none
+}
+
 .btn-primary {
   background-color: #d14444 !important;
   color: #fff;
@@ -228,6 +232,46 @@ button:focus-visible {
 .dz-error-mark{
   display: none
 } 
+
+.account-tabs {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  border-radius: 10px 
+}
+
+.account-tabs .nav-item button{
+  color: #000;
+}
+
+.account-tabs .nav-item button.active{
+  color: #fff;
+  background-color: #d14444;
+}
+
+.tab-content {
+  padding: 0 12px;
+  background-color: transparent
+}
+
+.search-input {
+  background-image: url('/search.gif'); 
+  background-size: 30px;
+  background-position: 7px 10px; 
+  background-repeat: no-repeat;
+  padding: 12px 20px 12px 40px;
+}
+
+.accounts-list tr {
+  background-color: transparent
+}
+
+.pagination a {
+  color: #000
+}
+
+.pagination .page-item .active {
+  color: #fff;
+  background-color: #d14444 !important;
+}
 
 @media (prefers-color-scheme: light) {
   :root {
