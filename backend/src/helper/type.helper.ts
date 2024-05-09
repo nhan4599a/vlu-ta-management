@@ -1,6 +1,6 @@
 import { Request } from "express"
 import { IBaseRequest, TypedRequest } from "../types/integration.types"
 
-export const createTypedRequest = <TBody extends {}>(req: Request) => {
-    return req as IBaseRequest as TypedRequest<TBody>
+export const createTypedRequest = <TBody extends {}, TQuery extends {}>(req: Request) => {
+    return req as IBaseRequest as TypedRequest<TBody, TQuery>
 }

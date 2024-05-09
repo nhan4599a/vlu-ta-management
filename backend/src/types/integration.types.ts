@@ -6,8 +6,9 @@ export interface IBaseRequest extends Request {
     db: DbInstance
 }
 
-export interface TypedRequest<TBody extends {} = {}> extends IBaseRequest {
-    body: TBody
+export interface TypedRequest<TBody extends {} = {}, TQuery extends {} = {}> extends IBaseRequest {
+    body: TBody,
+    query: TQuery
 }
 
 export interface BaseResponse<TResult> extends Response<TResult> {
@@ -33,4 +34,13 @@ export class InternalServerError extends HttpError {
     constructor(message: string) {
         super(500, env.isDev ? message : 'Internal server error')
     }
+}
+
+export type PaginationRequest = {
+    page: number
+}
+
+export type PaginationResponse<TResult> = {
+    data: TResult[],
+    count: number
 }
