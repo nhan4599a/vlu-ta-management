@@ -1,7 +1,11 @@
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, ModalProps } from "react-bootstrap";
 import LinkItem from "../LinkItem";
 
-const ImportSuccessPrompt = (props) => {
+type ImportSuccessPromtProps = ModalProps & {
+  url: string
+}
+
+const ImportSuccessPrompt = (props: ImportSuccessPromtProps) => {
   return (
     <Modal
       {...props}
@@ -17,7 +21,7 @@ const ImportSuccessPrompt = (props) => {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary">
-          <LinkItem to={"/class-management/class-list"}>Xem danh sách</LinkItem>
+          <LinkItem to={props.url}>Xem danh sách</LinkItem>
         </Button>
         <Button variant="primary" onClick={props.onHide}>
           Close

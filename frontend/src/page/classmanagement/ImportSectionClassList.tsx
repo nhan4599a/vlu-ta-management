@@ -1,11 +1,30 @@
 import DropzoneComponent, { DropzoneComponentMethodsRef } from "../../components/dropzone/Dropzone";
-import "../../index.css";
 import ImportButton from "../../components/buttons/ImportButton";
 import DownloadImportTemplateLink from "../../components/buttons/DownloadImportTemplateLink";
 import { useRef } from "react";
+import "../../index.css";
+import { useAppDispatch } from "../../features/hooks";
+import { importTermsData } from "../../features/slices/terms.slice";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 const ImportSectionClassList = () => {
-  const dropzoneRef = useRef<DropzoneComponentMethodsRef>()
+  const dropzoneRef = useRef<DropzoneComponentMethodsRef>(null)
+
+  const dispatch = useAppDispatch()
+
+  const onClickImport = () => {
+    if (!dropzoneRef.current) {
+      return Promise.reject()
+    }
+
+    const files = dropzoneRef.current.getFiles()
+
+    const formData = new FormData()
+
+    formData.append('file', files[0])
+
+    return dispatch(importTermsData(formData)).then(unwrapResult)
+  }
 
   return (
     <div>
@@ -13,7 +32,7 @@ const ImportSectionClassList = () => {
       <div className="shadow p-5 rounded-5 bg-white">
         <DownloadImportTemplateLink />
         <DropzoneComponent ref={dropzoneRef} />
-        <ImportButton />
+        <ImportButton importFileAction={onClickImport} url="/class-management/class-list" />
       </div>
     </div>
   );

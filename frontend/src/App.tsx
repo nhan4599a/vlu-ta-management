@@ -10,21 +10,24 @@ import NotFound from "./page/404NotFound";
 import Error500 from "./page/500Error";
 import SectionClassList from "./page/classmanagement/SectionClassList";
 import Welcome from "./page/Welcome";
-import StudentSidebar from "./components/sidebars/StudentSidebar";
+// import StudentSidebar from "./components/sidebars/StudentSidebar";
 // import TeacherSidebar from "./components/sidebars/TeacherSidebar";
-// import AdminSidebar from "./components/sidebars/AdminSidebar";
+import AdminSidebar from "./components/sidebars/AdminSidebar";
 import Loading from "./components/loading/Loading";
-
+import MessagePromt from "./components/promts/MessagePromt"
+import { store } from "./features/store";
+import { Provider } from "react-redux";
 
 const Layout = () => {
   return (
     <>
       <MainNavBar />
       <Loading />
+      <MessagePromt />
       <Container fluid>
         <Row>
           <Col xs={2} id="sidebar-wrapper">
-            <StudentSidebar />
+            <AdminSidebar />
           </Col>
           <Col xs={10} id="page-content-wrapper">
             <Outlet />
@@ -37,7 +40,7 @@ const Layout = () => {
 
 function App() {
   return (
-    <div>
+    <Provider store={store}>
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Welcome />} />
@@ -74,7 +77,7 @@ function App() {
         <Route path="/500" element={<Error500 />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </div>
+    </Provider>
   );
 }
 
