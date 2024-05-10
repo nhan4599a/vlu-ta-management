@@ -2,7 +2,7 @@ import { Button, Modal } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import { closeMessageDialog, selectCurrentMessage } from "../../features/slices/messages.slice";
 
-const Layout = () => {
+const MessagePromt = () => {
   const dispatch = useAppDispatch()
   const messageOption = useAppSelector(selectCurrentMessage)
 
@@ -31,4 +31,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default MessagePromt;
