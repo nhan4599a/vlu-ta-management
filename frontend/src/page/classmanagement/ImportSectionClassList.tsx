@@ -2,7 +2,6 @@ import DropzoneComponent, { DropzoneComponentMethodsRef } from "../../components
 import ImportButton from "../../components/buttons/ImportButton";
 import DownloadImportTemplateLink from "../../components/links/DownloadImportTemplateLink";
 import { useRef } from "react";
-import "../../index.css";
 import { useAppDispatch } from "../../features/hooks";
 import { importTermsData } from "../../features/slices/terms.slice";
 import { unwrapResult } from "@reduxjs/toolkit";

@@ -12,7 +12,7 @@ const UserActions = () => {
   const userMenu = (
     <Image
       src={
-        "/user-avatar.png"
+        "/images/user-avatar.png"
       }
       alt="UserName profile image"
       roundedCircle

@@ -1,4 +1,4 @@
-import { Badge, Table } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import "../../index.css";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 import { useEffect, useState } from "react";

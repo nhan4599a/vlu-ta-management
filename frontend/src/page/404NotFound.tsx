@@ -6,14 +6,14 @@ const NotFound = () => {
     <div className="text-center ">
       <div className="py-5">
         <Image
-          src={"/404.png"}
+          src={"/images/404.png"}
           alt="not-found"
           style={{ width: "700px" }}
         />
       </div>
       <a href="/" className="display-6">
         <Image
-          src="/vlu-logo.png"
+          src="/images/vlu-logo.png"
           alt="logo"
           style={{ width: "45px", marginRight: "10px" }}
         />

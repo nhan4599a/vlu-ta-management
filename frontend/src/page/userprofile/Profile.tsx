@@ -6,7 +6,7 @@ const Profile = () => (
     <div className="d-flex gap-4 align-items-center mb-5">
       <Image
         src={
-          "/user-avatar.png"
+          "/images/user-avatar.png"
         }
         alt="User profile image"
         roundedCircle

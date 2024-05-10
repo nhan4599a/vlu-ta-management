@@ -34,7 +34,7 @@
     "children": [
       {
         "title": "Danh sách account",
-        "path": "/accounts-list"
+        "path": "/account-management/accounts-list"
       }
     ]
   }

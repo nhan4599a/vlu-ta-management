@@ -6,14 +6,14 @@ const Error500 = () => {
     <div className="text-center ">
       <div className="py-5">
         <Image
-          src={"/500.png"}
+          src={"/images/500.png"}
           alt="500-server-error"
           style={{ width: "700px" }}
         />
       </div>
       <a href="/" className="display-6">
         <Image
-          src="/vlu-logo.png"
+          src="/images/vlu-logo.png"
           alt="logo"
           style={{ width: "45px", marginRight: "10px" }}
         />

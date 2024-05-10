@@ -17,6 +17,8 @@ import Loading from "./components/loading/Loading";
 import MessagePromt from "./components/promts/MessagePromt"
 import { store } from "./features/store";
 import { Provider } from "react-redux";
+import AccountMainPage from "./page/admin/accountmanagement/AccountMainPage";
+import TARegisterMainPage from "./page/student/TARegisterMainPage";
 
 const Layout = () => {
   return (
@@ -65,6 +67,13 @@ function App() {
               element={<ImportSectionClassList />}
             />
             <Route path="attendance" element="" />
+          </Route>
+
+          <Route path="/ta-management" element="">
+            <Route path="ta-register" element={<TARegisterMainPage />} />
+          </Route>
+          <Route path="/account-management" element="">
+            <Route path="accounts-list" element={<AccountMainPage />} />
           </Route>
 
           <Route path="/feedback-and-statistic" element="">

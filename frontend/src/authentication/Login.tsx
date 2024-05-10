@@ -8,13 +8,13 @@ const Login = () => {
         <h2 className="position-relative display-1 text-uppercase fw-bolder">Website quản lý trợ giảng</h2>
         <Image
         className="position-relative"
-          src="/af03af070e91980c391496da589f4978.png"
+          src="/images/main-illustrator.png"
           alt="login"
         />
       </div>
       <div className="login-action">
         <h2 className="position-relative display-4 fw-bolder">Đăng nhập</h2>
-        <Button className="btn-lg" href="../page/Home" variant="primary">
+        <Button className="btn-lg" href="../../" variant="primary">
           Đăng nhập</Button>
         <p>Đăng nhập bằng tài khoản Văn Lang để bắt đầu</p>
       </div>
