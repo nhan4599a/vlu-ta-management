@@ -244,6 +244,7 @@ const getTermData = async (req: Request) => {
     {
       $set: {
         name: "$className",
+        id: "$_id"
       },
     },
     {
@@ -251,14 +252,14 @@ const getTermData = async (req: Request) => {
     },
     {
       $project: {
+        id: 1,
         name: 1,
         code: 1,
         type: 1,
         credits: 1,
         day: 1,
         lesson: 1,
-        classId: 1,
-        _id: 0,
+        classId: 1
       },
     },
   ]);
