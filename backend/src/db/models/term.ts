@@ -11,7 +11,7 @@ export interface IRegistrationInfo {
     candidatesCount: number,
     criteria: string,
     reason: string,
-    approved: boolean
+    approved: boolean | null
 }
 
 export interface ITermClass {
@@ -38,7 +38,7 @@ const RegistrationInfoSchema = new Schema<IRegistrationInfo>({
     candidatesCount: { type: Number, required: true },
     criteria: { type: String, required: true },
     reason: { type: String, required: true },
-    approved: { type: Boolean, required: true }
+    approved: { type: Boolean, required: false }
 })
 
 const TermClassSchema = new Schema<ITermClass>({
