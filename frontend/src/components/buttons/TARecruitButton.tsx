@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import TARecruit from "../promts/TARecruit";
 
-const UpdateButton = () => {
+const TARecruitButton = () => {
   const [modalShow, setModalShow] = useState(false);
   return (
     <>
@@ -21,4 +21,4 @@ const UpdateButton = () => {
   );
 };
 
-export default UpdateButton;
+export default TARecruitButton;

@@ -2,19 +2,40 @@
   {
     "title": "Quản lí công tác trợ giảng",
     "children": [
-      { "title": "Tuyển dụng trợ giảng", "path": "/ta-recruitment" },
-      { "title": "Công tác sinh viên", "path": "/student-affairs" }
+      {
+        "title": "Tuyển dụng trợ giảng",
+        "path": "/ta-recruitment"
+      },
+      {
+        "title": "Công tác sinh viên",
+        "path": "/student-affairs"
+      }
     ]
   },
   {
     "title": "Quản lí công tác giảng dạy",
     "children": [
-      { "title": "Import danh sách học phần", "path": "/import-course-list" },
-      { "title": "Danh sách học phần khoa CNTT", "path": "/cnit-course-list" },
-      { "title": "Quản lí danh sách học phần theo kì và năm", "path": "/manage-course-list" }
+      {
+        "title": "Import danh sách học phần",
+        "path": "/class-management/import-class-list"
+      },
+      {
+        "title": "Danh sách học phần khoa CNTT",
+        "path": "/class-management/class-list"
+      },
+      {
+        "title": "Quản lí danh sách học phần theo kì và năm",
+        "path": "/manage-course-list"
+      }
     ]
   },
   {
-    "title": "Quản lí thông tin account", "path": "/account-management/accounts-list" 
+    "title": "Quản lý tài khoản",
+    "children": [
+      {
+        "title": "Danh sách account",
+        "path": "/accounts-list"
+      }
+    ]
   }
 ]

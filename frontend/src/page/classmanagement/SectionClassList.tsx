@@ -6,6 +6,7 @@ import { useAppDispatch } from "../../features/hooks";
 import { getTermsDataList } from "../../features/slices/terms.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { TermDataItem } from "../../types/terrms.type";
+import TARecruitButton from "../../components/buttons/TARecruitButton";
 const SectionClassList = () => {
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
@@ -49,9 +50,7 @@ const SectionClassList = () => {
               <td>{term.day}</td>
               <td>{term.lesson}</td>
               <td>
-                <h5>
-                  <Badge bg="info">Đã phân công TA</Badge>
-                </h5>
+                <TARecruitButton />
               </td>
             </tr>
           ))}
