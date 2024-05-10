@@ -85,4 +85,17 @@ const post = <TResult>({ path, query, body }: NetworkRequest) => {
   });
 };
 
-export { get, post };
+const patch = <TResult>({ path, query, body }: NetworkRequest) => {
+    const queryString = createQueryString(query);
+  
+    const contentType =
+      body instanceof FormData ? "multipart/form-data" : "application/json";
+  
+    return apiClient.patch<TResult, TResult>(path + queryString, body, {
+      headers: {
+        "Content-Type": contentType,
+      },
+    });
+  };
+
+export { get, post, patch };

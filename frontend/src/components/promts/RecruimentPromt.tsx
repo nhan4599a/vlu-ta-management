@@ -2,6 +2,8 @@ import { Button, Form, Modal } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import {
+  approveRecruimentInfo,
+  selectIsAdminMode,
   selectRecruimentInfo,
   unsetRecruimentInfo,
   updateRecruimentInfo,
@@ -9,9 +11,14 @@ import {
 import { unwrapResult } from "@reduxjs/toolkit";
 import { showMessageDialog } from "../../features/slices/messages.slice";
 
-const RecruimentPromt = () => {
-  const recruimentInfo = useAppSelector(selectRecruimentInfo);
+type RecruimentPromtProps = {
+  afterSubmitCallback: () => void
+}
+
+const RecruimentPromt = ({ afterSubmitCallback }: RecruimentPromtProps) => {
   const dispatch = useAppDispatch();
+  const recruimentInfo = useAppSelector(selectRecruimentInfo);
+  const isAdminMode = useAppSelector(selectIsAdminMode)
 
   const [candidatesCount, setCandidatesCount] = useState<number>();
   const [criteria, setCriteria] = useState<string>();
@@ -32,7 +39,7 @@ const RecruimentPromt = () => {
     setReason(undefined)
   };
 
-  const onSubmit = () => {
+  const onSubmitSave = () => {
     dispatch(
       updateRecruimentInfo({
         candidatesCount: candidatesCount ?? 0,
@@ -44,8 +51,23 @@ const RecruimentPromt = () => {
       .then(() => {
         dispatch(showMessageDialog("Đăng ký tuyển dụng trợ giảng thành công"));
         closeModal()
+        afterSubmitCallback()
       });
   };
+
+  const onSubmitApprove = (approved: boolean) => {
+    return () => {
+      dispatch(
+        approveRecruimentInfo(approved)
+      )
+        .then(unwrapResult)
+        .then(() => {
+          dispatch(showMessageDialog("Duyệt tin tuyển dụng trợ giảng thành công"));
+          closeModal()
+          afterSubmitCallback()
+        });
+    }
+  }
 
   return (
     <Modal
@@ -65,6 +87,7 @@ const RecruimentPromt = () => {
           <Form.Group className="mb-3" controlId="taskdescription">
             <Form.Label>Số lượng:</Form.Label>
             <Form.Control
+              disabled={isAdminMode}
               value={candidatesCount}
               type="number"
               onChange={(e) => setCandidatesCount(e.target.value as unknown as number)}
@@ -73,6 +96,7 @@ const RecruimentPromt = () => {
           <Form.Group className="mb-3" controlId="taskdescription">
             <Form.Label>Yêu cầu:</Form.Label>
             <Form.Control
+              disabled={isAdminMode}
               value={criteria}
               as="textarea"
               rows={3}
@@ -82,6 +106,7 @@ const RecruimentPromt = () => {
           <Form.Group className="mb-3" controlId="taskdescription">
             <Form.Label>Lý do:</Form.Label>
             <Form.Control
+              disabled={isAdminMode}
               value={reason}
               as="textarea"
               rows={3}
@@ -94,9 +119,18 @@ const RecruimentPromt = () => {
         <Button variant="secondary" onClick={closeModal}>
           Đóng
         </Button>
-        <Button onClick={onSubmit}>
-          Lưu
-        </Button>
+        {
+          isAdminMode ? (
+            <>
+              <Button onClick={onSubmitApprove(false)}>Từ chối</Button>
+              <Button onClick={onSubmitApprove(true)}>Chấp nhận</Button>
+            </>
+          ) : (
+            <Button onClick={onSubmitSave}>
+              Lưu
+            </Button>
+          )
+        }
       </Modal.Footer>
     </Modal>
   );
