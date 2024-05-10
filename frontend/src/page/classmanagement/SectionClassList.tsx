@@ -1,12 +1,18 @@
-import { Table } from "react-bootstrap";
-import "../../index.css";
+import { Button, Table } from "react-bootstrap";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../features/hooks";
 import { getTermsDataList } from "../../features/slices/terms.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { TermDataItem } from "../../types/terrms.type";
-import TARecruitButton from "../../components/buttons/TARecruitButton";
+import RecruimentPromt from "../../components/promts/RecruimentPromt";
+import {
+  GetRecruimentPayload,
+  getRecuimentInfo,
+  setGetDataPayload,
+} from "../../features/slices/recruiment.slice";
+import "../../index.css";
+
 const SectionClassList = () => {
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
@@ -19,11 +25,18 @@ const SectionClassList = () => {
       .then(unwrapResult)
       .then(({ data, count }) => {
         setTerms(data);
-        setCount(count)
+        setCount(count);
       });
-      
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
+
+  const fetchRecruimentInfo = (payload: GetRecruimentPayload) => {
+    return () => {
+      dispatch(setGetDataPayload(payload))
+      dispatch(getRecuimentInfo())
+    };
+  };
 
   return (
     <div>
@@ -52,7 +65,16 @@ const SectionClassList = () => {
               <td>{term.day}</td>
               <td>{term.lesson}</td>
               <td>
-                <TARecruitButton />
+                <Button
+                  variant="primary"
+                  className="w-100"
+                  onClick={fetchRecruimentInfo({
+                    id: term.id,
+                    classId: term.classId,
+                  })}
+                >
+                  Yêu cầu trợ giảng
+                </Button>
               </td>
             </tr>
           ))}
@@ -70,6 +92,7 @@ const SectionClassList = () => {
           ellipsis={2}
         />
       </div>
+      <RecruimentPromt />
     </div>
   );
 };

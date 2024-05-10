@@ -209,6 +209,7 @@ const getTermData = async (req: Request) => {
             },
           ],
         },
+        rootId: "$_id"
       },
     },
     {
@@ -244,11 +245,11 @@ const getTermData = async (req: Request) => {
     {
       $set: {
         name: "$className",
-        id: "$_id"
+        id: "$rootId"
       },
     },
     {
-      $unset: ["classes", "schedule", "className", "startLesson", "endLesson"],
+      $unset: [ "rootId", "classes", "schedule", "className", "startLesson", "endLesson"],
     },
     {
       $project: {
@@ -259,7 +260,8 @@ const getTermData = async (req: Request) => {
         credits: 1,
         day: 1,
         lesson: 1,
-        classId: 1
+        classId: 1,
+        _id: 0
       },
     },
   ]);
