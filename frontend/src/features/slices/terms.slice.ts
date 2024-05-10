@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { get, post } from "../../api"
 import { PaginaionResponse } from "../../types/integration.type";
-import { TermDataItem } from "../../types/terrms.type";
+import { TermDataItem } from "../../types/term.type";
 
 export const importTermsData = createAsyncThunk('terms/import', async (payload: FormData, { rejectWithValue }) => {
     try {

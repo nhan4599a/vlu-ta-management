@@ -1,5 +1,6 @@
 import express from "express";
 import { IBaseRequest } from "../../types/integration.types";
+import { responseWithValue } from "../../helper/response.helper";
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ router.post("/post-login", async (req, res) => {
     await db.users.create(user);
   }
 
-  res.json(user);
+  responseWithValue(res, user)
 });
 
 export default router;

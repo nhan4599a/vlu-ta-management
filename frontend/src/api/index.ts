@@ -15,6 +15,10 @@ const apiClient = axios.create(config);
 let numberOfRequests = 0;
 
 apiClient.interceptors.request.use((config) => {
+	const state = store.getState()
+
+  config.headers.Authorization = `Bearer ${state.authentication.accessToken}`
+
   if (numberOfRequests === 0) {
     store.dispatch(showLoadingDialog());
   }
@@ -42,7 +46,7 @@ apiClient.interceptors.response.use(
       store.dispatch(showMessageDialog("Cannot connect to server"));
     }
 
-    return Promise.reject(err)
+    return Promise.reject(err);
   }
 );
 
@@ -86,16 +90,16 @@ const post = <TResult>({ path, query, body }: NetworkRequest) => {
 };
 
 const patch = <TResult>({ path, query, body }: NetworkRequest) => {
-    const queryString = createQueryString(query);
-  
-    const contentType =
-      body instanceof FormData ? "multipart/form-data" : "application/json";
-  
-    return apiClient.patch<TResult, TResult>(path + queryString, body, {
-      headers: {
-        "Content-Type": contentType,
-      },
-    });
-  };
+  const queryString = createQueryString(query);
+
+  const contentType =
+    body instanceof FormData ? "multipart/form-data" : "application/json";
+
+  return apiClient.patch<TResult, TResult>(path + queryString, body, {
+    headers: {
+      "Content-Type": contentType,
+    },
+  });
+};
 
 export { get, post, patch };
