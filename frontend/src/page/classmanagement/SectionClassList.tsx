@@ -1,6 +1,6 @@
 import { Button, Table } from "react-bootstrap";
 import { PaginationControl } from "react-bootstrap-pagination-control";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAppDispatch } from "../../features/hooks";
 import { getTermsDataList } from "../../features/slices/terms.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -10,6 +10,7 @@ import {
   GetRecruimentPayload,
   getRecuimentInfo,
   setGetDataPayload,
+  setIsAdminMode,
 } from "../../features/slices/recruiment.slice";
 import "../../index.css";
 
@@ -20,21 +21,27 @@ const SectionClassList = () => {
   const [terms, setTerms] = useState<TermDataItem[]>([]);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     dispatch(getTermsDataList(page))
       .then(unwrapResult)
       .then(({ data, count }) => {
         setTerms(data);
         setCount(count);
       });
+  }, [dispatch, page])
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  useEffect(() => {
+    fetchData()
+  }, [fetchData]);
 
-  const fetchRecruimentInfo = (payload: GetRecruimentPayload) => {
+  const fetchRecruimentInfo = (
+    payload: GetRecruimentPayload,
+    isAdmin: boolean = false
+  ) => {
     return () => {
-      dispatch(setGetDataPayload(payload))
-      dispatch(getRecuimentInfo())
+      dispatch(setIsAdminMode(isAdmin));
+      dispatch(setGetDataPayload(payload));
+      dispatch(getRecuimentInfo());
     };
   };
 
@@ -65,16 +72,38 @@ const SectionClassList = () => {
               <td>{term.day}</td>
               <td>{term.lesson}</td>
               <td>
-                <Button
-                  variant="primary"
-                  className="w-100"
-                  onClick={fetchRecruimentInfo({
-                    id: term.id,
-                    classId: term.classId,
-                  })}
-                >
-                  Yêu cầu trợ giảng
-                </Button>
+                {term.isApproved ? (
+                  <></>
+                ) : (
+                  <Button
+                    variant="primary"
+                    className="w-100"
+                    onClick={fetchRecruimentInfo({
+                      id: term.id,
+                      classId: term.classId,
+                    })}
+                  >
+                    Yêu cầu trợ giảng
+                  </Button>
+                )}
+
+                {term.isRegistered && !term.isApproved ? (
+                  <Button
+                    variant="primary"
+                    className="w-100 mt-1"
+                    onClick={fetchRecruimentInfo(
+                      {
+                        id: term.id,
+                        classId: term.classId,
+                      },
+                      true
+                    )}
+                  >
+                    Chấp nhận yêu cầu tuyển TA
+                  </Button>
+                ) : (
+                  <></>
+                )}
               </td>
             </tr>
           ))}
@@ -92,7 +121,7 @@ const SectionClassList = () => {
           ellipsis={2}
         />
       </div>
-      <RecruimentPromt />
+      <RecruimentPromt afterSubmitCallback={fetchData} />
     </div>
   );
 };

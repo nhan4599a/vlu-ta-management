@@ -33,6 +33,7 @@ router.post("/:id/classes/:classId", async (req, res) => {
           ...body,
           approved: null,
         },
+        "$classes.$.isRegistered": true,
       },
     }
   );
@@ -52,7 +53,7 @@ router.patch("/:id/classes/:classId", async (req, res) => {
     },
     {
       $set: {
-        "classes.$.registrationInfo.approve": body.approved,
+        "classes.$.registrationInfo.approved": body.approved,
       },
     }
   );

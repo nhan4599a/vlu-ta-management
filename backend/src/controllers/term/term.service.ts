@@ -183,14 +183,12 @@ const getTermData = async (req: Request) => {
     {
       $unwind: {
         path: "$classes",
-        includeArrayIndex: "classIndex",
         preserveNullAndEmptyArrays: true,
       },
     },
     {
       $unwind: {
         path: "$classes.schedule",
-        includeArrayIndex: "string",
         preserveNullAndEmptyArrays: true,
       },
     },
@@ -209,7 +207,7 @@ const getTermData = async (req: Request) => {
             },
           ],
         },
-        rootId: "$_id"
+        rootId: "$_id",
       },
     },
     {
@@ -243,13 +241,30 @@ const getTermData = async (req: Request) => {
       },
     },
     {
-      $set: {
-        name: "$className",
-        id: "$rootId"
+      $addFields: {
+        isApproved: {
+          $eq: ["$classes.registrationInfo.approved", true],
+        },
+        isRegistered: {
+          $ne: ["$classes.registrationInfo", null],
+        },
       },
     },
     {
-      $unset: [ "rootId", "classes", "schedule", "className", "startLesson", "endLesson"],
+      $set: {
+        name: "$className",
+        id: "$rootId",
+      },
+    },
+    {
+      $unset: [
+        "rootId",
+        "classes",
+        "schedule",
+        "className",
+        "startLesson",
+        "endLesson",
+      ],
     },
     {
       $project: {
@@ -261,7 +276,9 @@ const getTermData = async (req: Request) => {
         day: 1,
         lesson: 1,
         classId: 1,
-        _id: 0
+        isApproved: 1,
+        isRegistered: 1,
+        _id: 0,
       },
     },
   ]);
