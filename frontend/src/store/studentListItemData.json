@@ -9,8 +9,8 @@
   {
     "title": "Quản lí thông tin trợ giảng",
     "children": [
-      { "title": "Thông tin lớp học phần", "path": "/ta-course-information" },
-      { "title": "Thời khoá biểu", "path": "/ta-schedule" }
+      { "title": "Thời khoá biểu", "path": "/ta-schedule" },
+      { "title": "Thông tin lớp học phần", "path": "/ta-course-information" }
     ]
   },
   {

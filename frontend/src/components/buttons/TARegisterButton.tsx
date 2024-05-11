@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
-import TARegister from "../promts/TARegister";
+import TARegisterPrompt from "../promts/TARegister";
 
 const TARegisterButton = () => {
   const [modalShow, setModalShow] = useState(false);
@@ -13,7 +13,7 @@ const TARegisterButton = () => {
       >
         Đăng ký
       </Button>
-      <TARegister
+      <TARegisterPrompt
         show={modalShow}
         onHide={() => setModalShow(false)}
       />

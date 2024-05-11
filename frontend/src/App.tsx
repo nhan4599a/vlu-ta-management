@@ -19,6 +19,7 @@ import { store } from "./features/store";
 import { Provider } from "react-redux";
 import AccountMainPage from "./page/admin/accountmanagement/AccountMainPage";
 import TARegisterMainPage from "./page/student/TARegisterMainPage";
+import TARecruitmentMainPage from "./page/admin/TA-recruitment-management/TARecruitementMainPage";
 
 const Layout = () => {
   return (
@@ -55,9 +56,18 @@ function App() {
             <Route path="import-student-list" element={<ImportStudentList />} />
           </Route>
 
+          <Route path="/ta-information-management" element="">
+            <Route path="ta-course-information" element={<TARecruitmentMainPage />} />
+            <Route path="feedbacks-ta" element="" />
+          </Route>
+
           <Route path="/task-mission-magagement" element="">
             <Route path="task-mission" element="" />
             <Route path="feedbacks-ta" element="" />
+          </Route>
+          
+          <Route path="/account-management" element="">
+            <Route path="accounts-list" element={<AccountMainPage />} />
           </Route>
 
           <Route path="/class-management" element="">

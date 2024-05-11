@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 
-const TARegister = (props) => {
+const TARegisterPrompt = (props) => {
   const className = "Toán cao cấp";
   return (
     <Modal
@@ -90,4 +90,4 @@ const TARegister = (props) => {
   );
 };
 
-export default TARegister;
+export default TARegisterPrompt;
