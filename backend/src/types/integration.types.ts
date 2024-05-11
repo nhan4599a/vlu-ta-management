@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import DbInstance from "../db";
 import { env } from "../env";
+import { IUser } from "../db/models/user";
 
 export interface IBaseRequest extends Request {
-    db: DbInstance
+    db: DbInstance,
+    user: IUser
 }
 
 export interface ITypedRequest<TBody extends {} = {}, TQuery extends {} = {}> extends IBaseRequest {
