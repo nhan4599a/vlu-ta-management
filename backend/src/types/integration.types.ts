@@ -6,13 +6,14 @@ export interface IBaseRequest extends Request {
     db: DbInstance
 }
 
-export interface TypedRequest<TBody extends {} = {}, TQuery extends {} = {}> extends IBaseRequest {
+export interface ITypedRequest<TBody extends {} = {}, TQuery extends {} = {}> extends IBaseRequest {
     body: TBody,
     query: TQuery
 }
 
-export interface BaseResponse<TResult> extends Response<TResult> {
-    success: boolean
+export interface IExtendedResponse extends Response {
+    error: (message: string) => void
+    success: <TResult>(result: TResult) => void
 }
 
 export abstract class HttpError extends Error {

@@ -1,28 +1,30 @@
 import { Request, Response, NextFunction } from "express"
+import DbInstance from "../db"
+import { IBaseRequest, IExtendedResponse } from "../types/integration.types"
 
-export const standardizeResponse = (_: Request, res: Response, next: NextFunction) => {
-    const oldJsonFunc = res.json
+export const attachDbInstance = (req: Request, _: Response, next: NextFunction) => {
+    const baseReq = req as IBaseRequest
+    baseReq.db = new DbInstance()
 
-    res.json = (data) => {
+    next()
+}
 
-        if (data && data.then) {
-            return data.then((responseData: unknown) => {
-                res.json = oldJsonFunc
+export const extendResponseMethods = (_: Request, res: Response, next: NextFunction) => {
+    const baseRes = res as IExtendedResponse
 
-                return oldJsonFunc.call(res, {
-                    success: true,
-                    result: responseData
-                })
-            })
-        } else {
-            res.json = oldJsonFunc
+    baseRes.success = (function<TResult>(this: typeof res, result: TResult) {
+        this.json({
+            success: true,
+            result: result
+        })
+    }).bind(res)
 
-            return oldJsonFunc.call(res, {
-                success: true,
-                result: data
-            })
-        }
-    }
+    baseRes.error = (function(this: typeof res, message: string) {
+        this.json({
+            success: false,
+            error: message
+        })
+    }).bind(res)
 
     next()
 }

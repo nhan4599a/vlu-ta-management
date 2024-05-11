@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { store } from "../features/store";
 import {
   closeLoadingDialog,
@@ -30,14 +30,14 @@ apiClient.interceptors.response.use(
     }
     return response.data.result;
   },
-  (err: IApiResponse<unknown>) => {
+  (err: AxiosError<IApiResponse<unknown>>) => {
     numberOfRequests -= 1;
     if (numberOfRequests === 0) {
       store.dispatch(closeLoadingDialog());
     }
 
-    if (err.error) {
-      store.dispatch(showMessageDialog(err.error));
+    if (err.response?.data?.error) {
+      store.dispatch(showMessageDialog(err.response?.data?.error));
     } else {
       store.dispatch(showMessageDialog("Cannot connect to server"));
     }
