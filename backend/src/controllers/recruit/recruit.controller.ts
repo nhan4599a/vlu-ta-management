@@ -32,8 +32,7 @@ router.post("/:id/classes/:classId", async (req, res) => {
         "classes.$.registrationInfo": {
           ...body,
           approved: null,
-        },
-        "$classes.$.isRegistered": true,
+        }
       },
     }
   );
