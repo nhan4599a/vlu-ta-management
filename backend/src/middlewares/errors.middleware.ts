@@ -4,6 +4,7 @@ import {
   HttpError,
   InternalServerError,
 } from "../types/integration.types";
+import { responseError } from "../helper/response.helper";
 
 export const errorLogging = (
   err: Error,
@@ -27,8 +28,5 @@ export const globalErrorHandler = (
   const httpError: HttpError =
     err instanceof HttpError ? err : new InternalServerError(err.message);
 
-  res.status(httpError.statusCode).json({
-    success: false,
-    message: httpError.message
-  });
+  responseError(res, httpError)
 };

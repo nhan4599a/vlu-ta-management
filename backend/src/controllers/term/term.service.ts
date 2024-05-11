@@ -56,8 +56,12 @@ const validateScheduleData = (scheduleData: string[]) => {
       throwValidationError("Số tiết không hợp lệ");
     }
 
+    const dayInWeekValue = Number(dayInWeekStr);
+
     result.push({
-      day: Number(dayInWeekStr) - 2 || DayInWeek.Sunday,
+      day: !Number.isNaN(dayInWeekValue)
+        ? dayInWeekValue - 2
+        : DayInWeek.Sunday,
       startLesson: Number(startLessonStr),
       endLesson: Number(endLessonStr),
     });
@@ -183,6 +187,7 @@ const getTermData = async (req: Request) => {
     {
       $unwind: {
         path: "$classes",
+        includeArrayIndex: "classIndex",
         preserveNullAndEmptyArrays: true,
       },
     },
@@ -279,6 +284,24 @@ const getTermData = async (req: Request) => {
         isApproved: 1,
         isRegistered: 1,
         _id: 0,
+      },
+    },
+    {
+      $set: {
+        day: {
+          $switch: {
+            branches: [
+              { case: { $eq: ["$day", 0] }, then: "Thứ 2" },
+              { case: { $eq: ["$day", 1] }, then: "Thứ 3" },
+              { case: { $eq: ["$day", 2] }, then: "Thứ 4" },
+              { case: { $eq: ["$day", 3] }, then: "Thứ 5" },
+              { case: { $eq: ["$day", 4] }, then: "Thứ 6" },
+              { case: { $eq: ["$day", 5] }, then: "Thứ 7" },
+              { case: { $eq: ["$day", 6] }, then: "Chủ nhật" },
+            ],
+            default: "",
+          },
+        },
       },
     },
   ]);
