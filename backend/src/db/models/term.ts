@@ -4,7 +4,9 @@ import { DayInWeek } from "../../constants/day.enum";
 export interface IScheduleDetail {
     day: DayInWeek,
     startLesson: number,
-    endLesson: number
+    endLesson: number,
+    type: string,
+    registrationInfo: IRegistrationInfo | null
 }
 
 export interface IRegistrationInfo {
@@ -21,14 +23,12 @@ export interface ITermClass {
     endDate: Date,
     attendanceRecordFile: string | null,
     maxStudentsCount: number,
-    registrationInfo: IRegistrationInfo | null,
     schedule: IScheduleDetail[]
 }
 
 export interface ITerm {
     name: string,
     code: string,
-    type: string,
     credits: number,
     sessions: number,
     classes: ITermClass[]
@@ -48,12 +48,13 @@ const TermClassSchema = new Schema<ITermClass>({
     endDate: { type: Date, required: true },
     attendanceRecordFile: { type: String, required: false },
     maxStudentsCount: { type: Number, required: true },
-    registrationInfo: { type: RegistrationInfoSchema, required: false },
     schedule: [
         {
             day: { type: Number, enum: DayInWeek, required: true },
             startLesson: { type: Number, required: true },
-            endLesson: { type: Number, required: true }
+            endLesson: { type: Number, required: true },
+            type: { type: String, required: true },
+            registrationInfo: { type: RegistrationInfoSchema, required: false },
         }
     ]
 })
@@ -61,7 +62,6 @@ const TermClassSchema = new Schema<ITermClass>({
 export const TermSchema = new Schema<ITerm>({
     name: { type: String, required: true },
     code: { type: String, required: true },
-    type: { type: String, required: true },
     credits: { type: Number, required: true },
     sessions: { type: Number, required: true },
     classes: [TermClassSchema]

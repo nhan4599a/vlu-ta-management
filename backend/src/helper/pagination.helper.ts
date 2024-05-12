@@ -14,7 +14,7 @@ type FacetPaginationResult<TData> = {
   ];
 };
 
-export const paginate = async <TDocument, TData>(
+export const paginate = async <TDocument, TData = TDocument>(
   document: Model<TDocument>,
   req: PaginationRequest,
   pipeline: PipelineStage[]

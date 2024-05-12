@@ -2,6 +2,7 @@ import express from "express";
 import { IRegistrationInfo } from "../../db/models/term";
 import { createTypedRequest } from "../../helper/type.helper";
 import { getRecruimentInfo } from "./recruit.service";
+import { responseWithValue } from "../../helper/response.helper";
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ type ApproveRegistrationInfo = {
 router.get("/:id/classes/:classId", async (req, res) => {
   const recruimentInfo = getRecruimentInfo(req);
 
-  res.json(recruimentInfo);
+  responseWithValue(res, recruimentInfo)
 });
 
 router.post("/:id/classes/:classId", async (req, res) => {
@@ -37,7 +38,7 @@ router.post("/:id/classes/:classId", async (req, res) => {
     }
   );
 
-  res.json({});
+  responseWithValue(res, undefined)
 });
 
 router.patch("/:id/classes/:classId", async (req, res) => {
@@ -57,7 +58,7 @@ router.patch("/:id/classes/:classId", async (req, res) => {
     }
   );
 
-  res.json({});
+  responseWithValue(res, undefined)
 });
 
 export default router;

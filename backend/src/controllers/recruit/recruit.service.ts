@@ -3,10 +3,10 @@ import { createTypedRequest } from "../../helper/type.helper";
 import mongoose from "mongoose";
 import { IRegistrationInfo } from "../../db/models/term";
 
-export const getRecruimentInfo = (req: Request) => {
+export const getRecruimentInfo = async (req: Request) => {
   const { db, params } = createTypedRequest<{}, {}>(req);
 
-  return db.terms
+  const terms = await db.terms
     .aggregate<IRegistrationInfo | undefined>([
       {
         $match: {
@@ -45,10 +45,11 @@ export const getRecruimentInfo = (req: Request) => {
       {
         $project: {
           _id: 0,
-          registrationInfo: 0
+          registrationInfo: 0,
         },
       },
     ])
-    .exec()
-    .then((terms) => terms[0]);
+    .exec();
+    
+  return terms[0];
 };
