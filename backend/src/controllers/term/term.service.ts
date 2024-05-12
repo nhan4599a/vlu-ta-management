@@ -64,13 +64,15 @@ const validateScheduleData = (scheduleData: string[]) => {
         : DayInWeek.Sunday,
       startLesson: Number(startLessonStr),
       endLesson: Number(endLessonStr),
+      registrationInfo: null,
+      type: "",
     });
   }
 
   return result;
 };
 
-const validateTermClassesData = (cells: Cell[]) => {
+const validateTermClassesData = (type: string, cells: Cell[]) => {
   const result: ITermClass[] = [];
 
   const [
@@ -123,6 +125,12 @@ const validateTermClassesData = (cells: Cell[]) => {
     throwValidationError("Ngày kết thúc không hợp lệ");
   }
 
+  const typeData = type.split(constants.DELIMETER.LIST);
+
+  if (typeData.length > 1 && typeData.length < classesCount) {
+    throwValidationError("Loại học phần không hợp lệ");
+  }
+
   for (let i = 0; i < classesCount; i++) {
     const className = classesNameList[i];
     const pic = picsList[i];
@@ -130,16 +138,38 @@ const validateTermClassesData = (cells: Cell[]) => {
     const scheduleData = schedulesList[i].split(constants.DELIMETER.LIST_ITEM);
     const schedules = validateScheduleData(scheduleData);
 
-    result.push({
+    const termClass = {
       name: className,
       lecture: pic,
       maxStudentsCount: Number(maxStudentsCountStr),
-      registrationInfo: null,
       attendanceRecordFile: null,
       startDate: startDate.toDate(),
       endDate: endDate.toDate(),
       schedule: schedules,
-    });
+    };
+
+    const currentTypeData = typeData.length === 1 ? typeData[0] : typeData[i];
+
+    const typeForClass =
+      typeData.length === 1
+        ? typeData[0]
+        : currentTypeData.split(constants.DELIMETER.LIST_ITEM);
+
+    if (
+      typeData.length !== 1 &&
+      typeForClass.length !== 1 &&
+      typeForClass.length !== schedules.length
+    ) {
+      throwValidationError("Loại học phần không hợp lệ");
+    }
+
+    for (let i = 0; i < schedules.length; i++) {
+      const currentType = typeData.length === 1 ? typeData[0] : typeForClass[i];
+
+      schedules[i].type = currentType;
+    }
+
+    result.push(termClass);
   }
 
   return result;
@@ -159,12 +189,11 @@ const validateTermData = (rows: Row[]) => {
       throwValidationError("Số tiết học phải là số nguyên");
     }
 
-    const termClassesData = validateTermClassesData(restProps);
+    const termClassesData = validateTermClassesData(type.toString(), restProps);
 
     result.push({
       code: code.toString(),
       name: name.toString(),
-      type: type.toString(),
       credits: Number(creditsStr),
       sessions: Number(sessionsStr),
       classes: termClassesData,
@@ -231,7 +260,7 @@ const getTermData = async (req: Request) => {
     },
     {
       $set: {
-        classId: "$classes._id",
+        scheduleId: "$classes.schedule._id",
         lesson: {
           $concat: [
             {
@@ -248,10 +277,10 @@ const getTermData = async (req: Request) => {
     {
       $addFields: {
         isApproved: {
-          $eq: ["$classes.registrationInfo.approved", true],
+          $eq: ["$classes.schedule.registrationInfo.approved", true],
         },
         isRegistered: {
-          $ne: ["$classes.registrationInfo", null],
+          $ne: ["$classes.schedule.registrationInfo", null],
         },
       },
     },
@@ -280,7 +309,7 @@ const getTermData = async (req: Request) => {
         credits: 1,
         day: 1,
         lesson: 1,
-        classId: 1,
+        scheduleId: 1,
         isApproved: 1,
         isRegistered: 1,
         _id: 0,
