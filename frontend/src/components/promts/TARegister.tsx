@@ -1,15 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
+import "../../index.css";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
+import DropzoneComponent from "../dropzone/Dropzone";
 
-const TARegisterPrompt = (props) => {
+const TARegister = () => {
+  const [recruitdescription, setRecruitDescription] = useState<string>();
+  const [fullName, setFullName] = useState<string>();
+  const [email, setEmail] = useState<string>();
+  const [studentClass, setStudentClass] = useState<string>();
+  const [mobile, setMobile] = useState<number>();
+
+  const [closeModal, setCloseModal] = useState();
+  const [onSubmit, setOnSubmit] = useState();
+
   const className = "Toán cao cấp";
   return (
-    <Modal
-      {...props}
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
+    <Modal size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
           Ứng tuyển làm trợ giảng môn {className}
@@ -21,7 +27,7 @@ const TARegisterPrompt = (props) => {
         </Modal.Title>
         <Form>
           <Form.Group className="my-3" controlId="recruitdescription">
-            <Form.Control as="textarea" rows={3} />
+            <Form.Control disabled defaultValue={recruitdescription} as="textarea" rows={3} />
           </Form.Group>
         </Form>
         <Modal.Title id="contained-modal-title-vcenter">
@@ -33,7 +39,7 @@ const TARegisterPrompt = (props) => {
               Họ và tên
             </Form.Label>
             <Col sm="10">
-              <Form.Control readOnly defaultValue="Nguyễn Văn A" type="text" placeholder="" />
+              <Form.Control disabled defaultValue={fullName} type="text" />
             </Col>
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="Email">
@@ -41,7 +47,10 @@ const TARegisterPrompt = (props) => {
               Email VLU
             </Form.Label>
             <Col sm="10">
-              <Form.Control readOnly defaultValue="email@example.com" type="text" placeholder="" />
+              <Form.Control
+                disabled
+                defaultValue={email}
+              />
             </Col>
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="studentclass">
@@ -49,7 +58,10 @@ const TARegisterPrompt = (props) => {
               Lớp
             </Form.Label>
             <Col sm="10">
-              <Form.Control readOnly defaultValue="PM2" type="text" placeholder="" />
+              <Form.Control
+                disabled
+                defaultValue={studentClass}
+              />
             </Col>
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="mobilephone">
@@ -57,19 +69,7 @@ const TARegisterPrompt = (props) => {
               Số điện thoại
             </Form.Label>
             <Col sm="10">
-              <Form.Control readOnly defaultValue="0700000020" type="text" placeholder="" />
-            </Col>
-          </Form.Group>
-          <Form.Group as={Row} className="mb-3" controlId="sesstion">
-            <Form.Label column sm="2">
-              Ca trợ giảng
-            </Form.Label>
-            <Col sm="10">
-              <Form.Select aria-label="Chọn ca trợ giảng">
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </Form.Select>
+              <Form.Control  type="number" />
             </Col>
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="attachment">
@@ -77,17 +77,19 @@ const TARegisterPrompt = (props) => {
               File đính kèm
             </Form.Label>
             <Col sm="10">
-              <Form.Control type="file"  />
+              <DropzoneComponent />
             </Col>
           </Form.Group>
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={props.onHide}>Đóng</Button>
-        <Button onClick={props.onSubmit}>Gửi đơn</Button>
-      </Modal.Footer> 
+        <Button variant="secondary" onClick={closeModal}>
+          Đóng
+        </Button>
+        <Button onClick={onSubmit}>Gửi đơn</Button>
+      </Modal.Footer>
     </Modal>
   );
 };
 
-export default TARegisterPrompt;
+export default TARegister;
