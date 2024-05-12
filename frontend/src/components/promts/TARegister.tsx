@@ -9,10 +9,7 @@ const TARegister = () => {
   const [email, setEmail] = useState<string>();
   const [studentClass, setStudentClass] = useState<string>();
   const [mobile, setMobile] = useState<number>();
-
-  const [closeModal, setCloseModal] = useState();
-  const [onSubmit, setOnSubmit] = useState();
-
+  
   const className = "Toán cao cấp";
   return (
     <Modal size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
@@ -27,7 +24,13 @@ const TARegister = () => {
         </Modal.Title>
         <Form>
           <Form.Group className="my-3" controlId="recruitdescription">
-            <Form.Control disabled defaultValue={recruitdescription} as="textarea" rows={3} />
+            <Form.Control
+              disabled
+              defaultValue={recruitdescription}
+              as="textarea"
+              rows={3}
+              onChange={e => setRecruitDescription(e.target.value)}
+            />
           </Form.Group>
         </Form>
         <Modal.Title id="contained-modal-title-vcenter">
@@ -39,7 +42,12 @@ const TARegister = () => {
               Họ và tên
             </Form.Label>
             <Col sm="10">
-              <Form.Control disabled defaultValue={fullName} type="text" />
+              <Form.Control
+                disabled
+                defaultValue={fullName}
+                type="text"
+                onChange={(e) => setFullName(e.target.value)}
+              />
             </Col>
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="Email">
@@ -50,6 +58,7 @@ const TARegister = () => {
               <Form.Control
                 disabled
                 defaultValue={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </Col>
           </Form.Group>
@@ -61,6 +70,7 @@ const TARegister = () => {
               <Form.Control
                 disabled
                 defaultValue={studentClass}
+                onChange={(e) => setStudentClass(e.target.value)}
               />
             </Col>
           </Form.Group>
@@ -69,7 +79,11 @@ const TARegister = () => {
               Số điện thoại
             </Form.Label>
             <Col sm="10">
-              <Form.Control  type="number" />
+              <Form.Control
+                type="number"
+                value={mobile}
+                onChange={(e) => setMobile(Number(e.target.value))}
+              />
             </Col>
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="attachment">
@@ -83,10 +97,10 @@ const TARegister = () => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={closeModal}>
+        <Button variant="secondary">
           Đóng
         </Button>
-        <Button onClick={onSubmit}>Gửi đơn</Button>
+        <Button>Gửi đơn</Button>
       </Modal.Footer>
     </Modal>
   );
