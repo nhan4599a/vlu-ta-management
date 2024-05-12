@@ -1,7 +1,7 @@
 import { Button, Table } from "react-bootstrap";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 import { useCallback, useEffect, useState } from "react";
-import { useAppDispatch } from "../../features/hooks";
+import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import { getTermsDataList } from "../../features/slices/terms.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { TermDataItem } from "../../types/term.type";
@@ -10,11 +10,14 @@ import {
   GetRecruimentPayload,
   getRecuimentInfo,
   setGetDataPayload,
-  setIsAdminMode,
 } from "../../features/slices/recruiment.slice";
+import { selectCurrentRole } from "../../features/slices/authentication.slice";
 import "../../index.css";
+import { Role } from "../../types/user.type";
 
 const SectionClassList = () => {
+  const role = useAppSelector(selectCurrentRole);
+
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
 
@@ -28,18 +31,14 @@ const SectionClassList = () => {
         setTerms(data);
         setCount(count);
       });
-  }, [dispatch, page])
+  }, [dispatch, page]);
 
   useEffect(() => {
-    fetchData()
+    fetchData();
   }, [fetchData]);
 
-  const fetchRecruimentInfo = (
-    payload: GetRecruimentPayload,
-    isAdmin: boolean = false
-  ) => {
+  const fetchRecruimentInfo = (payload: GetRecruimentPayload) => {
     return () => {
-      dispatch(setIsAdminMode(isAdmin));
       dispatch(setGetDataPayload(payload));
       dispatch(getRecuimentInfo());
     };
@@ -72,7 +71,7 @@ const SectionClassList = () => {
               <td>{term.day}</td>
               <td>{term.lesson}</td>
               <td>
-                {term.isApproved ? (
+                {role !== Role.Teacher || term.isApproved ? (
                   <></>
                 ) : (
                   <Button
@@ -80,26 +79,42 @@ const SectionClassList = () => {
                     className="w-100"
                     onClick={fetchRecruimentInfo({
                       id: term.id,
-                      classId: term.classId,
+                      scheduleId: term.scheduleId,
                     })}
                   >
                     Yêu cầu trợ giảng
                   </Button>
                 )}
 
-                {term.isRegistered && !term.isApproved ? (
+                {role === Role.Admin &&
+                !term.isRegistered &&
+                !term.isApproved ? (
                   <Button
                     variant="primary"
                     className="w-100 mt-1"
-                    onClick={fetchRecruimentInfo(
-                      {
-                        id: term.id,
-                        classId: term.classId,
-                      },
-                      true
-                    )}
+                    onClick={fetchRecruimentInfo({
+                      id: term.id,
+                      scheduleId: term.scheduleId,
+                    })}
                   >
                     Chấp nhận yêu cầu tuyển TA
+                  </Button>
+                ) : (
+                  <></>
+                )}
+
+                {role === Role.Student &&
+                term.isRegistered &&
+                term.isApproved ? (
+                  <Button
+                    variant="primary"
+                    className="w-100 mt-1"
+                    onClick={fetchRecruimentInfo({
+                      id: term.id,
+                      scheduleId: term.scheduleId,
+                    })}
+                  >
+                    Ứng tuyển
                   </Button>
                 ) : (
                   <></>

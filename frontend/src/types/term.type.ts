@@ -5,7 +5,7 @@ export type TermDataItem = {
     type: string,
     credits: number,
     day: number,
-    classId: string,
+    scheduleId: string,
     lesson: string,
     isRegistered: boolean,
     isApproved: boolean
