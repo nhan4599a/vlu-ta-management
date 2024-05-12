@@ -1,29 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import { JwksClient } from "jwks-rsa";
-import { JwtPayload, Secret, verify } from "jsonwebtoken";
+import { JwtPayload, decode } from "jsonwebtoken";
 import { IUser } from "../db/models/user";
 import { IBaseRequest } from "../types/integration.types";
 import DbInstance from "../db";
 import { constants } from "../constants";
 import { Role } from "../constants/role.enum";
 
-type JwtHeader = {
-  kid?: string | undefined;
-};
-
-type GetSigningKeyCallback = (err: Error | null, key?: Secret) => void;
-
 type GetUserInfoCallback = (err: Error | null, user?: IUser) => void;
-
-const getSigningKey = ({ kid }: JwtHeader, callback: GetSigningKeyCallback) => {
-  const client = new JwksClient({
-    jwksUri: constants.AUTHENTICATION.JWKS_URI,
-  });
-
-  return client.getSigningKey(kid, (err, key) => {
-    callback(err, key?.getPublicKey());
-  });
-};
 
 const getUserInfo = (
   db: DbInstance,
@@ -39,14 +22,14 @@ const getUserInfo = (
     .then((users) => {
       const schoolUserInfo = payload["name"].split(" - ");
 
+      const role = constants.AUTHENTICATION.ADMIN_ACCOUNTS.includes(email)
+      ? Role.Admin
+      : Role.Student
+
       const user = users[0] ?? {
         code: schoolUserInfo[0],
         email: email,
-        roles: [
-          constants.AUTHENTICATION.ADMIN_ACCOUNTS.includes(email)
-            ? Role.Admin
-            : Role.Student,
-        ],
+        role: role,
         name: schoolUserInfo[1],
         class: schoolUserInfo[2],
         active: true,
@@ -72,25 +55,27 @@ export const authenticate = (
     });
   }
 
-  verify(accessToken!, getSigningKey, (err, payload) => {
-    if (err) {
-      res.status(401).json({
-        success: false,
-        message: err.message,
-      });
-    } else {
-      const request = req as IBaseRequest;
-      getUserInfo(request.db, payload as JwtPayload, (err, user) => {
-        if (err) {
-          res.status(500).json({
-            success: false,
-            message: "Internal server error",
-          });
-        } else {
-          request.user = user!;
-          next();
-        }
-      });
-    }
+  const decodedToken = decode(accessToken!, {
+    complete: true,
   });
+
+  if (!decodedToken?.payload) {
+    res.status(401).json({
+      success: false,
+      message: "Invalid token",
+    });
+  } else {
+    const request = req as IBaseRequest;
+    getUserInfo(request.db, decodedToken.payload as JwtPayload, (err, user) => {
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: "Internal server error",
+        });
+      } else {
+        request.user = user!;
+        next();
+      }
+    });
+  }
 };

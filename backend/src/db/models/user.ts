@@ -7,7 +7,7 @@ export interface IUser {
     email: string,
     active: boolean,
     name: string,
-    roles: [Role]
+    role: Role
 }
 
 export const UserSchema = new Schema<IUser>({
@@ -16,5 +16,5 @@ export const UserSchema = new Schema<IUser>({
     email: { type: String, required: true, index: true },
     active: { type: Boolean, required: true },
     name: { type: String, required: true },
-    roles: { type: [Number], required: true }
+    role: { type: Number, required: true }
 })

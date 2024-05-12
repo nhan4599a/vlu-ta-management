@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useAppDispatch } from "../../features/hooks";
 import { getTermsDataList } from "../../features/slices/terms.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { TermDataItem } from "../../types/terrms.type";
+import { TermDataItem } from "../../types/term.type";
 import RecruimentPromt from "../../components/promts/RecruimentPromt";
 import {
   GetRecruimentPayload,
