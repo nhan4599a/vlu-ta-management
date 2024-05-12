@@ -5,28 +5,25 @@ import { RootState } from "../store";
 
 export type GetRecruimentPayload = {
   id: string;
-  classId: string;
+  scheduleId: string;
 };
 
 type InitialState = {
   termId?: string;
-  classId?: string;
+  scheduleId?: string;
   recruimentInfo?: RecruimentInfo;
-  isAdminMode: boolean
 };
 
-const initialState: InitialState = {
-  isAdminMode: false
-};
+const initialState: InitialState = {};
 
 export const getRecuimentInfo = createAsyncThunk(
   "recruiment/fetch",
   async (_, { getState, rejectWithValue }) => {
     try {
-      const { termId, classId } = (getState() as RootState).recruiment;
+      const { termId, scheduleId } = (getState() as RootState).recruiment;
 
       return await get<RecruimentInfo>({
-        path: `tuyen-dung/${termId}/classes/${classId}`,
+        path: `tuyen-dung/${termId}/classes/${scheduleId}`,
       });
     } catch (e) {
       return rejectWithValue(e);
@@ -38,10 +35,10 @@ export const updateRecruimentInfo = createAsyncThunk(
   "recruiment/update",
   async (payload: RecruimentInfo, { getState, rejectWithValue }) => {
     try {
-      const { termId, classId } = (getState() as RootState).recruiment;
+      const { termId, scheduleId } = (getState() as RootState).recruiment;
 
       return await post({
-        path: `tuyen-dung/${termId}/classes/${classId}`,
+        path: `tuyen-dung/${termId}/classes/${scheduleId}`,
         body: payload,
       });
     } catch (e) {
@@ -54,10 +51,10 @@ export const approveRecruimentInfo = createAsyncThunk(
     "recruiment/approve",
     async (payload: boolean, { getState, rejectWithValue }) => {
       try {
-        const { termId, classId } = (getState() as RootState).recruiment;
+        const { termId, scheduleId } = (getState() as RootState).recruiment;
   
         return await patch({
-          path: `tuyen-dung/${termId}/classes/${classId}`,
+          path: `tuyen-dung/${termId}/classes/${scheduleId}`,
           body: {
             approved: payload
           },
@@ -72,12 +69,9 @@ const recruimentSlice = createSlice({
   name: "recruiment",
   initialState,
   reducers: {
-    setIsAdminMode(state, { payload }: PayloadAction<boolean>) {
-        state.isAdminMode = payload
-    },
     setGetDataPayload(state, { payload }: PayloadAction<GetRecruimentPayload>) {
       state.termId = payload.id;
-      state.classId = payload.classId;
+      state.scheduleId = payload.scheduleId;
     },
     unsetRecruimentInfo(state) {
       state.recruimentInfo = undefined;
@@ -91,7 +85,6 @@ const recruimentSlice = createSlice({
 });
 
 export const recruimentReducer = recruimentSlice.reducer;
-export const { setIsAdminMode, setGetDataPayload, unsetRecruimentInfo } = recruimentSlice.actions;
+export const { setGetDataPayload, unsetRecruimentInfo } = recruimentSlice.actions;
 export const selectRecruimentInfo = (state: RootState) =>
   state.recruiment.recruimentInfo;
-export const selectIsAdminMode = (state: RootState) => state.recruiment.isAdminMode
