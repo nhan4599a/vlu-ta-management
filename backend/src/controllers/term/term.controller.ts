@@ -76,7 +76,7 @@ router.post("/:id/classes/:classId/users/:userId/tasks", async (req, res) => {
               ...actualTask,
               termId: params.id,
               scheduleId: params.classId,
-              assigner: user._id,
+              assigner: user._id.toString(),
               assignee: params.userId,
             },
           },

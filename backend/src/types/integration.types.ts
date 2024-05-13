@@ -2,11 +2,12 @@ import { Request, Response } from "express";
 import DbInstance from "../db";
 import { env } from "../env";
 import { IUser } from "../db/models/user";
+import mongoose from "mongoose";
 
 export interface IBaseRequest extends Request {
     db: DbInstance,
     user: IUser & {
-        _id: string
+        _id: mongoose.Types.ObjectId
     }
 }
 

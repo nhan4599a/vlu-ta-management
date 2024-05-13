@@ -1,10 +1,23 @@
-import React, { useState } from "react";
 import { Table } from "react-bootstrap";
-import "../../index.css";
 import ConfirmDelete from "../promts/ConfirmDelete";
+import { useAppDispatch, useAppSelector } from "../../features/hooks";
+import { selectUsersList, setSelectedUser } from "../../features/slices/users.slice";
+import "../../index.css";
+import { IUser } from "../../types/user.type";
 
 const AccountsList = () => {
-  const [modalShow, setModalShow] = useState(false);
+  const dispatch = useAppDispatch()
+  const users = useAppSelector(selectUsersList);
+
+  const onActionButtonClick = ({ _id, active }: IUser) => {
+    return () => {
+      dispatch(setSelectedUser({
+        id: _id,
+        active
+      }))
+    }
+  }
+
   return (
     <>
       <Table responsive className="accounts-list">
@@ -14,62 +27,33 @@ const AccountsList = () => {
             <th>Mail</th>
             <th>Họ tên</th>
             <th>MSSV</th>
-            <th>Khoa</th>
+            <th>Lớp</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>duy.207ct27685</td>
-            <td>Nguyễn Châu Phương Duy</td>
-            <td>207CT27685</td>
-            <td>Khoa CNTT</td>
-            <td>
-              <p>
-                <a
-                  className="link-opacity-100"
-                  onClick={() => setModalShow(true)}
-                >
-                  Xóa
-                </a>
-              </p>
-            </td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>duy.207ct27685</td>
-            <td>Nguyễn Châu Phương Duy</td>
-            <td>207CT27685</td>
-            <td>Khoa CNTT</td>
-            <td>
-              <p>
-                <a className="link-opacity-100" href="">
-                  Xóa
-                </a>
-              </p>
-            </td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>duy.207ct27685</td>
-            <td>Nguyễn Châu Phương Duy</td>
-            <td>207CT27685</td>
-            <td>Khoa CNTT</td>
-            <td>
-              <p>
-                <a
-                  className="link-opacity-100"
-                  onClick={() => setModalShow(true)}
-                >
-                  Xóa
-                </a>
-              </p>
-            </td>
-          </tr>
+          {users.map((user, index) => (
+            <tr>
+              <td>{index + 1}</td>
+              <td>{user.email}</td>
+              <td>{user.name}</td>
+              <td>{user.code}</td>
+              <td>{user.class}</td>
+              <td>
+                <p>
+                  <a
+                    className="link-opacity-100"
+                    onClick={onActionButtonClick(user)}
+                  >
+                    Xóa
+                  </a>
+                </p>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </Table>
-      <ConfirmDelete show={modalShow} onHide={() => setModalShow(false)} />
+      <ConfirmDelete />
     </>
   );
 };
