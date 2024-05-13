@@ -6,7 +6,8 @@ export interface IScheduleDetail {
     startLesson: number,
     endLesson: number,
     type: string,
-    registrationInfo: IRegistrationInfo | null
+    registrationInfo: IRegistrationInfo | null,
+    assistants: string[]
 }
 
 export interface IRegistrationInfo {
@@ -55,6 +56,7 @@ const TermClassSchema = new Schema<ITermClass>({
             endLesson: { type: Number, required: true },
             type: { type: String, required: true },
             registrationInfo: { type: RegistrationInfoSchema, required: false },
+            assistants: { type: [String], required: true }
         }
     ]
 })

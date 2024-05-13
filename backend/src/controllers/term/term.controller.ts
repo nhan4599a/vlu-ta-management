@@ -1,7 +1,7 @@
 import express from 'express'
 import { IBaseRequest } from '../../types/integration.types'
 import { uploadFileMiddleware } from '../../helper/upload.helper'
-import { getTermData, readTermData } from './term.service'
+import { getAssitantsInfo, getTermData, readTermData } from './term.service'
 import { responseWithValue } from '../../helper/response.helper'
 
 const router = express.Router()
@@ -20,6 +20,12 @@ router.post('/', uploadFileMiddleware, async (req, res) => {
     await db.terms.insertMany(terms)
 
     responseWithValue(res, null)
+})
+
+router.get('/:id/classes/:classId/assistants', async (req, res) => {
+    const assistants = await getAssitantsInfo(req)
+
+    responseWithValue(res, assistants)
 })
 
 export default router

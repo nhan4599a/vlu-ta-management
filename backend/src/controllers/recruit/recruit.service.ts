@@ -19,14 +19,19 @@ export const getRecruimentInfo = async (req: Request) => {
         },
       },
       {
+        $unwind: {
+          path: "$classes.schedule",
+        },
+      },
+      {
         $match: {
-          "classes._id": new mongoose.Types.ObjectId(params.classId),
+          "classes.schedule._id": new mongoose.Types.ObjectId(params.classId),
         },
       },
       {
         $replaceRoot: {
           newRoot: {
-            $mergeObjects: ["$classes", "$$ROOT"],
+            $mergeObjects: ["$classes.schedule", "$$ROOT"],
           },
         },
       },
