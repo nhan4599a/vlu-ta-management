@@ -27,19 +27,20 @@ import {
 } from "./features/slices/authentication.slice";
 import { Role } from "./types/user.type";
 import "./index.css";
+import TAClassList from "./page/ta/TAClassList";
 
 
 const Layout = () => {
-  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  // const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const user = useAppSelector(selectCurrentUser);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
-    }
-  }, [isAuthenticated, navigate]);
+  // useEffect(() => {
+  //   if (!isAuthenticated) {
+  //     navigate("/login");
+  //   }
+  // }, [isAuthenticated, navigate]);
 
   const Sidebar = useMemo(() => {
     switch (user?.role) {
@@ -105,6 +106,10 @@ function App() {
 
         <Route path="/account-management" element="">
           <Route path="accounts-list" element={<AccountMainPage />} />
+        </Route>
+
+        <Route path="/ta-classlist" element="">
+          <Route path="task-ta" element={<TAClassList />} />
         </Route>
 
         <Route path="/class-management" element="">
