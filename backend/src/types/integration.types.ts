@@ -5,7 +5,9 @@ import { IUser } from "../db/models/user";
 
 export interface IBaseRequest extends Request {
     db: DbInstance,
-    user: IUser
+    user: IUser & {
+        _id: string
+    }
 }
 
 export interface ITypedRequest<TBody extends {} = {}, TQuery extends {} = {}> extends IBaseRequest {
