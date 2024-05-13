@@ -40,7 +40,6 @@ const authenticationSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(postLoginCallback.fulfilled, (state, { payload }) => {
-        console.log(payload)
       state.user = payload;
       state.role = payload?.role;
       state.isAuthenticated = true;

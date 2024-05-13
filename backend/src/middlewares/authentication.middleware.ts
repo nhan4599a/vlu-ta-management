@@ -5,8 +5,14 @@ import { IBaseRequest } from "../types/integration.types";
 import DbInstance from "../db";
 import { constants } from "../constants";
 import { Role } from "../constants/role.enum";
+import mongoose from "mongoose";
 
-type GetUserInfoCallback = (err: Error | null, user?: IUser) => void;
+type GetUserInfoCallback = (
+  err: Error | null,
+  user?: IUser & {
+    _id: mongoose.Types.ObjectId;
+  }
+) => void;
 
 const getUserInfo = (
   db: DbInstance,
@@ -23,8 +29,8 @@ const getUserInfo = (
       const schoolUserInfo = payload["name"].split(" - ");
 
       const role = constants.AUTHENTICATION.ADMIN_ACCOUNTS.includes(email)
-      ? Role.Admin
-      : Role.Student
+        ? Role.Admin
+        : Role.Student;
 
       const user = users[0] ?? {
         code: schoolUserInfo[0],
@@ -34,6 +40,7 @@ const getUserInfo = (
         class: schoolUserInfo[2],
         active: true,
       };
+
       callback(null, user);
     })
     .catch((err) => callback(err, undefined));
