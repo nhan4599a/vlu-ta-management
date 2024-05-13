@@ -14,6 +14,7 @@ import { DayInWeek } from "../../constants/day.enum";
 import { createTypedRequest } from "../../helper/type.helper";
 import { PaginationRequest } from "../../types/integration.types";
 import { paginate } from "../../helper/pagination.helper";
+import mongoose from "mongoose";
 
 type TermDataItem = Omit<ITerm, "classes" | "sessions"> &
   Omit<IScheduleDetail, "startLesson" | "endLesson"> & {
@@ -66,6 +67,7 @@ const validateScheduleData = (scheduleData: string[]) => {
       endLesson: Number(endLessonStr),
       registrationInfo: null,
       type: "",
+      assistants: [],
     });
   }
 
@@ -336,4 +338,65 @@ const getTermData = async (req: Request) => {
   ]);
 };
 
-export { readTermData, getTermData };
+const getAssitantsInfo = (req: Request) => {
+  const { db, params } = createTypedRequest<{}, {}>(req);
+
+  return db.terms.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(params.id),
+      },
+    },
+    {
+      $unwind: {
+        path: "$classes",
+      },
+    },
+    {
+      $unwind: {
+        path: "$classes.schedule",
+      },
+    },
+    {
+      $match: {
+        "classes.schedule._id": new mongoose.Types.ObjectId(params.classId),
+      },
+    },
+    {
+      $set: {
+        assistants: {
+          $getField: {
+            field: "assistants",
+            input: "$classes.schedule",
+          },
+        },
+      },
+    },
+    {
+      $unset: ["classes"],
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "assistants",
+        foreignField: "code",
+        as: "users",
+      },
+    },
+    {
+      $project: {
+        users: 1,
+      },
+    },
+    {
+      $unwind: {
+        path: "users",
+      },
+    },
+    {
+      $unset: ["users"],
+    },
+  ]);
+};
+
+export { readTermData, getTermData, getAssitantsInfo };
