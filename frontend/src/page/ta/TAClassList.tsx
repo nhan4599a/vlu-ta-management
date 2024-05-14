@@ -1,13 +1,39 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 import TasksPrompt from "../../components/promts/TasksPrompt";
+import { useAppDispatch, useAppSelector } from "../../features/hooks";
+import { getTasks, setAssignee } from "../../features/slices/tasks.slice";
+import {
+  getUsersList,
+  selectUsersList,
+  setRequest,
+} from "../../features/slices/users.slice";
+import { Role } from "../../types/user.type";
 
 const TAClassList = () => {
-  const [user, setUser] = useState<string>();
-  const [showModal, setShowModal] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const usersResponse = useAppSelector(selectUsersList);
+
   const [page, setPage] = useState(1);
-  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const request = {
+      role: Role.Student,
+      isAssistant: true,
+      page,
+    };
+    dispatch(setRequest(request));
+    dispatch(getUsersList(request));
+  }, [dispatch, page]);
+
+  const openTaskModal = (userId: string) => {
+    return () => {
+      dispatch(setAssignee(userId));
+      dispatch(getTasks())
+    };
+  };
 
   return (
     <div>
@@ -25,38 +51,26 @@ const TAClassList = () => {
           </tr>
         </thead>
         <tbody>
-        <tr>
-              <td>1</td>
-              <td>abc</td>
-              <td>abcc</td>
-              <td>abc</td>
-              <td>
-                <Button variant="primary" onClick={() => setShowModal(true)}>
-                  Nhiệm vụ
-                </Button>
-                
-              </td>
-            </tr>
-          {/* {user.map((ta, index) => (
+          {usersResponse.data.map((user, index) => (
             <tr>
               <td>{index + 1}</td>
-              <td>{ta.name}</td>
-              <td>{ta.code}</td>
-              <td>{ta.class}</td>
+              <td>{user.name}</td>
+              <td>{user.code}</td>
+              <td>{user.class}</td>
               <td>
-                <Button variant="primary" onClick={() => setShowModal(true)}>
+                <Button variant="primary" onClick={openTaskModal(user._id)}>
                   Nhiệm vụ
                 </Button>
               </td>
             </tr>
-          ))} */}
+          ))}
         </tbody>
       </Table>
       <div className="text-align">
         <PaginationControl
           page={page}
           between={4}
-          total={count}
+          total={usersResponse.count}
           limit={10}
           changePage={(page) => {
             setPage(page);
@@ -64,7 +78,7 @@ const TAClassList = () => {
           ellipsis={2}
         />
       </div>
-      <TasksPrompt show={showModal} onHide={() => setShowModal(false)}/>
+      <TasksPrompt />
     </div>
   );
 };

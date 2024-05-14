@@ -1,42 +1,78 @@
 import React, { useState } from "react";
 import { Button, Form, InputGroup, ListGroup, Modal } from "react-bootstrap";
+import {
+  addTask,
+  deleteTask,
+  getTasks,
+  saveTasks,
+  selectAssignee,
+  selectTasks,
+  setAssignee,
+  updateTask,
+} from "../../features/slices/tasks.slice";
+import { useAppDispatch, useAppSelector } from "../../features/hooks";
+import { ITaskItem, TaskAction } from "../../types/task.type";
 
-const TasksPrompt = (props) => {
-  const [showModal, setShowModal] = useState(false);
+const TasksPrompt = () => {
+  const dispatch = useAppDispatch();
 
-  const [todos, setTodos] = useState([]);
+  const tasks = useAppSelector(selectTasks);
+  const assignee = useAppSelector(selectAssignee);
+
   const [inputValue, setInputValue] = useState("");
 
-  function handleChange(e: {
-    target: { value: React.SetStateAction<string> };
-  }) {
-    setInputValue(e.target.value);
-  }
+  const [edittingTask, setEdittingTask] = useState<string>();
+  const [edittingValue, setEdittingValue] = useState("");
 
-  function handleSubmit(e) {
+  const handleAddTask = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setTodos([...todos, inputValue]);
-    setInputValue(" ");
-  }
-
-  function handleDelete(index) {
-    const newTodos = [...todos];
-    newTodos.splice(index, 1);
-    setTodos(newTodos);
-  }
-
-  const handleUpdate = (index, updatedValue) => {
-    const newTodos = [...todos];
-    newTodos[index] = updatedValue;
-    setTodos(newTodos);
+    dispatch(addTask(inputValue));
+    setInputValue("");
   };
-  
+
+  const handleDelete = (index: number) => {
+    return () => {
+      dispatch(deleteTask(index));
+    };
+  };
+
+  const openEditMode = ({ _id, content }: ITaskItem) => {
+    return () => {
+      setEdittingTask(_id!);
+      setEdittingValue(content);
+    };
+  };
+
+  const closeEditMode = (taskId: string) => {
+    return () => {
+      dispatch(
+        updateTask({
+          taskId,
+          content: edittingValue,
+        })
+      );
+
+      setEdittingTask(undefined);
+      setEdittingValue("");
+    };
+  };
+
+  const onHide = () => {
+    dispatch(setAssignee(undefined));
+  };
+
+  const onSaveButtonClick = async () => {
+    await dispatch(saveTasks())
+    await dispatch(getTasks())
+    onHide()
+  };
 
   return (
     <Modal
-      {...props}
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
+      show={assignee !== undefined}
+      onHide={onHide}
       centered
     >
       <Modal.Header closeButton>
@@ -45,19 +81,19 @@ const TasksPrompt = (props) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleAddTask}>
           <Form.Group className="mb-3" controlId="">
             <Form.Label>Thêm nhiệm vụ:</Form.Label>
             <InputGroup size="lg">
               <Form.Control
                 type="text"
                 value={inputValue}
-                onChange={handleChange}
+                onChange={(e) => setInputValue(e.target.value)}
               />
               <Button
                 variant="outline-success"
                 id="button-addtask"
-                onClick={handleSubmit}
+                type="submit"
               >
                 Thêm nhiệm vụ
               </Button>
@@ -65,32 +101,49 @@ const TasksPrompt = (props) => {
           </Form.Group>
         </Form>
         <ListGroup className="task-list">
-          {todos.map((todo) => (
-            <ListGroup.Item
-              className="d-flex align-items-center justify-content-between"
-              key={todo}
-            >
-              <div>
-                <Form.Check aria-label="option" />
-              </div>
-              <div>{todo}</div>
-              <div>
-                <Button variant="link" onClick={() => handleUpdate()}>
-                  Chỉnh sửa
-                </Button>
-                <Button variant="link" onClick={() => handleDelete()}>
-                  Xóa
-                </Button>
-              </div>
-            </ListGroup.Item>
-          ))}
+          {tasks
+            .filter((task) => task.state !== TaskAction.Delete)
+            .map((task, index) => (
+              <ListGroup.Item
+                className="d-flex align-items-center justify-content-between"
+                key={index}
+              >
+                <div>
+                  <Form.Check aria-label="option" />
+                </div>
+                <div>
+                  {edittingTask === task._id && edittingTask !== undefined ? (
+                    <input
+                      value={edittingValue}
+                      onChange={(e) => setEdittingValue(e.target.value)}
+                    />
+                  ) : (
+                    <>{task.content}</>
+                  )}
+                </div>
+                <div>
+                  {edittingTask === task._id && edittingTask !== undefined ? (
+                    <Button variant="link" onClick={closeEditMode(task._id!)}>
+                      Hoàn tất
+                    </Button>
+                  ) : (
+                    <Button variant="link" onClick={openEditMode(task)}>
+                      Chỉnh sửa
+                    </Button>
+                  )}
+                  <Button variant="link" onClick={handleDelete(index)}>
+                    Xóa
+                  </Button>
+                </div>
+              </ListGroup.Item>
+            ))}
         </ListGroup>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={() => setShowModal(false)}>
+        <Button variant="secondary" onClick={onHide}>
           Đóng
         </Button>
-        <Button variant="primary">Lưu nhiệm vụ</Button>
+        <Button variant="primary" onClick={onSaveButtonClick}>Lưu nhiệm vụ</Button>
       </Modal.Footer>
     </Modal>
   );

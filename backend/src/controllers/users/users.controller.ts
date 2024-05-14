@@ -1,5 +1,5 @@
 import express from "express";
-import { getUsersByRole } from "./users.service";
+import { getUsersList } from "./users.service";
 import { responseWithValue } from "../../helper/response.helper";
 import { createTypedRequest } from "../../helper/type.helper";
 
@@ -10,7 +10,7 @@ type UpdateUserStatusRequest = {
 }
 
 router.get('/', async (req, res) => {
-    const users = await getUsersByRole(req)
+    const users = await getUsersList(req)
 
     responseWithValue(res, users)
 })
