@@ -39,6 +39,7 @@ const getUserInfo = (
         name: schoolUserInfo[1],
         class: schoolUserInfo[2],
         active: true,
+        isAssistant: false
       };
 
       callback(null, user);

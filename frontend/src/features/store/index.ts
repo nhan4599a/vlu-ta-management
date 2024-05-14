@@ -4,6 +4,7 @@ import { messagesReducer } from "../slices/messages.slice";
 import { recruimentReducer } from "../slices/recruiment.slice";
 import { authenticationReducer } from "../slices/authentication.slice";
 import { usersReducer } from "../slices/users.slice";
+import { tasksReducer } from "../slices/tasks.slice";
 import persistStore from "redux-persist/es/persistStore";
 import storage from "redux-persist/lib/storage";
 import persistReducer from "redux-persist/es/persistReducer";
@@ -13,7 +14,8 @@ const rootReducer = combineReducers({
   messages: messagesReducer,
   recruiment: recruimentReducer,
   authentication: authenticationReducer,
-  users: usersReducer
+  users: usersReducer,
+  tasks: tasksReducer
 });
 
 const peristConfig = {

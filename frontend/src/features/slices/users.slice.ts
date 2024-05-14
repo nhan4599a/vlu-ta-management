@@ -2,6 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IUser, Role } from "../../types/user.type";
 import { get, patch } from "../../api";
 import { RootState } from "../store";
+import { PaginaionResponse } from "../../types/integration.type";
 
 type SelectedUser = {
   id: string;
@@ -9,13 +10,16 @@ type SelectedUser = {
 };
 
 type InitialState = {
-  users: IUser[];
+  usersResponse: PaginaionResponse<IUser>;
   currentRequest: GetUsersByRoleRequest;
   selectedUser?: SelectedUser;
 };
 
 const initialState: InitialState = {
-  users: [],
+  usersResponse: {
+    data: [],
+    count: 0,
+  },
   currentRequest: {
     page: 1,
     role: Role.Student,
@@ -31,11 +35,14 @@ type GetUsersByRoleRequest = {
 
 export const getUsersList = createAsyncThunk(
   "users/fetch",
-  async (payload: GetUsersByRoleRequest | undefined = undefined, { getState, rejectWithValue }) => {
-    const state = getState() as RootState
+  async (
+    payload: GetUsersByRoleRequest | undefined = undefined,
+    { getState, rejectWithValue }
+  ) => {
+    const state = getState() as RootState;
 
     try {
-      return await get<IUser[]>({
+      return await get<PaginaionResponse<IUser>>({
         path: "/users",
         query: payload ?? state.users.currentRequest,
       });
@@ -79,13 +86,13 @@ const usersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(getUsersList.fulfilled, (state, { payload }) => {
-      state.users = payload;
+      state.usersResponse = payload;
     });
   },
 });
 
 export const { setRequest, setSelectedUser } = usersSlice.actions;
 export const usersReducer = usersSlice.reducer;
-export const selectUsersList = (state: RootState) => state.users.users;
+export const selectUsersList = (state: RootState) => state.users.usersResponse;
 export const selectSelectedUser = (state: RootState) =>
   state.users.selectedUser;

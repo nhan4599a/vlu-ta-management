@@ -29,9 +29,9 @@ const Login = () => {
           alt="login"
         />
       </div>
-      <div className="login-action">
+      <div className="d-flex flex-column justify-content-center align-items-center login-action">
         <h2 className="position-relative display-4 fw-bolder">Đăng nhập</h2>
-        <Button className="btn-lg" onClick={login} variant="primary">
+        <Button className="btn-lg mt-4 mb-5" onClick={login} variant="primary">
           Đăng nhập
         </Button>
         <p>Đăng nhập bằng tài khoản Văn Lang để bắt đầu</p>
