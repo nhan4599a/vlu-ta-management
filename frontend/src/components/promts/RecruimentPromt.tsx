@@ -84,7 +84,7 @@ const RecruimentPromt = ({ afterSubmitCallback }: RecruimentPromtProps) => {
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Group className="mb-3" controlId="taskdescription">
+          <Form.Group className="mb-3" controlId="taquantity">
             <Form.Label>Số lượng:</Form.Label>
             <Form.Control
               disabled={isAdminMode}
@@ -93,7 +93,7 @@ const RecruimentPromt = ({ afterSubmitCallback }: RecruimentPromtProps) => {
               onChange={(e) => setCandidatesCount(e.target.value as unknown as number)}
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="taskdescription">
+          <Form.Group className="mb-3" controlId="tadescription">
             <Form.Label>Yêu cầu:</Form.Label>
             <Form.Control
               disabled={isAdminMode}

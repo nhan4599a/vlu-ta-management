@@ -41,7 +41,7 @@ const TARecruitmentMainPage = () => {
             <td>abc</td>
             <td>
               <p>
-                <a className="l ink-opacity-100" href="">
+                <a className="link-opacity-100" href="">
                   Xem
                 </a>
               </p>
