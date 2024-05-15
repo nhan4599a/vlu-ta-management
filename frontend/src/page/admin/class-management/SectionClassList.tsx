@@ -1,19 +1,19 @@
 import { Button, Table } from "react-bootstrap";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 import { useCallback, useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../features/hooks";
-import { getTermsDataList } from "../../features/slices/terms.slice";
+import { useAppDispatch, useAppSelector } from "../../../features/hooks";
+import { getTermsDataList } from "../../../features/slices/terms.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { TermDataItem } from "../../types/term.type";
-import RecruimentPromt from "../../components/promts/RecruimentPromt";
+import { TermDataItem } from "../../../types/term.type";
+import RecruimentPromt from "../../../components/promts/RecruimentPromt";
 import {
   GetRecruimentPayload,
   getRecuimentInfo,
   setGetDataPayload,
-} from "../../features/slices/recruiment.slice";
-import { selectCurrentRole } from "../../features/slices/authentication.slice";
-import "../../index.css";
-import { Role } from "../../types/user.type";
+} from "../../../features/slices/recruiment.slice";
+import { selectCurrentRole } from "../../../features/slices/authentication.slice";
+import { Role } from "../../../types/user.type";
+import "../../../index.css"
 
 const SectionClassList = () => {
   const role = useAppSelector(selectCurrentRole);
