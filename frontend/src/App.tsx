@@ -1,15 +1,15 @@
 import { lazy } from "react";
 import MainNavBar from "./components/navbar/MainNavBar";
 import { Routes, Route, Outlet, useNavigate } from "react-router-dom";
-import Profile from "./page/user-profile/Profile";
-import ImportSectionClassList from "./page/class-management/ImportSectionClassList";
-import ImportStudentList from "./page/ta-information-management/ImportStudentList";
+import Profile from "./page/general/user-profile/Profile";
+import ImportSectionClassList from "./page/admin/class-management/ImportSectionClassList";
+import ImportStudentList from "./page/lecturer/ta-information-management/ImportStudentList";
 import { Col, Container, Row } from "react-bootstrap";
-import Login from "./page/login/Login";
-import NotFound from "./page/error/404NotFound";
-import Error500 from "./page/error/500Error";
-import SectionClassList from "./page/class-management/SectionClassList";
-import Welcome from "./page/Welcome";
+import Login from "./page/general/login/Login";
+import NotFound from "./page/general/error/404NotFound";
+import Error500 from "./page/general/error/500Error";
+import SectionClassList from "./page/admin/class-management/SectionClassList";
+import Welcome from "./page/general/Welcome";
 const StudentSidebar = lazy(() => import("./components/sidebars/StudentSidebar"));
 const TeacherSidebar = lazy(() => import("./components/sidebars/TeacherSidebar"));
 const AdminSidebar = lazy(() => import("./components/sidebars/AdminSidebar"));
@@ -17,9 +17,8 @@ import Loading from "./components/loading/Loading";
 import MessagePromt from "./components/promts/MessagePromt";
 import AccountMainPage from "./page/admin/account-management/AccountMainPage";
 import TARegisterMainPage from "./page/student/TARegisterMainPage";
-import { PostLogin } from "./page/login/PostLogin";
+import { PostLogin } from "./page/general/login/PostLogin";
 import { useEffect, useMemo } from "react";
-import TARecruitmentMainPage from "./page/admin/TA-recruitment-management/TARecruitementMainPage";
 import { useAppSelector } from "./features/hooks";
 import {
   selectCurrentUser,
@@ -27,7 +26,7 @@ import {
 } from "./features/slices/authentication.slice";
 import { Role } from "./types/user.type";
 import "./index.css";
-import TAClassList from "./page/ta/TAClassList";
+import TARecruitmentMainPage from "./page/admin/TA-recruitment-management/TARecruitementMainPage";
 
 
 const Layout = () => {

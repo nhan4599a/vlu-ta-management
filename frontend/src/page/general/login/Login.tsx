@@ -1,9 +1,9 @@
 import { Image, Button } from "react-bootstrap";
 import { useMsal } from "@azure/msal-react";
-import { constant } from "../../constants";
-import { useAppDispatch } from "../../features/hooks";
-import { showMessageDialog } from "../../features/slices/messages.slice";
-import "../../index.css";
+import { constant } from "../../../constants";
+import { useAppDispatch } from "../../../features/hooks";
+import { showMessageDialog } from "../../../features/slices/messages.slice";
+import "../../../index.css";
 
 
 const Login = () => {

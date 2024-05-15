@@ -1,12 +1,12 @@
-import { constant } from "../../constants";
+import { constant } from "../../../constants";
 import { useMsal } from "@azure/msal-react";
 import { useEffect } from "react";
-import { useAppDispatch } from "../../features/hooks";
+import { useAppDispatch } from "../../../features/hooks";
 import {
   postLoginCallback,
   setAccessToken,
-} from "../../features/slices/authentication.slice";
-import { showMessageDialog } from "../../features/slices/messages.slice";
+} from "../../../features/slices/authentication.slice";
+import { showMessageDialog } from "../../../features/slices/messages.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 export const PostLogin = () => {
