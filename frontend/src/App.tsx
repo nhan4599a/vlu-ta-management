@@ -14,7 +14,7 @@ const StudentSidebar = lazy(() => import("./components/sidebars/StudentSidebar")
 const TeacherSidebar = lazy(() => import("./components/sidebars/TeacherSidebar"));
 const AdminSidebar = lazy(() => import("./components/sidebars/AdminSidebar"));
 import Loading from "./components/loading/Loading";
-import MessagePromt from "./components/promts/MessagePromt";
+import MessagePromt from "./components/prompts/MessagePrompt";
 import AccountMainPage from "./page/admin/account-management/AccountMainPage";
 import TARegisterMainPage from "./page/student/TARegisterMainPage";
 import { PostLogin } from "./page/general/login/PostLogin";

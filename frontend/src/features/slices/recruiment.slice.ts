@@ -12,6 +12,7 @@ type InitialState = {
   termId?: string;
   scheduleId?: string;
   recruimentInfo?: RecruimentInfo;
+  activeTermName?: string;
 };
 
 const initialState: InitialState = {};
@@ -48,22 +49,38 @@ export const updateRecruimentInfo = createAsyncThunk(
 );
 
 export const approveRecruimentInfo = createAsyncThunk(
-    "recruiment/approve",
-    async (payload: boolean, { getState, rejectWithValue }) => {
-      try {
-        const { termId, scheduleId } = (getState() as RootState).recruiment;
-  
-        return await patch({
-          path: `tuyen-dung/${termId}/classes/${scheduleId}`,
-          body: {
-            approved: payload
-          },
-        });
-      } catch (e) {
-        return rejectWithValue(e);
-      }
+  "recruiment/approve",
+  async (payload: boolean, { getState, rejectWithValue }) => {
+    try {
+      const { termId, scheduleId } = (getState() as RootState).recruiment;
+
+      return await patch({
+        path: `tuyen-dung/${termId}/classes/${scheduleId}`,
+        body: {
+          approved: payload,
+        },
+      });
+    } catch (e) {
+      return rejectWithValue(e);
     }
-  );
+  }
+);
+
+export const applyRecruiment = createAsyncThunk(
+  "recruiment/apply",
+  async (payload: FormData, { getState, rejectWithValue }) => {
+    const { termId, scheduleId } = (getState() as RootState).recruiment;
+
+    try {
+      return await post({
+        path: `tuyen-dung/${termId}/classes/${scheduleId}/apply`,
+        body: payload,
+      });
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  }
+);
 
 const recruimentSlice = createSlice({
   name: "recruiment",
@@ -76,6 +93,9 @@ const recruimentSlice = createSlice({
     unsetRecruimentInfo(state) {
       state.recruimentInfo = undefined;
     },
+    setActiveTermName(state, { payload }: PayloadAction<string | undefined>) {
+      state.activeTermName = payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getRecuimentInfo.fulfilled, (state, { payload }) => {
@@ -85,6 +105,9 @@ const recruimentSlice = createSlice({
 });
 
 export const recruimentReducer = recruimentSlice.reducer;
-export const { setGetDataPayload, unsetRecruimentInfo } = recruimentSlice.actions;
+export const { setGetDataPayload, unsetRecruimentInfo, setActiveTermName } =
+  recruimentSlice.actions;
 export const selectRecruimentInfo = (state: RootState) =>
   state.recruiment.recruimentInfo;
+export const selectActiveTermName = (state: RootState) =>
+  state.recruiment.activeTermName;

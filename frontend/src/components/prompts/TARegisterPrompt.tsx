@@ -1,21 +1,58 @@
-import React, { useState } from "react";
-import "../../index.css";
+import { useRef, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
-import DropzoneComponent from "../dropzone/Dropzone";
+import DropzoneComponent, { DropzoneComponentMethodsRef } from "../dropzone/Dropzone";
+import { useAppDispatch, useAppSelector } from "../../features/hooks";
+import { selectCurrentUser } from "../../features/slices/authentication.slice";
+import {
+  applyRecruiment,
+  selectActiveTermName,
+  setActiveTermName,
+} from "../../features/slices/recruiment.slice";
+import "../../index.css";
 
-const TARegister = () => {
-  const [recruitdescription, setRecruitDescription] = useState<string>();
-  const [fullName, setFullName] = useState<string>();
-  const [email, setEmail] = useState<string>();
-  const [studentClass, setStudentClass] = useState<string>();
-  const [mobile, setMobile] = useState<number>();
-  
-  const className = "Toán cao cấp";
+const TARegisterPrompt = () => {
+  const dispatch = useAppDispatch();
+  const termName = useAppSelector(selectActiveTermName);
+  const user = useAppSelector(selectCurrentUser);
+
+  const [recruitdescription, setRecruitDescription] = useState("");
+  const [mobile, setMobile] = useState("");
+
+  const dropzoneRef = useRef<DropzoneComponentMethodsRef>(null)
+
+  const onHide = () => {
+    dispatch(setActiveTermName(undefined));
+  };
+
+  const onSubmit = async () => {
+    if (!dropzoneRef.current) {
+      return
+    }
+
+    const formData = new FormData()
+
+    const files = dropzoneRef.current.getFiles()
+    for (const file of files) {
+      formData.append('files', file)
+    }
+    formData.append('phoneNumber', mobile)
+    formData.append('description', recruitdescription)
+
+    await dispatch(applyRecruiment(formData))
+    onHide()
+  }
+
   return (
-    <Modal size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
+    <Modal
+      show={termName !== undefined}
+      onHide={onHide}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Ứng tuyển làm trợ giảng môn {className}
+          Ứng tuyển làm trợ giảng môn {termName}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -29,7 +66,7 @@ const TARegister = () => {
               defaultValue={recruitdescription}
               as="textarea"
               rows={3}
-              onChange={e => setRecruitDescription(e.target.value)}
+              onChange={(e) => setRecruitDescription(e.target.value)}
             />
           </Form.Group>
         </Form>
@@ -42,12 +79,7 @@ const TARegister = () => {
               Họ và tên
             </Form.Label>
             <Col sm="10">
-              <Form.Control
-                disabled
-                defaultValue={fullName}
-                type="text"
-                onChange={(e) => setFullName(e.target.value)}
-              />
+              <Form.Control disabled defaultValue={user?.name} type="text" />
             </Col>
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="Email">
@@ -55,11 +87,7 @@ const TARegister = () => {
               Email VLU
             </Form.Label>
             <Col sm="10">
-              <Form.Control
-                disabled
-                defaultValue={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <Form.Control disabled defaultValue={user?.email} />
             </Col>
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="studentclass">
@@ -67,11 +95,7 @@ const TARegister = () => {
               Lớp
             </Form.Label>
             <Col sm="10">
-              <Form.Control
-                disabled
-                defaultValue={studentClass}
-                onChange={(e) => setStudentClass(e.target.value)}
-              />
+              <Form.Control disabled defaultValue={user?.class} />
             </Col>
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="mobilephone">
@@ -80,9 +104,8 @@ const TARegister = () => {
             </Form.Label>
             <Col sm="10">
               <Form.Control
-                type="number"
                 value={mobile}
-                onChange={(e) => setMobile(Number(e.target.value))}
+                onChange={(e) => setMobile(e.target.value)}
               />
             </Col>
           </Form.Group>
@@ -91,19 +114,19 @@ const TARegister = () => {
               File đính kèm
             </Form.Label>
             <Col sm="10">
-              <DropzoneComponent />
+              <DropzoneComponent ref={dropzoneRef} />
             </Col>
           </Form.Group>
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary">
+        <Button variant="secondary" onClick={onHide}>
           Đóng
         </Button>
-        <Button>Gửi đơn</Button>
+        <Button onClick={onSubmit}>Gửi đơn</Button>
       </Modal.Footer>
     </Modal>
   );
 };
 
-export default TARegister;
+export default TARegisterPrompt;

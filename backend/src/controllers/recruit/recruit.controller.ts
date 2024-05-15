@@ -15,6 +15,7 @@ type ApproveRegistrationInfo = {
 
 type ApplyRecruimentRequest = {
   phoneNumber: string;
+  description: string
 };
 
 router.get("/:id/classes/:classId", async (req, res) => {
@@ -66,7 +67,7 @@ router.patch("/:id/classes/:classId", async (req, res) => {
   responseWithValue(res, undefined);
 });
 
-router.post("/classes/:classId/ung-tuyen", uploadMultipleFilesMiddleware, async (req, res) => {
+router.post(":id/classes/:classId/apply", uploadMultipleFilesMiddleware, async (req, res) => {
   const { db, body, params, user, files } = createTypedRequest<ApplyRecruimentRequest, {}>(
     req
   );

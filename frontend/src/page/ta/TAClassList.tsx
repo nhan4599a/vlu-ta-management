@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import { PaginationControl } from "react-bootstrap-pagination-control";
-import TasksPrompt from "../../components/promts/TasksPrompt";
+import TasksPrompt from "../../components/prompts/TasksPrompt";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import { getTasks, setAssignee } from "../../features/slices/tasks.slice";
 import {

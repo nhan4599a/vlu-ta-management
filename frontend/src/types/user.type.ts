@@ -5,12 +5,13 @@ export interface IUser {
 	name?: string,
 	email?: string,
 	active: boolean,
-	role: number
+	role: Role
 }
 
 export enum Role {
     Student,
     Teacher,
+    Assistant,
     StudentAssociate,
     Admin
 }
