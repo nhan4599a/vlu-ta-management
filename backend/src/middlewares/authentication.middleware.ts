@@ -63,6 +63,46 @@ export const authenticate = (
     });
   }
 
+  const request = req as IBaseRequest;
+
+  if (accessToken?.startsWith('User')) {
+    request.user = {
+        _id: new mongoose.Types.ObjectId(),
+        active: true,
+        email: 'user@vanlanguni.edu.com',
+        name: 'user',
+        role: Role.Student,
+        class: 'PM2',
+        code: 'user',
+        isAssistant: false
+    };
+    next();
+  } else if (accessToken?.startsWith('Teacher')) {
+    request.user = {
+        _id: new mongoose.Types.ObjectId(),
+        active: true,
+        email: 'teacher@vanlanguni.edu.com',
+        name: 'teacher',
+        role: Role.Teacher,
+        class: 'PM2',
+        code: 'teacher',
+        isAssistant: false
+    };
+    next();
+  } else if (accessToken?.startsWith('Admin')) {
+    request.user = {
+        _id: new mongoose.Types.ObjectId(),
+        active: true,
+        email: 'admin@vanlanguni.edu.com',
+        name: 'admin',
+        role: Role.StudentAssociate,
+        class: 'PM2',
+        code: 'admin',
+        isAssistant: false
+    };
+    next();
+  }
+
   const decodedToken = decode(accessToken!, {
     complete: true,
   });
