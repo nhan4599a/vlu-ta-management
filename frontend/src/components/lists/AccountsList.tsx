@@ -1,5 +1,5 @@
 import { Table } from "react-bootstrap";
-import ConfirmDelete from "../promts/ConfirmDelete";
+import ConfirmDelete from "../prompts/ConfirmDelete";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import { selectUsersList, setSelectedUser } from "../../features/slices/users.slice";
 import "../../index.css";

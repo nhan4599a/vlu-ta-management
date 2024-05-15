@@ -1,5 +1,4 @@
 import { Col, Tab, Tabs } from "react-bootstrap";
-import "../../../index.css";
 import SearchInput from "../../../components/generic/SearchInput";
 import AccountsList from "../../../components/lists/AccountsList";
 import { PaginationControl } from "react-bootstrap-pagination-control";
@@ -7,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Role } from "../../../types/user.type";
 import { useAppDispatch } from "../../../features/hooks";
 import { getUsersList, setRequest } from "../../../features/slices/users.slice";
+import "../../../index.css";
 
 const AccountMainPage = () => {
   const dispatch = useAppDispatch();
@@ -17,8 +17,8 @@ const AccountMainPage = () => {
   useEffect(() => {
     const request = {
       page,
-      role: tab,
-      isAssistant: false,
+      role: tab === Role.StudentAssociate ? Role.Student : tab,
+      isAssistant: tab === Role.StudentAssociate,
     };
     dispatch(setRequest(request));
     dispatch(getUsersList(request));
@@ -43,7 +43,7 @@ const AccountMainPage = () => {
           <Tab eventKey={Role.Teacher} title="Giảng viên">
             <AccountsList />
           </Tab>
-          <Tab eventKey={Role.Student} title="Trợ giảng">
+          <Tab eventKey={Role.Assistant} title="Trợ giảng">
             <AccountsList />
           </Tab>
         </Tabs>

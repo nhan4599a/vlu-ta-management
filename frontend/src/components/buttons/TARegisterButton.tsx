@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
-import TARegisterPrompt from "../promts/TARegister";
+import TARegisterPrompt from "../prompts/TARegisterPrompt";
 
 const TARegisterButton = () => {
   const [modalShow, setModalShow] = useState(false);

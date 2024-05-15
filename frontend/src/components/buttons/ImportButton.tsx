@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap";
-import ImportSuccessPrompt from "../promts/ImportSuccessPrompt";
+import ImportSuccessPrompt from "../prompts/ImportSuccessPrompt";
 import { useState } from "react";
 
 type ImportButtonProps = {

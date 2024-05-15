@@ -8,10 +8,12 @@ import { tasksReducer } from "../slices/tasks.slice";
 import persistStore from "redux-persist/es/persistStore";
 import storage from "redux-persist/lib/storage";
 import persistReducer from "redux-persist/es/persistReducer";
+import { termsReducer } from "../slices/terms.slice";
 
 const rootReducer = combineReducers({
   loading: loadingReducer,
   messages: messagesReducer,
+  terms: termsReducer,
   recruiment: recruimentReducer,
   authentication: authenticationReducer,
   users: usersReducer,

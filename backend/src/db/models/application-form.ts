@@ -5,6 +5,7 @@ export interface IApplicationForm {
     code: string,
     class: string,
     phoneNumber: string,
+    description: string,
     scheduleId: string,
     attachments: string[]
 }

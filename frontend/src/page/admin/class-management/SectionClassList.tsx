@@ -1,134 +1,60 @@
-import { Button, Table } from "react-bootstrap";
+import { lazy, useEffect, useState } from "react";
 import { PaginationControl } from "react-bootstrap-pagination-control";
-import { useCallback, useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../features/hooks";
-import { getTermsDataList } from "../../../features/slices/terms.slice";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { TermDataItem } from "../../../types/term.type";
-import RecruimentPromt from "../../../components/promts/RecruimentPromt";
+import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import {
-  GetRecruimentPayload,
-  getRecuimentInfo,
-  setGetDataPayload,
-} from "../../../features/slices/recruiment.slice";
-import { selectCurrentRole } from "../../../features/slices/authentication.slice";
-import { Role } from "../../../types/user.type";
-import "../../../index.css"
+  getTermsDataList,
+  selectTermsData,
+  setCurrentPage,
+} from "../../features/slices/terms.slice";
+import { useAdaptiveRoleComponent } from "../../hooks/useAdaptiveRoleComponent";
+const StudentSectionClassList = lazy(() => import("./StudentSectionClassList"));
+const TeacherSectionClassList = lazy(() => import("./TeacherSectionClassList"));
+const AdminSectionClassList = lazy(() => import("./AdminSectionClassList"));
+const RecruimentRegisterPrompt = lazy(
+  () => import("../../components/prompts/RecruimentRegisterPrompt")
+);
+const TARegister = lazy(
+  () => import("../../components/prompts/TARegisterPrompt")
+);
+const ApproveRecruimentPrompt = lazy(
+  () => import("../../components/prompts/ApproveRecruimentPrompt")
+);
+import "../../index.css";
 
 const SectionClassList = () => {
-  const role = useAppSelector(selectCurrentRole);
+  const dispatch = useAppDispatch();
+  const termsResponse = useAppSelector(selectTermsData);
 
   const [page, setPage] = useState(1);
-  const [count, setCount] = useState(0);
 
-  const [terms, setTerms] = useState<TermDataItem[]>([]);
-  const dispatch = useAppDispatch();
+  const TableContentComponent = useAdaptiveRoleComponent({
+    0: <StudentSectionClassList />,
+    1: <TeacherSectionClassList />,
+    2: <StudentSectionClassList />,
+    3: <AdminSectionClassList />,
+  });
 
-  const fetchData = useCallback(() => {
-    dispatch(getTermsDataList(page))
-      .then(unwrapResult)
-      .then(({ data, count }) => {
-        setTerms(data);
-        setCount(count);
-      });
-  }, [dispatch, page]);
+  const PromptComponent = useAdaptiveRoleComponent({
+    0: <TARegister />,
+    1: <RecruimentRegisterPrompt />,
+    2: <TARegister />,
+    3: <ApproveRecruimentPrompt />,
+  });
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  const fetchRecruimentInfo = (payload: GetRecruimentPayload) => {
-    return () => {
-      dispatch(setGetDataPayload(payload));
-      dispatch(getRecuimentInfo());
-    };
-  };
+    dispatch(setCurrentPage(page));
+    dispatch(getTermsDataList());
+  }, [dispatch, page]);
 
   return (
     <div>
       <h2 className="display-5 mt-2 mb-3">Danh sách lớp học phần</h2>
-      <Table responsive>
-        <thead>
-          <tr className="table-header ">
-            <th>TT</th>
-            <th>Mã LHP</th>
-            <th>Tên HP</th>
-            <th>Số TC</th>
-            <th>Loại HP</th>
-            <th>Thứ</th>
-            <th>Tiết học</th>
-            <th>Trạng thái</th>
-          </tr>
-        </thead>
-        <tbody>
-          {terms.map((term, index) => (
-            <tr>
-              <td>{index + 1}</td>
-              <td>{term.code}</td>
-              <td>{term.name}</td>
-              <td>{term.credits}</td>
-              <td>{term.type}</td>
-              <td>{term.day}</td>
-              <td>{term.lesson}</td>
-              <td>
-                {role !== Role.Teacher || term.isApproved ? (
-                  <></>
-                ) : (
-                  <Button
-                    variant="primary"
-                    className="w-100"
-                    onClick={fetchRecruimentInfo({
-                      id: term.id,
-                      scheduleId: term.scheduleId,
-                    })}
-                  >
-                    Yêu cầu trợ giảng
-                  </Button>
-                )}
-
-                {role === Role.Admin &&
-                !term.isRegistered &&
-                !term.isApproved ? (
-                  <Button
-                    variant="primary"
-                    className="w-100 mt-1"
-                    onClick={fetchRecruimentInfo({
-                      id: term.id,
-                      scheduleId: term.scheduleId,
-                    })}
-                  >
-                    Chấp nhận yêu cầu tuyển TA
-                  </Button>
-                ) : (
-                  <></>
-                )}
-
-                {role === Role.Student &&
-                term.isRegistered &&
-                term.isApproved ? (
-                  <Button
-                    variant="primary"
-                    className="w-100 mt-1"
-                    onClick={fetchRecruimentInfo({
-                      id: term.id,
-                      scheduleId: term.scheduleId,
-                    })}
-                  >
-                    Ứng tuyển
-                  </Button>
-                ) : (
-                  <></>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      {TableContentComponent}
       <div className="text-align">
         <PaginationControl
           page={page}
           between={4}
-          total={count}
+          total={termsResponse.count}
           limit={10}
           changePage={(page) => {
             setPage(page);
@@ -136,7 +62,7 @@ const SectionClassList = () => {
           ellipsis={2}
         />
       </div>
-      <RecruimentPromt afterSubmitCallback={fetchData} />
+      {PromptComponent}
     </div>
   );
 };

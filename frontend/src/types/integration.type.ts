@@ -4,7 +4,7 @@ export interface IApiResponse<TResult> {
     error?: string
 }
 
-export interface PaginaionResponse<TData> {
+export interface PaginationResponse<TData> {
     data: TData[],
     count: number
 }

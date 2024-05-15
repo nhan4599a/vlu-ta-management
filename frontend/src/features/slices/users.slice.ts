@@ -2,7 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IUser, Role } from "../../types/user.type";
 import { get, patch } from "../../api";
 import { RootState } from "../store";
-import { PaginaionResponse } from "../../types/integration.type";
+import { PaginationResponse } from "../../types/integration.type";
 
 type SelectedUser = {
   id: string;
@@ -10,7 +10,7 @@ type SelectedUser = {
 };
 
 type InitialState = {
-  usersResponse: PaginaionResponse<IUser>;
+  usersResponse: PaginationResponse<IUser>;
   currentRequest: GetUsersByRoleRequest;
   selectedUser?: SelectedUser;
 };
@@ -42,7 +42,7 @@ export const getUsersList = createAsyncThunk(
     const state = getState() as RootState;
 
     try {
-      return await get<PaginaionResponse<IUser>>({
+      return await get<PaginationResponse<IUser>>({
         path: "/users",
         query: payload ?? state.users.currentRequest,
       });
