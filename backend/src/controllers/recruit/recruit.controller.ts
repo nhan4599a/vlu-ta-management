@@ -8,6 +8,7 @@ import {
 } from "./recruit.service";
 import { responseWithValue } from "../../helper/response.helper";
 import { uploadMultipleFilesMiddleware } from "../../helper/upload.helper";
+import { IBaseRequest } from "../../types/integration.types";
 
 const router = express.Router();
 
@@ -25,19 +26,27 @@ type ApplyRecruimentRequest = {
 };
 
 router.get("/applications", async (req, res) => {
-  const applications = getApplicationsList(req);
+  const applications = await getApplicationsList(req);
 
   responseWithValue(res, applications);
 });
 
+router.get("/applications/:id", async (req, res) => {
+  const { db, params } = createTypedRequest<{}, {}>(req);
+
+  const application = await db.appliactions.findById(params.id);
+
+  responseWithValue(res, application);
+});
+
 router.get("/classes/:classId/applications", async (req, res) => {
-  const applications = getApplicationsOfSchedule(req);
+  const applications = await getApplicationsOfSchedule(req);
 
   responseWithValue(res, applications);
 });
 
 router.get("/classes/:classId", async (req, res) => {
-  const recruimentInfo = getRecruimentInfo(req);
+  const recruimentInfo = await getRecruimentInfo(req);
 
   responseWithValue(res, recruimentInfo);
 });
@@ -119,7 +128,7 @@ router.patch("/applications/:id/approve", async (req, res) => {
     },
   });
 
-  responseWithValue(res, undefined)
+  responseWithValue(res, undefined);
 });
 
 export default router;

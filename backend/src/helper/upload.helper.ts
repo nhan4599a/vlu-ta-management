@@ -5,7 +5,7 @@ const upload = multer()
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'evidences')
+        cb(null, 'public')
     },
     filename: (req, file, cb) => {
         cb(null, uuidv4())
