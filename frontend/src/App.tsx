@@ -14,7 +14,7 @@ const StudentSidebar = lazy(() => import("./components/sidebars/StudentSidebar")
 const TeacherSidebar = lazy(() => import("./components/sidebars/TeacherSidebar"));
 const AdminSidebar = lazy(() => import("./components/sidebars/AdminSidebar"));
 import Loading from "./components/loading/Loading";
-import MessagePromt from "./components/prompts/MessagePrompt";
+import MessagePromt from "./components/promppts/MessagePrompt";
 import AccountMainPage from "./page/admin/account-management/AccountMainPage";
 import TARegisterMainPage from "./page/student/TARegisterMainPage";
 import { PostLogin } from "./page/general/login/PostLogin";
@@ -26,6 +26,7 @@ import {
 } from "@redux/slices/authentication.slice";
 import { Role } from "./types/user.type";
 import TARecruitmentMainPage from "./page/admin/TA-recruitment-management/TARecruitementMainPage";
+import TAClassList from "./page/student/ta/TAClassList";
 import "./index.css";
 
 
