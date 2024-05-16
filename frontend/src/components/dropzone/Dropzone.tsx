@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import Dropzone from "dropzone";
+import Dropzone, { DropzoneFile } from "dropzone";
 import  { v4 as uuidv4 } from 'uuid'
 import "../../index.css";
 
@@ -7,7 +7,28 @@ export interface DropzoneComponentMethodsRef {
   getFiles: () => File[]
 }
 
-const DropzoneComponent = forwardRef<DropzoneComponentMethodsRef>((_, ref) => {
+type DropzoneProps = {
+  acceptedFiles?: string,
+  maxFiles?: number,
+  files?: string[],
+  allowDownload?: boolean
+}
+
+const images_file_ext = [ ".jpg", ".jpeg", ".jpe", ".bmp", ".gif", ".png" ]
+const base_download_url = "http://localhost:5000/public"
+
+const createDownloadButton = (fileName: string) => {
+  const button = document.createElement('a')
+
+  button.href = `${base_download_url}/${fileName}`
+  button.style.display = 'block'
+  button.download = fileName
+  button.text = 'Download'
+
+  return button
+}
+
+const DropzoneComponent = forwardRef<DropzoneComponentMethodsRef, DropzoneProps>((props, ref) => {
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
 
   const elementIdRef = useRef(`d-${uuidv4()}`)
@@ -24,8 +45,8 @@ const DropzoneComponent = forwardRef<DropzoneComponentMethodsRef>((_, ref) => {
 
   useEffect(() => {
     const dropzone = new Dropzone(`#${elementIdRef.current}`, {
-      acceptedFiles: ".xlsx,.xls",
-      maxFiles: 1,
+      acceptedFiles: props.acceptedFiles,
+      maxFiles: props.maxFiles,
       autoProcessQueue: false,
       url: "/file/post",
       createImageThumbnails: true,
@@ -33,8 +54,12 @@ const DropzoneComponent = forwardRef<DropzoneComponentMethodsRef>((_, ref) => {
       addRemoveLinks: true,
     });
 
-    dropzone.on("addedfile", () => {
+    dropzone.on("addedfile", (file) => {
       setIsPreviewVisible(true);
+
+      if (props.allowDownload) {
+        file.previewElement.appendChild(createDownloadButton(file.name))
+      }
     });
 
     dropzone.on("removedfile", () => {
@@ -43,10 +68,19 @@ const DropzoneComponent = forwardRef<DropzoneComponentMethodsRef>((_, ref) => {
 
     dropzoneRef.current = dropzone
 
+    if (props.files) {
+      for (const file of props.files) {
+        dropzone.addFile({
+          name: file,
+          type: images_file_ext.includes(file.split('.')[-1]) ? 'images/*' : 'unknown'
+        } as unknown as DropzoneFile)
+      }
+    }
+
     return () => {
       dropzone.destroy();
     };
-  }, []);
+  }, [props]);
 
   return (
     <div id={elementIdRef.current} className="dropzone">

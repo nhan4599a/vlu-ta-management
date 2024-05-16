@@ -1,11 +1,12 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { loadingReducer } from "../slices/loading.slice";
 import { messagesReducer } from "../slices/messages.slice";
+import { termsReducer } from "../slices/terms.slice";
 import { recruimentReducer } from "../slices/recruiment.slice";
 import { authenticationReducer } from "../slices/authentication.slice";
+import { applicationReducer } from "../slices/application.slice";
 import { usersReducer } from "../slices/users.slice";
 import { tasksReducer } from "../slices/tasks.slice";
-import { termsReducer } from "../slices/terms.slice";
 import persistStore from "redux-persist/es/persistStore";
 import storage from "redux-persist/lib/storage";
 import persistReducer from "redux-persist/es/persistReducer";
@@ -17,7 +18,8 @@ const rootReducer = combineReducers({
   recruiment: recruimentReducer,
   authentication: authenticationReducer,
   users: usersReducer,
-  tasks: tasksReducer
+  tasks: tasksReducer,
+  application: applicationReducer
 });
 
 const peristConfig = {

@@ -1,84 +1,42 @@
-import React, { useState } from "react";
-import { Accordion, Button, Table } from "react-bootstrap";
+import { TeacherAssistantsList } from "@main/components/lists/TeacherAssistantsList";
+import { useAppDispatch } from "@main/features/hooks";
+import { getApplicationsOverview } from "@main/features/slices/application.slice";
+import { OverviewApplicationFormResponse } from "@main/types/application-form.type";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { useEffect, useState } from "react";
+import { Accordion } from "react-bootstrap";
 
 const TARegistrationList = () => {
-  const [index, setIndex] = useState<string>("0");
-  const [className1, setClassName] = useState<string>("Math");
-  const [className2, setClassName2] = useState<string>("abc");
-  const [session1, setSession1] = useState<string>("t2 tiet 1-2");
-  const [session2, setSession2] = useState<string>("t4 tiet 1-2");
+  const dispatch = useAppDispatch();
+
+  const [activeKey, setActiveKey] = useState<string>();
+  const [data, setData] = useState<OverviewApplicationFormResponse[]>([]);
+
+  useEffect(() => {
+    dispatch(getApplicationsOverview()).then(unwrapResult).then(setData);
+  }, [dispatch]);
 
   return (
-    <Accordion defaultActiveKey={className1} alwaysOpen>
-      <Accordion.Item eventKey={className1}>
-        <Accordion.Header>
-          {index} {className1} - {session1}
-        </Accordion.Header>
-        <Accordion.Body>
-          <Table responsive>
-            <thead>
-              <tr className="table-header ">
-                <th>TT</th>
-                <th>Tên sinh viên</th>
-                <th>MSSV</th>
-                <th>Email</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* {student.map((student, index) => (
-                <tr>
-                  <th>{index + 1}</th>
-                  <th>{student.name}</th>
-                  <th>{student.code}</th>
-                  <th>{student.email}</th>
-                  <th>
-                    <Button variant="primary">Xem</Button>
-                  </th>
-                </tr>
-              ))} */}
-              <tr>
-                <th>1</th>
-                <th>abv</th>
-                <th>avb</th>
-                <th>acac</th>
-                <th>
-                  <Button variant="primary">Xem</Button>
-                </th>
-              </tr>
-            </tbody>
-          </Table>
-        </Accordion.Body>
-      </Accordion.Item>
-      <Accordion.Item eventKey={className2}>
-        <Accordion.Header>
-          {index + 1} {className2} - {session2}
-        </Accordion.Header>
-        <Accordion.Body>
-          <Table responsive>
-            <thead>
-              <tr className="table-header ">
-                <th>TT</th>
-                <th>Tên sinh viên</th>
-                <th>MSSV</th>
-                <th>Email</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th>1</th>
-                <th>abv</th>
-                <th>avb</th>
-                <th>acac</th>
-                <th>
-                  <Button variant="primary">Xem</Button>
-                </th>
-              </tr>
-            </tbody>
-          </Table>
-        </Accordion.Body>
-      </Accordion.Item>
+    <Accordion
+      activeKey={activeKey}
+      onSelect={(e) => setActiveKey(e as string)}
+      alwaysOpen
+    >
+      {data.map((item, index) => (
+        <Accordion.Item eventKey={item.scheduleId}>
+          <Accordion.Header>
+            {index} {item.name} - {item.lesson}
+          </Accordion.Header>
+          <Accordion.Body>
+            <TeacherAssistantsList applications={item.applications} />
+            {item.hasMore && (
+              <a href="#" target="_blank">
+                View more
+              </a>
+            )}
+          </Accordion.Body>
+        </Accordion.Item>
+      ))}
     </Accordion>
   );
 };

@@ -3,7 +3,7 @@ import { PaginationControl } from "react-bootstrap-pagination-control";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import {
   getTermsDataList,
-  selectTermsData,
+  // selectTermsData,
   setCurrentPage,
 } from "@redux/slices/terms.slice";
 import { useAdaptiveRoleComponent } from "@main/hooks/useAdaptiveRoleComponent";
@@ -19,11 +19,11 @@ const TARegister = lazy(
 const ApproveRecruimentPrompt = lazy(
   () => import("@main/components/prompts/ApproveRecruimentPrompt")
 );
-import "../../index.css";
+import "@main/index.css";
 
 const SectionClassList = () => {
   const dispatch = useAppDispatch();
-  const termsResponse = useAppSelector(selectTermsData);
+  const termsResponse = useAppSelector((state) => state.terms.termsResponse);
 
   const [page, setPage] = useState(1);
 

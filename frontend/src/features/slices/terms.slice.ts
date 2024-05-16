@@ -4,6 +4,7 @@ import { PaginationResponse } from "@main/types/integration.type";
 import { TermDataItem } from "@main/types/term.type";
 import { RootState } from "@redux/store";
 
+
 type InitialState = {
   termsResponse: PaginationResponse<TermDataItem>;
   currentPage: number;
@@ -49,8 +50,8 @@ export const getTermsDataList = createAsyncThunk(
   }
 );
 
-export const termsSlice = createSlice({
-  name: "slices",
+const termsSlice = createSlice({
+  name: "terms",
   initialState,
   reducers: {
     setCurrentPage(state, { payload }: PayloadAction<number>) {

@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { get, post } from "../../api";
-import { RootState } from "../store";
-import { ITaskItem, TaskAction } from "../../types/task.type";
+import { get, post } from "@main/api";
+import { RootState } from "@redux/store";
+import { ITaskItem, TaskAction } from "@main/types/task.type";
 
 type InitialState = {
   currentAssignee?: string;
