@@ -16,7 +16,6 @@ const AdminSidebar = lazy(() => import("./components/sidebars/AdminSidebar"));
 import Loading from "./components/loading/Loading";
 import MessagePromt from "./components/prompts/MessagePrompt";
 import AccountMainPage from "./page/admin/account-management/AccountMainPage";
-import TARegisterMainPage from "./page/student/TARegisterMainPage";
 import { PostLogin } from "./page/general/login/PostLogin";
 import { useEffect, useMemo } from "react";
 import { useAppSelector } from "@redux/hooks";
@@ -121,9 +120,6 @@ function App() {
           <Route path="attendance" element="" />
         </Route>
 
-        <Route path="/ta-management" element="">
-          <Route path="ta-register" element={<TARegisterMainPage />} />
-        </Route>
         <Route path="/account-management" element="">
           <Route path="accounts-list" element={<AccountMainPage />} />
         </Route>

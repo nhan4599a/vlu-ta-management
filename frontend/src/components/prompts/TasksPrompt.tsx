@@ -12,6 +12,7 @@ import {
 } from "@redux/slices/tasks.slice";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import { ITaskItem, TaskAction } from "@main/types/task.type";
+import AttachmentButton from "../buttons/AttachmentButton";
 
 const TasksPrompt = () => {
   const dispatch = useAppDispatch();
@@ -62,9 +63,9 @@ const TasksPrompt = () => {
   };
 
   const onSaveButtonClick = async () => {
-    await dispatch(saveTasks())
-    await dispatch(getTasks())
-    onHide()
+    await dispatch(saveTasks());
+    await dispatch(getTasks());
+    onHide();
   };
 
   return (
@@ -127,9 +128,12 @@ const TasksPrompt = () => {
                       Hoàn tất
                     </Button>
                   ) : (
-                    <Button variant="link" onClick={openEditMode(task)}>
-                      Chỉnh sửa
-                    </Button>
+                    <div>
+                      <AttachmentButton />
+                      <Button variant="link" onClick={openEditMode(task)}>
+                        Chỉnh sửa
+                      </Button>
+                    </div>
                   )}
                   <Button variant="link" onClick={handleDelete(index)}>
                     Xóa
@@ -143,7 +147,9 @@ const TasksPrompt = () => {
         <Button variant="secondary" onClick={onHide}>
           Đóng
         </Button>
-        <Button variant="primary" onClick={onSaveButtonClick}>Lưu nhiệm vụ</Button>
+        <Button variant="primary" onClick={onSaveButtonClick}>
+          Lưu nhiệm vụ
+        </Button>
       </Modal.Footer>
     </Modal>
   );
