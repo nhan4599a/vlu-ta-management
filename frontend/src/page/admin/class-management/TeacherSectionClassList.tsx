@@ -1,20 +1,19 @@
 import { Button, Table } from "react-bootstrap";
-import { useAppDispatch, useAppSelector } from "../../features/hooks";
-import { selectTermsData } from "../../features/slices/terms.slice";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
+import { selectTermsData } from "@redux/slices/terms.slice";
 import {
-  GetRecruimentPayload,
   getRecuimentInfo,
-  setGetDataPayload,
-} from "../../features/slices/recruiment.slice";
+  setScheduleId
+} from "@redux/slices/recruiment.slice";
 import "../../index.css";
 
 const TeacherSectionClassList = () => {
   const dispatch = useAppDispatch();
   const termsResponse = useAppSelector(selectTermsData);
 
-  const fetchRecruimentInfo = (payload: GetRecruimentPayload) => {
+  const fetchRecruimentInfo = (payload: string) => {
     return () => {
-      dispatch(setGetDataPayload(payload));
+      dispatch(setScheduleId(payload));
       dispatch(getRecuimentInfo());
     };
   };
@@ -50,10 +49,7 @@ const TeacherSectionClassList = () => {
                   <Button
                     variant="primary"
                     className="w-100"
-                    onClick={fetchRecruimentInfo({
-                      id: term.id,
-                      scheduleId: term.scheduleId,
-                    })}
+                    onClick={fetchRecruimentInfo(term.scheduleId)}
                   >
                     Yêu cầu trợ giảng
                   </Button>

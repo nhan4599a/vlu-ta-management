@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import { PaginationControl } from "react-bootstrap-pagination-control";
-import TasksPrompt from "../../components/prompts/TasksPrompt";
-import { useAppDispatch, useAppSelector } from "../../features/hooks";
-import { getTasks, setAssignee } from "../../features/slices/tasks.slice";
+import TasksPrompt from "@main/components/prompts/TasksPrompt";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
+import { getTasks, setAssignee } from "@redux/slices/tasks.slice";
 import {
   getUsersList,
   selectUsersList,
   setRequest,
-} from "../../features/slices/users.slice";
-import { Role } from "../../types/user.type";
+} from "@redux/slices/users.slice";
+import { Role } from "@main/types/user.type";
 
 const TAClassList = () => {
   const dispatch = useAppDispatch();

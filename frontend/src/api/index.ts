@@ -1,11 +1,11 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../features/store";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import { store } from "@redux/store";
 import {
   closeLoadingDialog,
   showLoadingDialog,
-} from "../features/slices/loading.slice";
-import { IApiResponse } from "../types/integration.type";
-import { showMessageDialog } from "../features/slices/messages.slice";
+} from "@redux/slices/loading.slice";
+import { IApiResponse } from "@main/types/integration.type";
+import { showMessageDialog } from "@redux/slices/messages.slice";
 
 const config: AxiosRequestConfig = {
   baseURL: "http://localhost:5000/",

@@ -1,8 +1,8 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { IUser, Role } from "../../types/user.type";
-import { get, patch } from "../../api";
-import { RootState } from "../store";
-import { PaginationResponse } from "../../types/integration.type";
+import { IUser, Role } from "@main/types/user.type";
+import { get, patch } from "@main/api";
+import { RootState } from "@redux/store";
+import { PaginationResponse } from "@main/types/integration.type";
 
 type SelectedUser = {
   id: string;

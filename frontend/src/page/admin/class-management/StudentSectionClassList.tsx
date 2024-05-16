@@ -1,11 +1,11 @@
 import { Button, Table } from "react-bootstrap";
-import { useAppDispatch, useAppSelector } from "../../features/hooks";
-import { selectTermsData } from "../../features/slices/terms.slice";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
+import { selectTermsData } from "@redux/slices/terms.slice";
 import {
   setActiveTermName,
-  setGetDataPayload,
-} from "../../features/slices/recruiment.slice";
-import { TermDataItem } from "../../types/term.type";
+  setScheduleId
+} from "@redux/slices/recruiment.slice";
+import { TermDataItem } from "@main/types/term.type";
 import "../../index.css";
 
 const StudentSectionClassList = () => {
@@ -14,10 +14,7 @@ const StudentSectionClassList = () => {
 
   const openApplyRecruimentPromt = (term: TermDataItem) => {
     return () => {
-      dispatch(setGetDataPayload({
-        id: term.id,
-        scheduleId: term.scheduleId
-      }))
+      dispatch(setScheduleId(term.scheduleId))
       dispatch(setActiveTermName(term.name))
     }
   }

@@ -1,12 +1,12 @@
 import { Button, Form, Modal } from "react-bootstrap";
-import { useAppDispatch, useAppSelector } from "../../features/hooks";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import {
   approveRecruimentInfo,
   selectRecruimentInfo,
   unsetRecruimentInfo,
-} from "../../features/slices/recruiment.slice";
-import { showMessageDialog } from "../../features/slices/messages.slice";
-import { getTermsDataList } from "../../features/slices/terms.slice";
+} from "@redux/slices/recruiment.slice";
+import { showMessageDialog } from "@redux/slices/messages.slice";
+import { getTermsDataList } from "@redux/slices/terms.slice";
 
 const ApproveRecruimentPrompt = () => {
   const dispatch = useAppDispatch();

@@ -1,11 +1,11 @@
 import { Button, Modal } from "react-bootstrap";
-import { useAppDispatch, useAppSelector } from "../../features/hooks";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import {
   activeUser,
   getUsersList,
   selectSelectedUser,
   setSelectedUser,
-} from "../../features/slices/users.slice";
+} from "@redux/slices/users.slice";
 
 const ConfirmDelete = () => {
   const dispatch = useAppDispatch();

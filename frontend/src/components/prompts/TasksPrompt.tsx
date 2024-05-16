@@ -9,9 +9,9 @@ import {
   selectTasks,
   setAssignee,
   updateTask,
-} from "../../features/slices/tasks.slice";
-import { useAppDispatch, useAppSelector } from "../../features/hooks";
-import { ITaskItem, TaskAction } from "../../types/task.type";
+} from "@redux/slices/tasks.slice";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
+import { ITaskItem, TaskAction } from "@main/types/task.type";
 
 const TasksPrompt = () => {
   const dispatch = useAppDispatch();

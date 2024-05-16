@@ -1,13 +1,13 @@
 import { Button, Form, Modal } from "react-bootstrap";
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../features/hooks";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import {
   selectRecruimentInfo,
   unsetRecruimentInfo,
   updateRecruimentInfo,
-} from "../../features/slices/recruiment.slice";
-import { showMessageDialog } from "../../features/slices/messages.slice";
-import { getTermsDataList } from "../../features/slices/terms.slice";
+} from "@redux/slices/recruiment.slice";
+import { showMessageDialog } from "@redux/slices/messages.slice";
+import { getTermsDataList } from "@redux/slices/terms.slice";
 
 const RecruimentRegisterPrompt = () => {
   const dispatch = useAppDispatch();

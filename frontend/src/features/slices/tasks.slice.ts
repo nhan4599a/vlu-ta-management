@@ -24,11 +24,11 @@ export const getTasks = createAsyncThunk(
     { getState, rejectWithValue }
   ) => {
     const state = getState() as RootState;
-    const { termId, scheduleId } = state.recruiment;
+    const { scheduleId } = state.recruiment;
 
     try {
       return await get<ITaskItem[]>({
-        path: `/${termId}/classes/${scheduleId}/users/${state.tasks.currentAssignee}/tasks`,
+        path: `/classes/${scheduleId}/users/${state.tasks.currentAssignee}/tasks`,
       });
     } catch (e) {
       return rejectWithValue(e);
@@ -40,11 +40,11 @@ export const saveTasks = createAsyncThunk(
   "tasks/update",
   async (_: undefined, { getState, rejectWithValue }) => {
     const state = getState() as RootState;
-    const { termId, scheduleId } = state.recruiment;
+    const { scheduleId } = state.recruiment;
 
     try {
       return await post({
-        path: `/${termId}/classes/${scheduleId}/users/${state.tasks.currentAssignee}/tasks`,
+        path: `/classes/${scheduleId}/users/${state.tasks.currentAssignee}/tasks`,
         body: {
           tasks: state.tasks.tasks,
         },

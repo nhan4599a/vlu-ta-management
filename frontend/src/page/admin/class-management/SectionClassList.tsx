@@ -1,23 +1,23 @@
 import { lazy, useEffect, useState } from "react";
 import { PaginationControl } from "react-bootstrap-pagination-control";
-import { useAppDispatch, useAppSelector } from "../../features/hooks";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import {
   getTermsDataList,
   selectTermsData,
   setCurrentPage,
-} from "../../features/slices/terms.slice";
-import { useAdaptiveRoleComponent } from "../../hooks/useAdaptiveRoleComponent";
+} from "@redux/slices/terms.slice";
+import { useAdaptiveRoleComponent } from "@main/hooks/useAdaptiveRoleComponent";
 const StudentSectionClassList = lazy(() => import("./StudentSectionClassList"));
 const TeacherSectionClassList = lazy(() => import("./TeacherSectionClassList"));
 const AdminSectionClassList = lazy(() => import("./AdminSectionClassList"));
 const RecruimentRegisterPrompt = lazy(
-  () => import("../../components/prompts/RecruimentRegisterPrompt")
+  () => import("@main/components/prompts/RecruimentRegisterPrompt")
 );
 const TARegister = lazy(
-  () => import("../../components/prompts/TARegisterPrompt")
+  () => import("@main/components/prompts/TARegisterPrompt")
 );
 const ApproveRecruimentPrompt = lazy(
-  () => import("../../components/prompts/ApproveRecruimentPrompt")
+  () => import("@main/components/prompts/ApproveRecruimentPrompt")
 );
 import "../../index.css";
 

@@ -1,13 +1,13 @@
 import { useRef, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import DropzoneComponent, { DropzoneComponentMethodsRef } from "../dropzone/Dropzone";
-import { useAppDispatch, useAppSelector } from "../../features/hooks";
-import { selectCurrentUser } from "../../features/slices/authentication.slice";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
+import { selectCurrentUser } from "@redux/slices/authentication.slice";
 import {
   applyRecruiment,
   selectActiveTermName,
   setActiveTermName,
-} from "../../features/slices/recruiment.slice";
+} from "@redux/slices/recruiment.slice";
 import "../../index.css";
 
 const TARegisterPrompt = () => {

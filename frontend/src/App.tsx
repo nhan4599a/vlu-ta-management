@@ -19,14 +19,14 @@ import AccountMainPage from "./page/admin/account-management/AccountMainPage";
 import TARegisterMainPage from "./page/student/TARegisterMainPage";
 import { PostLogin } from "./page/general/login/PostLogin";
 import { useEffect, useMemo } from "react";
-import { useAppSelector } from "./features/hooks";
+import { useAppSelector } from "@redux/hooks";
 import {
   selectCurrentUser,
   selectIsAuthenticated,
-} from "./features/slices/authentication.slice";
+} from "@redux/slices/authentication.slice";
 import { Role } from "./types/user.type";
-import "./index.css";
 import TARecruitmentMainPage from "./page/admin/TA-recruitment-management/TARecruitementMainPage";
+import "./index.css";
 
 
 const Layout = () => {
