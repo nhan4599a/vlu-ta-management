@@ -17,6 +17,8 @@ const TARegisterPrompt = () => {
 
   const [recruitdescription, setRecruitDescription] = useState("");
   const [mobile, setMobile] = useState("");
+  const [grade1, setGrade1] = useState<number>();
+  const [grade2, setGrade2] = useState<number>();
 
   const dropzoneRef = useRef<DropzoneComponentMethodsRef>(null)
 
@@ -106,6 +108,30 @@ const TARegisterPrompt = () => {
               <Form.Control
                 value={mobile}
                 onChange={(e) => setMobile(e.target.value)}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="mb-3" controlId="grade1">
+            <Form.Label column sm="2">
+              Điểm môn 1: 
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control
+                type="number"
+                value={grade1}
+                onChange={(e) => setGrade1(Number(e.target.value))}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="mb-3" controlId="grade2">
+            <Form.Label column sm="2">
+              Điểm môn 2: 
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control
+                type="number"
+                value={grade2}
+                onChange={(e) => setGrade2(Number(e.target.value))}
               />
             </Col>
           </Form.Group>

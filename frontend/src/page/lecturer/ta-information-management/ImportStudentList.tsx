@@ -1,7 +1,7 @@
 import DropzoneComponent, { DropzoneComponentMethodsRef } from "../../../components/dropzone/Dropzone";
 import ImportButton from "../../../components/buttons/ImportButton";
 import { useRef } from "react";
-import "../../index.css";
+import "../../../index.css";
 
 
 const ImportStudentList = () => {

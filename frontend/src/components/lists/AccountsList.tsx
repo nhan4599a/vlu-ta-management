@@ -53,7 +53,7 @@ const AccountsList = () => {
           ))}
         </tbody>
       </Table>
-      <ConfirmDelete />
+      <ConfirmDeletePrompt />
     </>
   );
 };
