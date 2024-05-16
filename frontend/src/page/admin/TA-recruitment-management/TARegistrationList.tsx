@@ -1,44 +1,55 @@
 import { TeacherAssistantsList } from "@main/components/lists/TeacherAssistantsList";
-import { useAppDispatch } from "@main/features/hooks";
-import { getApplicationsOverview } from "@main/features/slices/application.slice";
-import { OverviewApplicationFormResponse } from "@main/types/application-form.type";
-import { unwrapResult } from "@reduxjs/toolkit";
+import TARegisterApprovalPrompt from "@main/components/prompts/TARegisterApprovalPrompt";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
+import {
+  setPage as setPageAction,
+  getApplicationsOfClass,
+  selectApplicationsData,
+  setScheduleId,
+} from "@redux/slices/application.slice";
 import { useEffect, useState } from "react";
-import { Accordion } from "react-bootstrap";
+import { PaginationControl } from "react-bootstrap-pagination-control";
+import { useParams } from "react-router-dom";
 
-const TARegistrationList = () => {
+export const TARegistrationList = () => {
   const dispatch = useAppDispatch();
+  const applicationsResponse = useAppSelector(selectApplicationsData);
 
-  const [activeKey, setActiveKey] = useState<string>();
-  const [data, setData] = useState<OverviewApplicationFormResponse[]>([]);
+  const { scheduleId } = useParams();
+
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    dispatch(getApplicationsOverview()).then(unwrapResult).then(setData);
-  }, [dispatch]);
+    dispatch(setPageAction(page));
+  }, [dispatch, page]);
+
+  useEffect(() => {
+    dispatch(setScheduleId(scheduleId));
+  }, [dispatch, scheduleId]);
+
+  useEffect(() => {
+    if (scheduleId) {
+      dispatch(getApplicationsOfClass());
+    }
+  }, [dispatch, scheduleId, page]);
 
   return (
-    <Accordion
-      activeKey={activeKey}
-      onSelect={(e) => setActiveKey(e as string)}
-      alwaysOpen
-    >
-      {data.map((item, index) => (
-        <Accordion.Item eventKey={item.scheduleId}>
-          <Accordion.Header>
-            {index} {item.name} - {item.lesson}
-          </Accordion.Header>
-          <Accordion.Body>
-            <TeacherAssistantsList applications={item.applications} />
-            {item.hasMore && (
-              <a href="#" target="_blank">
-                View more
-              </a>
-            )}
-          </Accordion.Body>
-        </Accordion.Item>
-      ))}
-    </Accordion>
+    <>
+      <h2>Danh sách trợ giảng môn</h2>
+      <TeacherAssistantsList applications={applicationsResponse.data} />
+      <div className="text-align">
+        <PaginationControl
+          page={page}
+          between={4}
+          total={applicationsResponse.count}
+          limit={10}
+          changePage={(page) => {
+            setPage(page);
+          }}
+          ellipsis={2}
+        />
+      </div>
+      <TARegisterApprovalPrompt dataFetcherThunk={getApplicationsOfClass} />
+    </>
   );
 };
-
-export default TARegistrationList;

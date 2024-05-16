@@ -1,12 +1,15 @@
-export type TermDataItem = {
+export type TermClassInfo = {
+    name: string,
+    lesson: string
+}
+
+export type TermDataItem = TermClassInfo & {
     id: string,
     code: string,
-    name: string,
     type: string,
     credits: number,
     day: number,
     scheduleId: string,
-    lesson: string,
     isRegistered: boolean,
     isApproved: boolean
 }

@@ -399,4 +399,104 @@ const getAssitantsInfo = (req: Request) => {
   ]);
 };
 
-export { readTermData, getTermData, getAssitantsInfo };
+const getTermClassInfo = async (req: Request) => {
+  const { db, params } = createTypedRequest<{}, {}>(req);
+
+  const result = await db.terms.aggregate([
+    {
+      $unwind: {
+        path: "$classes",
+      },
+    },
+    {
+      $unwind: {
+        path: "$classes.schedule",
+      },
+    },
+    {
+      $match: {
+        "classes.schedule._id": new mongoose.Types.ObjectId(params.classId),
+      },
+    },
+    {
+      $set: {
+        day: {
+          $switch: {
+            branches: [
+              {
+                case: {
+                  $eq: ["$classes.schedule.day", 0],
+                },
+                then: "Thứ 2",
+              },
+              {
+                case: {
+                  $eq: ["$classes.schedule.day", 1],
+                },
+                then: "Thứ 3",
+              },
+              {
+                case: {
+                  $eq: ["$classes.schedule.day", 2],
+                },
+                then: "Thứ 4",
+              },
+              {
+                case: {
+                  $eq: ["$classes.schedule.day", 3],
+                },
+                then: "Thứ 5",
+              },
+              {
+                case: {
+                  $eq: ["$classes.schedule.day", 4],
+                },
+                then: "Thứ 6",
+              },
+              {
+                case: {
+                  $eq: ["$classes.schedule.day", 5],
+                },
+                then: "Thứ 7",
+              },
+              {
+                case: {
+                  $eq: ["$classes.schedule.day", 6],
+                },
+                then: "Chủ nhật",
+              },
+            ],
+            default: "",
+          },
+        },
+      },
+    },
+    {
+      $set: {
+        lesson: {
+          $concat: [
+            {
+              $toString: "$classes.schedule.startLesson",
+            },
+            "-",
+            {
+              $toString: "$classes.schedule.endLesson",
+            },
+          ],
+        },
+      },
+    },
+    {
+      $project: {
+        name: 1,
+        day: 1,
+        lesson: 1,
+        _id: 0,
+      },
+    },
+  ]);
+
+  return result[0]
+};
+
+export { readTermData, getTermData, getAssitantsInfo, getTermClassInfo };
