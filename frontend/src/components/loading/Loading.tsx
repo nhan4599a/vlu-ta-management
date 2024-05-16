@@ -1,9 +1,9 @@
-import "../../index.css";
-import { useLottie } from "lottie-react";
-import LoadingAnimation from "../../lottie/loading.json";
-import { useAppSelector } from "../../features/hooks";
-import { selectLoadingState } from "../../features/slices/loading.slice";
 import { useEffect, useMemo } from "react";
+import { useLottie } from "lottie-react";
+import LoadingAnimation from "@main/lottie/loading.json";
+import { useAppSelector } from "@redux/hooks";
+import { selectLoadingState } from "@redux/slices/loading.slice";
+import "../../index.css";
   
 const options = {
   animationData: LoadingAnimation,

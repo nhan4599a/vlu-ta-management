@@ -5,10 +5,10 @@ import { recruimentReducer } from "../slices/recruiment.slice";
 import { authenticationReducer } from "../slices/authentication.slice";
 import { usersReducer } from "../slices/users.slice";
 import { tasksReducer } from "../slices/tasks.slice";
+import { termsReducer } from "../slices/terms.slice";
 import persistStore from "redux-persist/es/persistStore";
 import storage from "redux-persist/lib/storage";
 import persistReducer from "redux-persist/es/persistReducer";
-import { termsReducer } from "../slices/terms.slice";
 
 const rootReducer = combineReducers({
   loading: loadingReducer,

@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 // import TARegisterClassList from "./TARegisterClassList";
-import { useAppDispatch, useAppSelector } from "../../../features/hooks";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import {
   getTermsDataList,
   selectTermsData,
   setCurrentPage,
-} from "../../../features/slices/terms.slice";
-import TARegister from "../../../components/prompts/TARegisterPrompt";
+} from "@redux/slices/terms.slice";
+import TARegister from "@main/components/prompts/TARegisterPrompt";
 
 const TARecruitmentMainPage = () => {
   const dispatch = useAppDispatch();

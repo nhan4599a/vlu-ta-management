@@ -1,15 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
-import "./index.css";
 import "react-bootstrap";
 import { BrowserRouter } from "react-router-dom";
 import { PublicClientApplication } from "@azure/msal-browser";
-import { constant } from "./constants/index.ts";
+import { constant } from "./constants";
 import { MsalProvider } from "@azure/msal-react";
 import { Provider } from "react-redux";
-import { persistor, store } from "./features/store/index.ts";
+import { persistor, store } from "@redux/store";
 import { PersistGate } from "redux-persist/integration/react";
+import "./index.css";
 
 const msalInstance = new PublicClientApplication(
   constant.authentication.msalConfig

@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { post } from "../../api";
-import { IUser, Role } from "../../types/user.type";
-import { RootState } from "../store";
+import { post } from "@main/api";
+import { IUser, Role } from "@main/types/user.type";
+import { RootState } from "@redux/store";
 
 type AuthenticationState = {
   accessToken?: string;

@@ -1,8 +1,8 @@
 import { Image, Button } from "react-bootstrap";
 import { useMsal } from "@azure/msal-react";
-import { constant } from "../../../constants";
-import { useAppDispatch } from "../../../features/hooks";
-import { showMessageDialog } from "../../../features/slices/messages.slice";
+import { constant } from "@main/constants";
+import { useAppDispatch } from "@redux/hooks";
+import { showMessageDialog } from "@redux/slices/messages.slice";
 import "../../../index.css";
 
 

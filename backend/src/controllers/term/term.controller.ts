@@ -40,13 +40,13 @@ router.post("/", uploadFileMiddleware, async (req, res) => {
   responseWithValue(res, null);
 });
 
-router.get("/:id/classes/:classId/assistants", async (req, res) => {
+router.get("/classes/:classId/assistants", async (req, res) => {
   const assistants = await getAssitantsInfo(req);
 
   responseWithValue(res, assistants);
 });
 
-router.get("/:id/classes/:classId/users/:userId/tasks", async (req, res) => {
+router.get("/classes/:classId/users/:userId/tasks", async (req, res) => {
   const { db, params } = createTypedRequest<{}, {}>(req);
 
   const tasks = await db.tasks.where({
@@ -58,7 +58,7 @@ router.get("/:id/classes/:classId/users/:userId/tasks", async (req, res) => {
   responseWithValue(res, tasks);
 });
 
-router.post("/:id/classes/:classId/users/:userId/tasks", async (req, res) => {
+router.post("/classes/:classId/users/:userId/tasks", async (req, res) => {
   const { db, params, body, user } = createTypedRequest<CreateTaskRequest, {}>(
     req
   );
@@ -74,7 +74,6 @@ router.post("/:id/classes/:classId/users/:userId/tasks", async (req, res) => {
           insertOne: {
             document: {
               ...actualTask,
-              termId: params.id,
               scheduleId: params.classId,
               assigner: user._id.toString(),
               assignee: params.userId,
@@ -114,7 +113,6 @@ router.post("/:id/classes/:classId/users/:userId/tasks", async (req, res) => {
   await db.tasks.bulkWrite(actions);
 
   const tasks = await db.tasks.where({
-    _id: params.id,
     scheduleId: params.classId,
     assignee: params.userId,
   });

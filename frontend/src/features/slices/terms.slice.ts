@@ -1,8 +1,8 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { get, post } from "../../api";
-import { PaginationResponse } from "../../types/integration.type";
-import { TermDataItem } from "../../types/term.type";
-import { RootState } from "../store";
+import { get, post } from "@main/api";
+import { PaginationResponse } from "@main/types/integration.type";
+import { TermDataItem } from "@main/types/term.type";
+import { RootState } from "@redux/store";
 
 type InitialState = {
   termsResponse: PaginationResponse<TermDataItem>;

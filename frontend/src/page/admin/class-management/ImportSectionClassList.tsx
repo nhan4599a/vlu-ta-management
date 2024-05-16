@@ -1,9 +1,9 @@
-import DropzoneComponent, { DropzoneComponentMethodsRef } from "../../../components/dropzone/Dropzone";
-import ImportButton from "../../../components/buttons/ImportButton";
-import DownloadImportTemplateLink from "../../../components/links/DownloadImportTemplateLink";
+import DropzoneComponent, { DropzoneComponentMethodsRef } from "@main/components/dropzone/Dropzone";
+import ImportButton from "@main/components/buttons/ImportButton";
+import DownloadImportTemplateLink from "@main/components/links/DownloadImportTemplateLink";
 import { useRef } from "react";
-import { useAppDispatch } from "../../../features/hooks";
-import { importTermsData } from "../../../features/slices/terms.slice";
+import { useAppDispatch } from "@redux/hooks";
+import { importTermsData } from "@redux/slices/terms.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 const ImportSectionClassList = () => {

@@ -1,6 +1,6 @@
 import { Button, Modal } from "react-bootstrap";
-import { useAppDispatch, useAppSelector } from "../../features/hooks";
-import { closeMessageDialog, selectCurrentMessage } from "../../features/slices/messages.slice";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
+import { closeMessageDialog, selectCurrentMessage } from "@redux/slices/messages.slice";
 
 const MessagePromt = () => {
   const dispatch = useAppDispatch()

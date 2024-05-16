@@ -1,15 +1,9 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { get, patch, post } from "../../api";
-import { RecruimentInfo } from "../../types/recruiment.type";
-import { RootState } from "../store";
-
-export type GetRecruimentPayload = {
-  id: string;
-  scheduleId: string;
-};
+import { get, patch, post } from "@main/api";
+import { RecruimentInfo } from "@main/types/recruiment.type";
+import { RootState } from "@redux/store";
 
 type InitialState = {
-  termId?: string;
   scheduleId?: string;
   recruimentInfo?: RecruimentInfo;
   activeTermName?: string;
@@ -21,10 +15,10 @@ export const getRecuimentInfo = createAsyncThunk(
   "recruiment/fetch",
   async (_, { getState, rejectWithValue }) => {
     try {
-      const { termId, scheduleId } = (getState() as RootState).recruiment;
+      const { scheduleId } = (getState() as RootState).recruiment;
 
       return await get<RecruimentInfo>({
-        path: `tuyen-dung/${termId}/classes/${scheduleId}`,
+        path: `tuyen-dung/classes/${scheduleId}`,
       });
     } catch (e) {
       return rejectWithValue(e);
@@ -36,10 +30,10 @@ export const updateRecruimentInfo = createAsyncThunk(
   "recruiment/update",
   async (payload: RecruimentInfo, { getState, rejectWithValue }) => {
     try {
-      const { termId, scheduleId } = (getState() as RootState).recruiment;
+      const { scheduleId } = (getState() as RootState).recruiment;
 
       return await post({
-        path: `tuyen-dung/${termId}/classes/${scheduleId}`,
+        path: `tuyen-dung/classes/${scheduleId}`,
         body: payload,
       });
     } catch (e) {
@@ -52,10 +46,10 @@ export const approveRecruimentInfo = createAsyncThunk(
   "recruiment/approve",
   async (payload: boolean, { getState, rejectWithValue }) => {
     try {
-      const { termId, scheduleId } = (getState() as RootState).recruiment;
+      const { scheduleId } = (getState() as RootState).recruiment;
 
       return await patch({
-        path: `tuyen-dung/${termId}/classes/${scheduleId}`,
+        path: `tuyen-dung/classes/${scheduleId}`,
         body: {
           approved: payload,
         },
@@ -69,11 +63,11 @@ export const approveRecruimentInfo = createAsyncThunk(
 export const applyRecruiment = createAsyncThunk(
   "recruiment/apply",
   async (payload: FormData, { getState, rejectWithValue }) => {
-    const { termId, scheduleId } = (getState() as RootState).recruiment;
+    const { scheduleId } = (getState() as RootState).recruiment;
 
     try {
       return await post({
-        path: `tuyen-dung/${termId}/classes/${scheduleId}/apply`,
+        path: `tuyen-dung/classes/${scheduleId}/apply`,
         body: payload,
       });
     } catch (e) {
@@ -86,9 +80,8 @@ const recruimentSlice = createSlice({
   name: "recruiment",
   initialState,
   reducers: {
-    setGetDataPayload(state, { payload }: PayloadAction<GetRecruimentPayload>) {
-      state.termId = payload.id;
-      state.scheduleId = payload.scheduleId;
+    setScheduleId(state, { payload }: PayloadAction<string>) {
+      state.scheduleId = payload;
     },
     unsetRecruimentInfo(state) {
       state.recruimentInfo = undefined;
@@ -105,7 +98,7 @@ const recruimentSlice = createSlice({
 });
 
 export const recruimentReducer = recruimentSlice.reducer;
-export const { setGetDataPayload, unsetRecruimentInfo, setActiveTermName } =
+export const { setScheduleId, unsetRecruimentInfo, setActiveTermName } =
   recruimentSlice.actions;
 export const selectRecruimentInfo = (state: RootState) =>
   state.recruiment.recruimentInfo;

@@ -1,11 +1,11 @@
 import { Col, Tab, Tabs } from "react-bootstrap";
-import SearchInput from "../../../components/generic/SearchInput";
-import AccountsList from "../../../components/lists/AccountsList";
+import SearchInput from "@main/components/generic/SearchInput";
+import AccountsList from "@main/components/lists/AccountsList";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 import { useEffect, useState } from "react";
-import { Role } from "../../../types/user.type";
-import { useAppDispatch } from "../../../features/hooks";
-import { getUsersList, setRequest } from "../../../features/slices/users.slice";
+import { Role } from "@main/types/user.type";
+import { useAppDispatch } from "@redux/hooks";
+import { getUsersList, setRequest } from "@redux/slices/users.slice";
 import "../../../index.css";
 
 const AccountMainPage = () => {

@@ -1,9 +1,9 @@
 import { Table } from "react-bootstrap";
-import ConfirmDelete from "../prompts/ConfirmDelete";
-import { useAppDispatch, useAppSelector } from "../../features/hooks";
-import { selectUsersList, setSelectedUser } from "../../features/slices/users.slice";
+import ConfirmDelete from "@main/components/prompts/ConfirmDelete";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
+import { selectUsersList, setSelectedUser } from "@redux/slices/users.slice";
+import { IUser } from "@main/types/user.type";
 import "../../index.css";
-import { IUser } from "../../types/user.type";
 
 const AccountsList = () => {
   const dispatch = useAppDispatch()

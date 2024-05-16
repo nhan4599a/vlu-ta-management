@@ -1,7 +1,7 @@
 import { ReactElement, useMemo } from "react";
-import { useAppSelector } from "../features/hooks";
-import { selectCurrentRole } from "../features/slices/authentication.slice";
-import { Role } from "../types/user.type";
+import { useAppSelector } from "@redux/hooks";
+import { selectCurrentRole } from "@redux/slices/authentication.slice";
+import { Role } from "@main/types/user.type";
 
 type CompoenentRoleMapping = {
   [role in Role]?: ReactElement
