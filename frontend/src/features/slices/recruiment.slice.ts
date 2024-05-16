@@ -88,7 +88,7 @@ const recruimentSlice = createSlice({
     },
     setActiveTermName(state, { payload }: PayloadAction<string | undefined>) {
       state.activeTermName = payload;
-    },
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(getRecuimentInfo.fulfilled, (state, { payload }) => {

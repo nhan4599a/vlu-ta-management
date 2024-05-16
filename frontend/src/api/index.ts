@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
-import { store } from "@redux/store";
+import { IApiResponse } from "@main/types/integration.type";
 import {
   closeLoadingDialog,
   showLoadingDialog,
 } from "@redux/slices/loading.slice";
-import { IApiResponse } from "@main/types/integration.type";
 import { showMessageDialog } from "@redux/slices/messages.slice";
 
 const config: AxiosRequestConfig = {
@@ -14,10 +15,12 @@ const config: AxiosRequestConfig = {
 const apiClient = axios.create(config);
 let numberOfRequests = 0;
 
-apiClient.interceptors.request.use((config) => {
-	const state = store.getState()
+apiClient.interceptors.request.use(async (config) => {
+  const { store } = await import("@redux/store");
 
-  config.headers.Authorization = `Bearer ${state.authentication.accessToken}`
+  const state = store.getState();
+
+  config.headers.Authorization = `Bearer ${state.authentication.accessToken}`;
 
   if (numberOfRequests === 0) {
     store.dispatch(showLoadingDialog());
@@ -27,14 +30,18 @@ apiClient.interceptors.request.use((config) => {
 });
 
 apiClient.interceptors.response.use(
-  (response) => {
+  async (response) => {
+    const { store } = await import("@redux/store");
+
     numberOfRequests -= 1;
     if (numberOfRequests === 0) {
       store.dispatch(closeLoadingDialog());
     }
     return response.data.result;
   },
-  (err: AxiosError<IApiResponse<unknown>>) => {
+  async (err: AxiosError<IApiResponse<unknown>>) => {
+    const { store } = await import("@redux/store");
+
     numberOfRequests -= 1;
     if (numberOfRequests === 0) {
       store.dispatch(closeLoadingDialog());
