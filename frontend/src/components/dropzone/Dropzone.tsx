@@ -83,7 +83,7 @@ const DropzoneComponent = forwardRef<DropzoneComponentMethodsRef, DropzoneProps>
   }, [props]);
 
   return (
-    <div id={elementIdRef.current} className="dropzone">
+    <div id={elementIdRef.current} className="dropzone d-flex flex-wrap justify-content-center w-100">
       <div
         className="dz-message text-center p-4"
         style={{ display: isPreviewVisible ? "none" : "block" }}
