@@ -8,7 +8,6 @@ import {
 } from "./recruit.service";
 import { responseWithValue } from "../../helper/response.helper";
 import { uploadMultipleFilesMiddleware } from "../../helper/upload.helper";
-import { IBaseRequest } from "../../types/integration.types";
 
 const router = express.Router();
 
