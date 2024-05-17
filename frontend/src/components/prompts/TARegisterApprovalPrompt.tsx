@@ -1,36 +1,42 @@
-import { useRef } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
-import DropzoneComponent, {
-  DropzoneComponentMethodsRef,
-} from "../dropzone/Dropzone";
+import DropzoneComponent from "../dropzone/Dropzone";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import {
+  approveApplicationForm,
+  selectApplicationId,
   selectApplicationInfo,
+  selectTermClassInfo,
   setApplicationId,
-} from "@main/features/slices/application.slice";
+} from "@redux/slices/application.slice";
+import { AsyncThunk } from "@reduxjs/toolkit";
+import { AsyncThunkConfig } from "node_modules/@reduxjs/toolkit/dist/createAsyncThunk";
 import "../../index.css";
 
-const TARegisterApprovalPrompt = () => {
-  const dispatch = useAppDispatch();
-  const applicationInfo = useAppSelector(selectApplicationInfo);
+type Props<TResponse> = {
+  dataFetcherThunk: AsyncThunk<TResponse, undefined, AsyncThunkConfig>
+}
 
-  const dropzoneRef = useRef<DropzoneComponentMethodsRef>(null);
+const TARegisterApprovalPrompt = <TResponse,>({ dataFetcherThunk }: Props<TResponse>) => {
+  const dispatch = useAppDispatch();
+  const applicationId = useAppSelector(selectApplicationId)
+  const applicationInfo = useAppSelector(selectApplicationInfo);
+  const termClassInfo = useAppSelector(selectTermClassInfo)
 
   const onHide = () => {
     dispatch(setApplicationId(undefined));
   };
 
-  const onSubmit = async () => {
-    if (!dropzoneRef.current) {
-      return;
+  const onSubmit = (approve: boolean) => {
+    return async () => {
+      await dispatch(approveApplicationForm(approve))
+      await dispatch(dataFetcherThunk())
+      onHide();
     }
-
-    onHide();
   };
 
   return (
     <Modal
-      show={termName !== undefined}
+      show={applicationId !== undefined}
       onHide={onHide}
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
@@ -38,7 +44,7 @@ const TARegisterApprovalPrompt = () => {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Ứng tuyển làm trợ giảng môn {termName}
+          Ứng tuyển làm trợ giảng môn {termClassInfo?.name} tiết {termClassInfo?.lesson}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -128,7 +134,6 @@ const TARegisterApprovalPrompt = () => {
             </Form.Label>
             <Col sm="10">
               <DropzoneComponent
-                ref={dropzoneRef}
                 files={applicationInfo?.attachments}
                 allowDownload={true}
               />
@@ -140,7 +145,8 @@ const TARegisterApprovalPrompt = () => {
         <Button variant="secondary" onClick={onHide}>
           Đóng
         </Button>
-        <Button onClick={onSubmit}>Gửi đơn</Button>
+        <Button onClick={onSubmit(true)}>Reject</Button>
+        <Button onClick={onSubmit(false)}>Approve</Button>
       </Modal.Footer>
     </Modal>
   );

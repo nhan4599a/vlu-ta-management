@@ -3,7 +3,7 @@ import { PaginationControl } from "react-bootstrap-pagination-control";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import {
   getTermsDataList,
-  // selectTermsData,
+  selectTermsData,
   setCurrentPage,
 } from "@redux/slices/terms.slice";
 import { useAdaptiveRoleComponent } from "@main/hooks/useAdaptiveRoleComponent";
@@ -23,7 +23,7 @@ import "@main/index.css";
 
 const SectionClassList = () => {
   const dispatch = useAppDispatch();
-  const termsResponse = useAppSelector((state) => state.terms.termsResponse);
+  const termsResponse = useAppSelector(selectTermsData)
 
   const [page, setPage] = useState(1);
 

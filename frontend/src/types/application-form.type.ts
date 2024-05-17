@@ -1,4 +1,5 @@
 export type ApplicationForm = {
+    _id: string,
     name: string,
     code: string,
     class: string,
@@ -8,7 +9,8 @@ export type ApplicationForm = {
     description: string,
     attachments: string[],
     stage1Approval: boolean,
-    stage2Approval: boolean
+    stage2Approval: boolean,
+    scheduleId: string
 }
 
 export type OverviewApplicationFormResponse = {

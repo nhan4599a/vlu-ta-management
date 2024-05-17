@@ -1,7 +1,12 @@
 import express from "express";
 import { IBaseRequest } from "../../types/integration.types";
 import { uploadFileMiddleware } from "../../helper/upload.helper";
-import { getAssitantsInfo, getTermData, readTermData } from "./term.service";
+import {
+  getAssitantsInfo,
+  getTermClassInfo,
+  getTermData,
+  readTermData,
+} from "./term.service";
 import { responseWithValue } from "../../helper/response.helper";
 import { createTypedRequest } from "../../helper/type.helper";
 import { ITask } from "../../db/models/task";
@@ -28,6 +33,12 @@ router.get("/", async (req, res) => {
   const terms = await getTermData(req);
 
   responseWithValue(res, terms);
+});
+
+router.get("/classes/:classId", async (req, res) => {
+  const termClassInfo = getTermClassInfo(req);
+
+  responseWithValue(res, termClassInfo);
 });
 
 router.post("/", uploadFileMiddleware, async (req, res) => {
@@ -117,7 +128,7 @@ router.post("/classes/:classId/users/:userId/tasks", async (req, res) => {
     assignee: params.userId,
   });
 
-  responseWithValue(res, tasks)
+  responseWithValue(res, tasks);
 });
 
 export default router;

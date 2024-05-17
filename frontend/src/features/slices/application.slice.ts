@@ -1,21 +1,32 @@
-import { get } from "@main/api";
+import { get, patch } from "@main/api";
 import {
   ApplicationForm,
   OverviewApplicationFormResponse,
 } from "@main/types/application-form.type";
-import { PaginationRequest } from "@main/types/integration.type";
+import {
+  PaginationResponse,
+} from "@main/types/integration.type";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { TermClassInfo } from "@main/types/term.type";
 
 type InitialState = {
   applicationId?: string;
   applicationInfo?: ApplicationForm;
+  applicationsResponse: PaginationResponse<ApplicationForm>;
+  termClassInfo?: TermClassInfo;
+  scheduleId?: string;
+  page: number;
+  applicationsOverview: OverviewApplicationFormResponse[];
 };
 
-const initialState: InitialState = {};
-
-type GetApplicationsOfClassRequest = PaginationRequest & {
-  scheduleId: string;
+const initialState: InitialState = {
+  applicationsResponse: {
+    data: [],
+    count: 0,
+  },
+  page: 1,
+  applicationsOverview: [],
 };
 
 export const getApplicationsOverview = createAsyncThunk(
@@ -33,12 +44,13 @@ export const getApplicationsOverview = createAsyncThunk(
 
 export const getApplicationsOfClass = createAsyncThunk(
   "applications/fetch",
-  async (payload: GetApplicationsOfClassRequest, { rejectWithValue }) => {
+  async (_: undefined, { getState, rejectWithValue }) => {
     try {
-      return await get({
-        path: `/tuyen-dung/classes/${payload.scheduleId}/applications`,
+      const { scheduleId, page } = (getState() as RootState).application;
+      return await get<PaginationResponse<ApplicationForm>>({
+        path: `/tuyen-dung/classes/${scheduleId}/applications`,
         query: {
-          page: payload.page,
+          page: page,
         },
       });
     } catch (e) {
@@ -53,8 +65,39 @@ export const getApplicationInfo = createAsyncThunk(
     try {
       const { applicationId } = (getState() as RootState).application;
 
-      return get<ApplicationForm>({
+      return await get<ApplicationForm>({
         path: `/tuyen-dung/applications/${applicationId}`,
+      });
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
+export const approveApplicationForm = createAsyncThunk(
+  "applications/approve",
+  async (payload: boolean, { getState, rejectWithValue }) => {
+    try {
+      const { applicationId } = (getState() as RootState).application;
+
+      return await patch({
+        path: `/tuyen-dung/applications/${applicationId}`,
+        body: {
+          approved: payload,
+        },
+      });
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
+export const getTermClassInfo = createAsyncThunk(
+  "applications/terms/info",
+  async (payload: string, { rejectWithValue }) => {
+    try {
+      return await get<TermClassInfo>({
+        path: `/hoc-phan/classes/${payload}`,
       });
     } catch (e) {
       return rejectWithValue(e);
@@ -66,22 +109,61 @@ const applicationSlice = createSlice({
   name: "applications",
   initialState,
   reducers: {
+    setPage(state, { payload }: PayloadAction<number>) {
+      state.page = payload;
+    },
+    setScheduleId(state, { payload }: PayloadAction<string | undefined>) {
+      state.scheduleId = payload;
+    },
     setApplicationId(state, { payload }: PayloadAction<string | undefined>) {
       state.applicationId = payload;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(
+      getApplicationsOverview.fulfilled,
+      (
+        state,
+        { payload }: PayloadAction<OverviewApplicationFormResponse[]>
+      ) => {
+        state.applicationsOverview = payload;
+      }
+    );
+    builder.addCase(
       getApplicationInfo.fulfilled,
       (state, { payload }: PayloadAction<ApplicationForm>) => {
         state.applicationInfo = payload;
       }
     );
+    builder.addCase(
+      getApplicationsOfClass.fulfilled,
+      (
+        state,
+        { payload }: PayloadAction<PaginationResponse<ApplicationForm>>
+      ) => {
+        state.applicationsResponse = payload;
+      }
+    );
+    builder.addCase(
+      getTermClassInfo.fulfilled,
+      (state, { payload }: PayloadAction<TermClassInfo>) => {
+        state.termClassInfo = payload;
+      }
+    );
   },
 });
 
-export const { setApplicationId } = applicationSlice.actions;
+export const { setPage, setScheduleId, setApplicationId } = applicationSlice.actions;
 export const applicationReducer = applicationSlice.reducer;
+export const selectScheduleId = (state: RootState) =>
+  state.application.scheduleId;
 export const selectApplicationId = (state: RootState) =>
   state.application.applicationId;
-export const selectApplicationInfo = (state: RootState) => state.application.applicationInfo
+export const selectApplicationInfo = (state: RootState) =>
+  state.application.applicationInfo;
+export const selectApplicationsData = (state: RootState) =>
+  state.application.applicationsResponse;
+export const selectTermClassInfo = (state: RootState) =>
+  state.application.termClassInfo;
+export const selectApplicationsOverview = (state: RootState) =>
+  state.application.applicationsOverview;

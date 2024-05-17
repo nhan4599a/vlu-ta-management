@@ -1,3 +1,5 @@
+import { useAppDispatch } from "@redux/hooks";
+import { getApplicationInfo, getTermClassInfo, setApplicationId } from "@redux/slices/application.slice";
 import { ApplicationForm } from "@main/types/application-form.type";
 import { Button, Table } from "react-bootstrap";
 
@@ -8,6 +10,18 @@ type TeacherAssistanntsListProps = {
 export const TeacherAssistantsList = ({
   applications
 }: TeacherAssistanntsListProps) => {
+  const dispatch = useAppDispatch()
+
+  const showApprovalDialog = (application: ApplicationForm) => {
+    return async () => {
+      dispatch(setApplicationId(application._id))
+
+      await Promise.all([
+        dispatch(getTermClassInfo(application.scheduleId)),
+        dispatch(getApplicationInfo())
+      ])
+    }
+  }
   
   return (
     <Table responsive>
@@ -28,7 +42,7 @@ export const TeacherAssistantsList = ({
             <th>{application.code}</th>
             <th>{application.description}</th>
             <th>
-              <Button variant="primary">Xem</Button>
+              <Button variant="primary" onClick={showApprovalDialog(application)}>Xem</Button>
             </th>
           </tr>
         ))}
