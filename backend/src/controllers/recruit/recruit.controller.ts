@@ -8,6 +8,7 @@ import {
 } from "./recruit.service";
 import { responseWithValue } from "../../helper/response.helper";
 import { uploadMultipleFilesMiddleware } from "../../helper/upload.helper";
+import mongoose from "mongoose";
 
 const router = express.Router();
 
@@ -55,17 +56,22 @@ router.post("/classes/:classId", async (req, res) => {
     req
   );
 
-  await db.terms.findOneAndUpdate(
-    {
-      "classes._id": params.classId,
-    },
+  await db.terms.updateOne(
+    {},
     {
       $set: {
-        "classes.$.registrationInfo": {
+        "classes.$[].schedule.$[i].registrationInfo": {
           ...body,
           approved: null,
         },
       },
+    },
+    {
+      arrayFilters: [
+        {
+          "i._id": new mongoose.Types.ObjectId(params.classId),
+        },
+      ],
     }
   );
 
@@ -75,14 +81,19 @@ router.post("/classes/:classId", async (req, res) => {
 router.patch("/classes/:classId", async (req, res) => {
   const { db, body, params } = createTypedRequest<ApprovalInfo, {}>(req);
 
-  await db.terms.findOneAndUpdate(
-    {
-      "classes._id": params.classId,
-    },
+  await db.terms.updateOne(
+    {},
     {
       $set: {
-        "classes.$.registrationInfo.approved": body.approved,
+        "classes.$[].schedule.$[i].registrationInfo.approved": body.approved,
       },
+    },
+    {
+      arrayFilters: [
+        {
+          "i._id": new mongoose.Types.ObjectId(params.classId),
+        },
+      ],
     }
   );
 

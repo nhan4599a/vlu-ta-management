@@ -11,11 +11,6 @@ export const getRecruimentInfo = async (req: Request) => {
   const terms = await db.terms
     .aggregate<IRegistrationInfo | undefined>([
       {
-        $match: {
-          _id: new mongoose.Types.ObjectId(params.id),
-        },
-      },
-      {
         $unwind: {
           path: "$classes",
         },

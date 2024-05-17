@@ -27,6 +27,7 @@ const StudentSectionClassList = () => {
             <th>TT</th>
             <th>Mã môn học</th>
             <th>Môn học</th>
+            <th>Thứ</th>
             <th>Tiết</th>
             <th></th>
           </tr>
@@ -37,6 +38,7 @@ const StudentSectionClassList = () => {
               <td>{index + 1}</td>
               <td>{term.code}</td>
               <td>{term.name}</td>
+              <td>{term.day}</td>
               <td>{term.lesson}</td>
               <td>
                 <Button

@@ -50,7 +50,7 @@ const TeacherSectionClassList = () => {
                     className="w-100"
                     onClick={fetchRecruimentInfo(term.scheduleId)}
                   >
-                    Yêu cầu trợ giảng
+                    {term.isRegistered ? "Cập nhật" : "Yêu cầu trợ giảng"}
                   </Button>
                 ) : (
                   <></>

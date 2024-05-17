@@ -14,7 +14,8 @@ import { DayInWeek } from "../../constants/day.enum";
 import { createTypedRequest } from "../../helper/type.helper";
 import { PaginationRequest } from "../../types/integration.types";
 import { paginate } from "../../helper/pagination.helper";
-import mongoose from "mongoose";
+import mongoose, { PipelineStage } from "mongoose";
+import { Role } from "../../constants/role.enum";
 
 type TermDataItem = Omit<ITerm, "classes" | "sessions"> &
   Omit<IScheduleDetail, "startLesson" | "endLesson"> & {
@@ -212,9 +213,9 @@ const readTermData = async (file: Express.Multer.File): Promise<ITerm[]> => {
 };
 
 const getTermData = async (req: Request) => {
-  const { db, query } = createTypedRequest<{}, PaginationRequest>(req);
+  const { db, query, user } = createTypedRequest<{}, PaginationRequest>(req);
 
-  return paginate<ITerm, TermDataItem>(db.terms, query, [
+  const basePipeline: PipelineStage[] = [
     {
       $unwind: {
         path: "$classes",
@@ -260,6 +261,18 @@ const getTermData = async (req: Request) => {
         },
       },
     },
+  ];
+
+  if (user.role === Role.Teacher) {
+    basePipeline.push({
+      $match: {
+        lecture: user.code,
+      },
+    });
+  }
+
+  return paginate<ITerm, TermDataItem>(db.terms, query, [
+    ...basePipeline,
     {
       $set: {
         scheduleId: "$classes.schedule._id",
@@ -496,7 +509,7 @@ const getTermClassInfo = async (req: Request) => {
     },
   ]);
 
-  return result[0]
+  return result[0];
 };
 
 export { readTermData, getTermData, getAssitantsInfo, getTermClassInfo };
