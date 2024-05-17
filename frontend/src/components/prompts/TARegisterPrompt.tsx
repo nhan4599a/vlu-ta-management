@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import DropzoneComponent, { DropzoneComponentMethodsRef } from "../dropzone/Dropzone";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
@@ -9,22 +9,35 @@ import {
   setActiveTermName,
 } from "@redux/slices/recruiment.slice";
 import "@main/index.css";
+import { selectApplicationInfo } from "@main/features/slices/application.slice";
 
 const TARegisterPrompt = () => {
   const dispatch = useAppDispatch();
+  const applicationInfo = useAppSelector(selectApplicationInfo)
   const termName = useAppSelector(selectActiveTermName);
   const user = useAppSelector(selectCurrentUser);
 
   const [recruitdescription, setRecruitDescription] = useState("");
   const [mobile, setMobile] = useState("");
-  const [grade1, setGrade1] = useState<number>();
-  const [grade2, setGrade2] = useState<number>();
+  const [termScore, setTermScore] = useState<number>(0);
+  const [avgScore, setAvgScore] = useState<number>(0);
 
   const dropzoneRef = useRef<DropzoneComponentMethodsRef>(null)
 
   const onHide = () => {
+    setMobile("")
+    setTermScore(0)
+    setAvgScore(0)
     dispatch(setActiveTermName(undefined));
   };
+
+  useEffect(() => {
+    if (applicationInfo) {
+      setMobile(applicationInfo.phoneNumber)
+      setTermScore(applicationInfo.termScore)
+      setAvgScore(applicationInfo.avgScore)
+    }
+  }, [applicationInfo])
 
   const onSubmit = async () => {
     if (!dropzoneRef.current) {
@@ -39,6 +52,8 @@ const TARegisterPrompt = () => {
     }
     formData.append('phoneNumber', mobile)
     formData.append('description', recruitdescription)
+    formData.append('termScore', termScore.toString())
+    formData.append('avgScore', avgScore.toString())
 
     await dispatch(applyRecruiment(formData))
     onHide()
@@ -113,25 +128,25 @@ const TARegisterPrompt = () => {
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="grade1">
             <Form.Label column sm="2">
-              Điểm môn 1: 
+              Điểm môn {termName}: 
             </Form.Label>
             <Col sm="10">
               <Form.Control
                 type="number"
-                value={grade1}
-                onChange={(e) => setGrade1(Number(e.target.value))}
+                value={termScore}
+                onChange={(e) => setTermScore(Number(e.target.value))}
               />
             </Col>
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="grade2">
             <Form.Label column sm="2">
-              Điểm môn 2: 
+              Điểm trung bình học kỳ: 
             </Form.Label>
             <Col sm="10">
               <Form.Control
                 type="number"
-                value={grade2}
-                onChange={(e) => setGrade2(Number(e.target.value))}
+                value={avgScore}
+                onChange={(e) => setAvgScore(Number(e.target.value))}
               />
             </Col>
           </Form.Group>
@@ -140,7 +155,7 @@ const TARegisterPrompt = () => {
               File đính kèm
             </Form.Label>
             <Col sm="10">
-              <DropzoneComponent ref={dropzoneRef} />
+              <DropzoneComponent ref={dropzoneRef} files={applicationInfo?.attachments ?? []} />
             </Col>
           </Form.Group>
         </Form>

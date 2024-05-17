@@ -109,21 +109,33 @@ router.post(
       {}
     >(req);
 
-    const { code, class: userClass, name } = user;
+    const { _id, code, class: userClass, name } = user;
 
     const uploadedFiles =
       (files as Express.Multer.File[])?.map((file) => file.path) ?? [];
 
-    await db.appliactions.create({
-      scheduleId: params.classId,
-      code,
-      name,
-      class: userClass,
-      ...body,
-      attachments: uploadedFiles,
-      stage1Approval: false,
-      stage2Approval: false,
-    });
+    await db.appliactions.updateOne(
+      {
+        scheduleId: params.classId,
+        userId: _id.toString(),
+      },
+      {
+        $set: {
+          scheduleId: params.classId,
+          userId: _id.toString(),
+          code,
+          name,
+          class: userClass,
+          ...body,
+          attachments: uploadedFiles,
+          stage1Approval: false,
+          stage2Approval: false,
+        },
+      },
+      {
+        upsert: true,
+      }
+    );
 
     responseWithValue(res, undefined);
   }
@@ -132,7 +144,7 @@ router.post(
 router.patch("/applications/:id/approve", async (req, res) => {
   const { db, body, params } = createTypedRequest<ApprovalInfo, {}>(req);
 
-  await db.appliactions.findByIdAndUpdate(params.classId, {
+  await db.appliactions.findByIdAndUpdate(params.id, {
     $set: {
       stage1Approval: body.approved,
     },

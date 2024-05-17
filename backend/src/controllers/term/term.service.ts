@@ -269,6 +269,29 @@ const getTermData = async (req: Request) => {
         lecture: user.code,
       },
     });
+  } else if (user.role === Role.Student) {
+    basePipeline.push({
+      $lookup: {
+        from: "applications",
+        localField: "classes.schedule._id",
+        foreignField: "scheduleId",
+        as: "applications",
+        pipeline: [
+          {
+            $match: {
+              userId: user._id.toString(),
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              stage1Approval: 1,
+              stage2Approval: 1,
+            },
+          },
+        ],
+      },
+    });
   }
 
   return paginate<ITerm, TermDataItem>(db.terms, query, [

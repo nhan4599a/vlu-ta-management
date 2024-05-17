@@ -3,21 +3,31 @@ import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import { selectTermsData } from "@redux/slices/terms.slice";
 import {
   setActiveTermName,
-  setScheduleId
+  setScheduleId,
 } from "@redux/slices/recruiment.slice";
 import { TermDataItem } from "@main/types/term.type";
+import { selectCurrentUser } from "@main/features/slices/authentication.slice";
 import "@main/index.css";
+import { getApplicationInfo, setApplicationId } from "@main/features/slices/application.slice";
 
 const StudentSectionClassList = () => {
   const dispatch = useAppDispatch();
+  const user = useAppSelector(selectCurrentUser);
   const termsResponse = useAppSelector(selectTermsData);
 
-  const openApplyRecruimentPromt = (term: TermDataItem) => {
-    return () => {
-      dispatch(setScheduleId(term.scheduleId))
-      dispatch(setActiveTermName(term.name))
-    }
-  }
+  const openApplyRecruimentPromt = (
+    term: TermDataItem,
+    applicationId?: string
+  ) => {
+    return async () => {
+      if (applicationId) {
+        dispatch(setApplicationId(applicationId))
+        await dispatch(getApplicationInfo())
+      }
+      dispatch(setScheduleId(term.scheduleId));
+      dispatch(setActiveTermName(term.name));
+    };
+  };
 
   return (
     <div>
@@ -33,24 +43,45 @@ const StudentSectionClassList = () => {
           </tr>
         </thead>
         <tbody>
-          {termsResponse.data.map((term, index) => (
-            <tr>
-              <td>{index + 1}</td>
-              <td>{term.code}</td>
-              <td>{term.name}</td>
-              <td>{term.day}</td>
-              <td>{term.lesson}</td>
-              <td>
-                <Button
-                  variant="primary"
-                  className="w-100 mt-1"
-                  onClick={openApplyRecruimentPromt(term)}
-                >
-                  Ứng tuyển
-                </Button>
-              </td>
-            </tr>
-          ))}
+          {termsResponse.data.map((term, index) => {
+            const applicationInfo = term.applications!.find(
+              (e) => e._id === user?._id
+            );
+
+            return (
+              <tr>
+                <td>{index + 1}</td>
+                <td>{term.code}</td>
+                <td>{term.name}</td>
+                <td>{term.day}</td>
+                <td>{term.lesson}</td>
+                <td>
+                  {applicationInfo?.stage1Approval ? (
+                    applicationInfo ? (
+                      <Button
+                        variant="primary"
+                        className="w-100 mt-1"
+                        onClick={openApplyRecruimentPromt(
+                          term,
+                          applicationInfo._id
+                        )}
+                      >
+                        Cập nhật
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="primary"
+                        className="w-100 mt-1"
+                        onClick={openApplyRecruimentPromt(term)}
+                      >
+                        Ứng tuyển
+                      </Button>
+                    )
+                  ) : null}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
     </div>

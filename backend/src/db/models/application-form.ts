@@ -2,6 +2,7 @@ import { Schema } from "mongoose";
 
 export interface IApplicationForm {
     scheduleId: string,
+    userId: string,
     name: string,
     code: string,
     class: string,
@@ -16,6 +17,7 @@ export interface IApplicationForm {
 
 export const ApplicationFormSchema = new Schema<IApplicationForm>({
     scheduleId: { type: String, required: true, index: true },
+    userId: { type: String, required: true, index: true },
     name: { type: String, required: true },
     phoneNumber: { type: String, required: true },
     class: { type: String, required: true },
