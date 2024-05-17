@@ -1,7 +1,8 @@
 export type TermClassInfo = {
-  name: string;
-  lesson: string;
-};
+    name: string,
+    day: string,
+    lesson: string
+}
 
 export type TermDataItem = TermClassInfo & {
   id: string;

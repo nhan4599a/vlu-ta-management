@@ -8,14 +8,17 @@ import {
 } from "@redux/slices/recruiment.slice";
 import { showMessageDialog } from "@redux/slices/messages.slice";
 import { getTermsDataList } from "@redux/slices/terms.slice";
+import { selectTermClassInfo } from "@redux/slices/application.slice";
 
 const RecruimentRegisterPrompt = () => {
   const dispatch = useAppDispatch();
+  const term = useAppSelector(selectTermClassInfo);
   const recruimentInfo = useAppSelector(selectRecruimentInfo);
 
   const [candidatesCount, setCandidatesCount] = useState(0);
   const [criteria, setCriteria] = useState("");
   const [reason, setReason] = useState("");
+
 
   useEffect(() => {
     if (recruimentInfo) {
@@ -42,7 +45,7 @@ const RecruimentRegisterPrompt = () => {
     );
     dispatch(showMessageDialog("Đăng ký tuyển dụng trợ giảng thành công"));
     closeModal();
-    await dispatch(getTermsDataList())
+    await dispatch(getTermsDataList());
   };
 
   return (
@@ -55,11 +58,23 @@ const RecruimentRegisterPrompt = () => {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Tuyển dụng trợ giảng
+          Tuyển dụng trợ giảng môn thứ tiết
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
+          <Form.Group className="mb-3" controlId="termname">
+            <Form.Label>Môn:</Form.Label>
+            <Form.Control defaultValue={term?.name} type="text" />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="termday">
+            <Form.Label>Thứ:</Form.Label>
+            <Form.Control defaultValue={term?.day} type="text" />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="termlesson">
+            <Form.Label>Tiết:</Form.Label>
+            <Form.Control value={term?.lesson} type="text" />
+          </Form.Group>
           <Form.Group className="mb-3" controlId="taquantity">
             <Form.Label>Số lượng:</Form.Label>
             <Form.Control

@@ -3,8 +3,9 @@ import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import { selectTermsData } from "@redux/slices/terms.slice";
 import {
   getRecuimentInfo,
-  setScheduleId
+  setScheduleId,
 } from "@redux/slices/recruiment.slice";
+import { getTermClassInfo } from "@redux/slices/application.slice";
 import "@main/index.css";
 
 const TeacherSectionClassList = () => {
@@ -13,6 +14,7 @@ const TeacherSectionClassList = () => {
 
   const fetchRecruimentInfo = (payload: string) => {
     return () => {
+      dispatch(getTermClassInfo(payload));
       dispatch(setScheduleId(payload));
       dispatch(getRecuimentInfo());
     };
@@ -31,6 +33,7 @@ const TeacherSectionClassList = () => {
             <th>Thứ</th>
             <th>Tiết học</th>
             <th>Trạng thái</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -43,6 +46,13 @@ const TeacherSectionClassList = () => {
               <td>{term.type}</td>
               <td>{term.day}</td>
               <td>{term.lesson}</td>
+              <td>
+                {term.isApproved
+                  ? "Đã xong"
+                  : term.isRegistered
+                  ? "Chờ xác nhận"
+                  : ""}
+              </td>
               <td>
                 {!term.isApproved ? (
                   <Button

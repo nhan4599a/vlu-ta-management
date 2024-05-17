@@ -8,7 +8,10 @@ import {
 import { TermDataItem } from "@main/types/term.type";
 import { selectCurrentUser } from "@main/features/slices/authentication.slice";
 import "@main/index.css";
-import { getApplicationInfo, setApplicationId } from "@main/features/slices/application.slice";
+import {
+  getApplicationInfo,
+  setApplicationId,
+} from "@main/features/slices/application.slice";
 
 const StudentSectionClassList = () => {
   const dispatch = useAppDispatch();
@@ -21,8 +24,8 @@ const StudentSectionClassList = () => {
   ) => {
     return async () => {
       if (applicationId) {
-        dispatch(setApplicationId(applicationId))
-        await dispatch(getApplicationInfo())
+        dispatch(setApplicationId(applicationId));
+        await dispatch(getApplicationInfo());
       }
       dispatch(setScheduleId(term.scheduleId));
       dispatch(setActiveTermName(term.name));
@@ -39,6 +42,7 @@ const StudentSectionClassList = () => {
             <th>Môn học</th>
             <th>Thứ</th>
             <th>Tiết</th>
+            <th>Trạng thái</th>
             <th></th>
           </tr>
         </thead>
@@ -55,6 +59,13 @@ const StudentSectionClassList = () => {
                 <td>{term.name}</td>
                 <td>{term.day}</td>
                 <td>{term.lesson}</td>
+                <td>
+                  {applicationInfo?.stage1Approval
+                    ? applicationInfo
+                      ? "Đang chờ xác nhận"
+                      : ""
+                    : "Đã xác nhận"}
+                </td>
                 <td>
                   {applicationInfo?.stage1Approval ? (
                     applicationInfo ? (
