@@ -10,7 +10,7 @@ import {
 } from "@redux/slices/application.slice";
 import { AsyncThunk } from "@reduxjs/toolkit";
 import { AsyncThunkConfig } from "node_modules/@reduxjs/toolkit/dist/createAsyncThunk";
-import "../../index.css";
+import "@main/index.css";
 
 type Props<TResponse> = {
   dataFetcherThunk: AsyncThunk<TResponse, undefined, AsyncThunkConfig>

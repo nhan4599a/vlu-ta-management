@@ -1,6 +1,7 @@
 import { Navbar, Image, NavDropdown, Nav, DropdownDivider } from "react-bootstrap";
 import LinkItem from "../LinkItem";
-import { IUser } from "../../types/user.type";
+import { useAppSelector } from "@redux/hooks";
+import { selectCurrentUser } from "@redux/slices/authentication.slice";
 
 const UserMenu = (
   <Image
@@ -13,11 +14,9 @@ const UserMenu = (
   />
 );
 
-type NavBarProps = {
-  user?: IUser
-}
+const MainNavBar = () => {
+  const user = useAppSelector(selectCurrentUser)
 
-const MainNavBar = ({ user }: NavBarProps) => {
   return (
     <Navbar expand="lg" className="px-4 justify-content-between">
       <Navbar.Brand>

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Role } from "@main/types/user.type";
 import { useAppDispatch } from "@redux/hooks";
 import { getUsersList, setRequest } from "@redux/slices/users.slice";
-import "../../../index.css";
+import "@main/index.css";
 
 const AccountMainPage = () => {
   const dispatch = useAppDispatch();

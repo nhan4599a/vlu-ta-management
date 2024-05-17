@@ -6,7 +6,7 @@ import {
   setScheduleId
 } from "@redux/slices/recruiment.slice";
 import { TermDataItem } from "@main/types/term.type";
-import "../../index.css";
+import "@main/index.css";
 
 const StudentSectionClassList = () => {
   const dispatch = useAppDispatch();
@@ -21,7 +21,6 @@ const StudentSectionClassList = () => {
 
   return (
     <div>
-      <h2 className="display-5 mt-2 mb-3">Danh sách lớp học phần</h2>
       <Table responsive>
         <thead className="table-header">
           <tr>

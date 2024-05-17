@@ -18,7 +18,7 @@ app.use(express.json())
 app.use(attachDbInstance)
 app.use(extendResponseMethods)
 
-// app.use(authenticate)
+app.use(authenticate)
 
 app.use('/hoc-phan', termController)
 app.use('/tuyen-dung', recruitController)

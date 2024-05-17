@@ -8,7 +8,7 @@ import {
   selectActiveTermName,
   setActiveTermName,
 } from "@redux/slices/recruiment.slice";
-import "../../index.css";
+import "@main/index.css";
 
 const TARegisterPrompt = () => {
   const dispatch = useAppDispatch();

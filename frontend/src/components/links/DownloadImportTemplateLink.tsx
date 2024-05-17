@@ -1,5 +1,4 @@
-import React from 'react';
-import '../../index.css'
+import '@main/index.css'
 
 const DownloadImportTemplateLink = () => {
     const filename = "/files/Template_DanhSachHocPhan.xlsx"

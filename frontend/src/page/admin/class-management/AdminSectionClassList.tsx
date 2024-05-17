@@ -7,7 +7,7 @@ import {
   getRecuimentInfo,
   setScheduleId
 } from "@redux/slices/recruiment.slice";
-import "../../index.css";
+import "@main/index.css";
 
 const AdminSectionClassList = () => {
   const dispatch = useAppDispatch();
@@ -22,7 +22,6 @@ const AdminSectionClassList = () => {
 
   return (
     <div>
-      <h2 className="display-5 mt-2 mb-3">Danh sách lớp học phần</h2>
       <Table responsive>
         <thead>
           <tr className="table-header ">
@@ -47,7 +46,7 @@ const AdminSectionClassList = () => {
               <td>{term.day}</td>
               <td>{term.lesson}</td>
               <td>
-                {!term.isRegistered && !term.isApproved ? (
+                {term.isRegistered && !term.isApproved ? (
                   <Button
                     variant="primary"
                     className="w-100 mt-1"

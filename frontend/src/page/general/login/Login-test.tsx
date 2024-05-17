@@ -1,30 +1,17 @@
 import { Image, Button } from "react-bootstrap";
-import { useAppDispatch } from "../../../features/hooks";
-import { Role } from "../../../types/user.type";
-import { setUserInfo } from "../../../features/slices/authentication.slice";
-import { v4 as uuidv4 } from "uuid"
-import "../../../index.css";
-
-const userIds = {
-  0: uuidv4(),
-  1: uuidv4(),
-  2: uuidv4()
-} as Record<Role, string>
+import { useAppDispatch } from "@redux/hooks";
+import { Role } from "@main/types/user.type";
+import { postLoginCallback, setAccessToken } from "@redux/slices/authentication.slice";
+import "@main/index.css";
 
 const Login = () => {
   const dispatch = useAppDispatch();
 
   const login = (role: Role) => {
-    return () => {
-      dispatch(setUserInfo({
-        _id: userIds[role],
-        role: role,
-        active: true,
-        class: "PM2",
-        code: userIds[role],
-        email: `user-${role}@vanlanguni.edu.vn`,
-        name: `user-${role}`
-      }))
+    return async () => {
+      dispatch(setAccessToken(Role[role]))
+      await dispatch(postLoginCallback())
+      window.location.href = '/'
     }
   }
 

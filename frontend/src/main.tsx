@@ -20,7 +20,7 @@ await msalInstance.initialize();
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <PersistGate loading={<></>} persistor={persistor}>
+      <PersistGate persistor={persistor}>
         <BrowserRouter>
           <MsalProvider instance={msalInstance}>
             <App />

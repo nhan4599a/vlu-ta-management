@@ -3,7 +3,7 @@ import { useMsal } from "@azure/msal-react";
 import { constant } from "@main/constants";
 import { useAppDispatch } from "@redux/hooks";
 import { showMessageDialog } from "@redux/slices/messages.slice";
-import "../../../index.css";
+import "@main/index.css";
 
 
 const Login = () => {

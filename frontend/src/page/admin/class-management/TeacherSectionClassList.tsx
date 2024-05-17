@@ -5,7 +5,7 @@ import {
   getRecuimentInfo,
   setScheduleId
 } from "@redux/slices/recruiment.slice";
-import "../../index.css";
+import "@main/index.css";
 
 const TeacherSectionClassList = () => {
   const dispatch = useAppDispatch();
@@ -20,7 +20,6 @@ const TeacherSectionClassList = () => {
 
   return (
     <div>
-      <h2 className="display-5 mt-2 mb-3">Danh sách lớp học phần</h2>
       <Table responsive>
         <thead>
           <tr className="table-header ">

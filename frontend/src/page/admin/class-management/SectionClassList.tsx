@@ -30,15 +30,15 @@ const SectionClassList = () => {
   const TableContentComponent = useAdaptiveRoleComponent({
     0: <StudentSectionClassList />,
     1: <TeacherSectionClassList />,
-    2: <StudentSectionClassList />,
-    3: <AdminSectionClassList />,
+    2: <AdminSectionClassList />,
+    3: <StudentSectionClassList />,
   });
 
   const PromptComponent = useAdaptiveRoleComponent({
     0: <TARegister />,
     1: <RecruimentRegisterPrompt />,
-    2: <TARegister />,
-    3: <ApproveRecruimentPrompt />,
+    2: <ApproveRecruimentPrompt />,
+    3: <TARegister />,
   });
 
   useEffect(() => {

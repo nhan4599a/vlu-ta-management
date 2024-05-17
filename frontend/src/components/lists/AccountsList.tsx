@@ -3,7 +3,7 @@ import ConfirmDelete from "@main/components/prompts/ConfirmDelete";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import { selectUsersList, setSelectedUser } from "@redux/slices/users.slice";
 import { IUser } from "@main/types/user.type";
-import "../../index.css";
+import "@main/index.css";
 
 const AccountsList = () => {
   const dispatch = useAppDispatch()

@@ -29,7 +29,7 @@ const getUserInfo = (
       const schoolUserInfo = payload["name"].split(" - ");
 
       const role = constants.AUTHENTICATION.ADMIN_ACCOUNTS.includes(email)
-        ? Role.Admin
+        ? Role.StudentAssociate
         : Role.Student;
 
       const user = users[0] ?? {
@@ -65,7 +65,7 @@ export const authenticate = (
 
   const request = req as IBaseRequest;
 
-  if (accessToken?.startsWith('User')) {
+  if (accessToken?.includes('Student')) {
     request.user = {
         _id: new mongoose.Types.ObjectId(),
         active: true,
@@ -77,7 +77,8 @@ export const authenticate = (
         isAssistant: false
     };
     next();
-  } else if (accessToken?.startsWith('Teacher')) {
+    return
+  } else if (accessToken?.includes('Teacher')) {
     request.user = {
         _id: new mongoose.Types.ObjectId(),
         active: true,
@@ -89,7 +90,8 @@ export const authenticate = (
         isAssistant: false
     };
     next();
-  } else if (accessToken?.startsWith('Admin')) {
+    return
+  } else if (accessToken?.includes('Admin')) {
     request.user = {
         _id: new mongoose.Types.ObjectId(),
         active: true,
@@ -101,6 +103,7 @@ export const authenticate = (
         isAssistant: false
     };
     next();
+    return
   }
 
   const decodedToken = decode(accessToken!, {

@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import Dropzone, { DropzoneFile } from "dropzone";
 import  { v4 as uuidv4 } from 'uuid'
-import "../../index.css";
+import "@main/index.css";
 
 export interface DropzoneComponentMethodsRef {
   getFiles: () => File[]
