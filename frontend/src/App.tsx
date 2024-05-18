@@ -1,11 +1,11 @@
 import { Suspense, lazy } from "react";
 import MainNavBar from "./components/navbar/MainNavBar";
 import { Routes, Route, Outlet, useNavigate } from "react-router-dom";
-import Profile from "./page/general/user-profile/Profile";
+const Profile = lazy(() => import("./page/general/user-profile/Profile"));
 import ImportSectionClassList from "./page/admin/class-management/ImportSectionClassList";
 import ImportStudentList from "./page/lecturer/ta-information-management/ImportStudentList";
 import { Col, Container, Row } from "react-bootstrap";
-import Login from "./page/general/login/Login-test";
+const Login = lazy(() => import("./page/general/login/Login-test"));
 import NotFound from "./page/general/error/404NotFound";
 import Error500 from "./page/general/error/500Error";
 import SectionClassList from "./page/admin/class-management/SectionClassList";
@@ -79,7 +79,10 @@ function App() {
           <Route path="/ta-information-management">
             <Route path="teacher" element={<SectionClassList />} />
             <Route path="assistant" element={<TARegistrationOverviewList />} />
-            <Route path="assistant/:scheduleId" element={<TARegistrationList />} />
+            <Route
+              path="assistant/:scheduleId"
+              element={<TARegistrationList />}
+            />
             <Route path="schedule" element="" />
             <Route path="ta-register" element="" />
             <Route path="class-information" element="" />
