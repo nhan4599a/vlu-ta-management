@@ -66,7 +66,7 @@ const StudentSectionClassList = () => {
                   {applicationInfo ? (
                     applicationInfo.stage1Approval ? null : (
                       <Button
-                        variant="primary"
+                        variant="info"
                         className="w-100 mt-1"
                         onClick={openApplyRecruimentPromt(
                           term,

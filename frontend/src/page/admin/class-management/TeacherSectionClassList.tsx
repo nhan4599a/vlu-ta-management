@@ -56,7 +56,7 @@ const TeacherSectionClassList = () => {
               <td>
                 {!term.isApproved ? (
                   <Button
-                    variant="primary"
+                    variant={term.isRegistered ? "info" : "primary"}
                     className="w-100"
                     onClick={fetchRecruimentInfo(term.scheduleId)}
                   >
