@@ -6,7 +6,6 @@ import { RootState } from "@redux/store";
 type InitialState = {
   scheduleId?: string;
   recruimentInfo?: RecruimentInfo;
-  activeTermName?: string;
 };
 
 const initialState: InitialState = {};
@@ -80,14 +79,11 @@ const recruimentSlice = createSlice({
   name: "recruiment",
   initialState,
   reducers: {
-    setScheduleId(state, { payload }: PayloadAction<string>) {
+    setScheduleId(state, { payload }: PayloadAction<string | undefined>) {
       state.scheduleId = payload;
     },
     unsetRecruimentInfo(state) {
       state.recruimentInfo = undefined;
-    },
-    setActiveTermName(state, { payload }: PayloadAction<string | undefined>) {
-      state.activeTermName = payload;
     }
   },
   extraReducers: (builder) => {
@@ -98,9 +94,8 @@ const recruimentSlice = createSlice({
 });
 
 export const recruimentReducer = recruimentSlice.reducer;
-export const { setScheduleId, unsetRecruimentInfo, setActiveTermName } =
+export const { setScheduleId, unsetRecruimentInfo } =
   recruimentSlice.actions;
+export const selectScheduleId = (state: RootState) => state.recruiment.scheduleId
 export const selectRecruimentInfo = (state: RootState) =>
   state.recruiment.recruimentInfo;
-export const selectActiveTermName = (state: RootState) =>
-  state.recruiment.activeTermName;

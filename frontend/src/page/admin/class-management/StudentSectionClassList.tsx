@@ -2,12 +2,13 @@ import { Button, Table } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import { selectTermsData } from "@redux/slices/terms.slice";
 import {
-  setActiveTermName,
+  getRecuimentInfo,
   setScheduleId,
 } from "@redux/slices/recruiment.slice";
 import { TermDataItem } from "@main/types/term.type";
 import {
   getApplicationInfo,
+  getTermClassInfo,
   setApplicationId,
 } from "@main/features/slices/application.slice";
 import "@main/index.css";
@@ -23,10 +24,14 @@ const StudentSectionClassList = () => {
     return async () => {
       if (applicationId) {
         dispatch(setApplicationId(applicationId));
-        await dispatch(getApplicationInfo());
+        await dispatch(getApplicationInfo())
       }
       dispatch(setScheduleId(term.scheduleId));
-      dispatch(setActiveTermName(term.name));
+
+      await Promise.all([
+        dispatch(getRecuimentInfo()),
+        dispatch(getTermClassInfo(term.scheduleId))
+      ])
     };
   };
 
