@@ -6,16 +6,14 @@ import {
   setScheduleId,
 } from "@redux/slices/recruiment.slice";
 import { TermDataItem } from "@main/types/term.type";
-import { selectCurrentUser } from "@main/features/slices/authentication.slice";
-import "@main/index.css";
 import {
   getApplicationInfo,
   setApplicationId,
 } from "@main/features/slices/application.slice";
+import "@main/index.css";
 
 const StudentSectionClassList = () => {
   const dispatch = useAppDispatch();
-  const user = useAppSelector(selectCurrentUser);
   const termsResponse = useAppSelector(selectTermsData);
 
   const openApplyRecruimentPromt = (
@@ -48,9 +46,7 @@ const StudentSectionClassList = () => {
         </thead>
         <tbody>
           {termsResponse.data.map((term, index) => {
-            const applicationInfo = term.applications!.find(
-              (e) => e._id === user?._id
-            );
+            const applicationInfo = term.applications![0];
 
             return (
               <tr key={index}>

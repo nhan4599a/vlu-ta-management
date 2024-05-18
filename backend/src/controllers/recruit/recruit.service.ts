@@ -218,7 +218,7 @@ export const getApplicationsList = (req: Request) => {
       },
       {
         $match: {
-          isApproved: false,
+          isApproved: true,
         },
       },
       {

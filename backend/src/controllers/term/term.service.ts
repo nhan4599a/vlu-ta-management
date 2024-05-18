@@ -261,6 +261,16 @@ const getTermData = async (req: Request) => {
         },
       },
     },
+    {
+      $addFields: {
+        isApproved: {
+          $eq: ["$classes.schedule.registrationInfo.approved", true],
+        },
+        isRegistered: {
+          $ne: ["$classes.schedule.registrationInfo", null],
+        },
+      },
+    },
   ];
 
   if (user.role === Role.Teacher) {
@@ -270,6 +280,11 @@ const getTermData = async (req: Request) => {
       },
     });
   } else if (user.role === Role.Student) {
+    basePipeline.push({
+      $match: {
+        isApproved: true,
+      },
+    });
     basePipeline.push({
       $lookup: {
         from: "applications",
@@ -309,16 +324,6 @@ const getTermData = async (req: Request) => {
               $toString: "$endLesson",
             },
           ],
-        },
-      },
-    },
-    {
-      $addFields: {
-        isApproved: {
-          $eq: ["$classes.schedule.registrationInfo.approved", true],
-        },
-        isRegistered: {
-          $ne: ["$classes.schedule.registrationInfo", null],
         },
       },
     },
