@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
-import DropzoneComponent, { DropzoneComponentMethodsRef } from "../dropzone/Dropzone";
+import DropzoneComponent, {
+  DropzoneComponentMethodsRef,
+} from "../dropzone/Dropzone";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import { selectCurrentUser } from "@redux/slices/authentication.slice";
 import {
@@ -13,7 +15,7 @@ import { selectApplicationInfo } from "@main/features/slices/application.slice";
 
 const TARegisterPrompt = () => {
   const dispatch = useAppDispatch();
-  const applicationInfo = useAppSelector(selectApplicationInfo)
+  const applicationInfo = useAppSelector(selectApplicationInfo);
   const termName = useAppSelector(selectActiveTermName);
   const user = useAppSelector(selectCurrentUser);
 
@@ -22,42 +24,42 @@ const TARegisterPrompt = () => {
   const [termScore, setTermScore] = useState<number>(0);
   const [avgScore, setAvgScore] = useState<number>(0);
 
-  const dropzoneRef = useRef<DropzoneComponentMethodsRef>(null)
+  const dropzoneRef = useRef<DropzoneComponentMethodsRef>(null);
 
   const onHide = () => {
-    setMobile("")
-    setTermScore(0)
-    setAvgScore(0)
+    setMobile("");
+    setTermScore(0);
+    setAvgScore(0);
     dispatch(setActiveTermName(undefined));
   };
 
   useEffect(() => {
     if (applicationInfo) {
-      setMobile(applicationInfo.phoneNumber)
-      setTermScore(applicationInfo.termScore)
-      setAvgScore(applicationInfo.avgScore)
+      setMobile(applicationInfo.phoneNumber);
+      setTermScore(applicationInfo.termScore);
+      setAvgScore(applicationInfo.avgScore);
     }
-  }, [applicationInfo])
+  }, [applicationInfo]);
 
   const onSubmit = async () => {
     if (!dropzoneRef.current) {
-      return
+      return;
     }
 
-    const formData = new FormData()
+    const formData = new FormData();
 
-    const files = dropzoneRef.current.getFiles()
+    const files = dropzoneRef.current.getFiles();
     for (const file of files) {
-      formData.append('files', file)
+      formData.append("files", file);
     }
-    formData.append('phoneNumber', mobile)
-    formData.append('description', recruitdescription)
-    formData.append('termScore', termScore.toString())
-    formData.append('avgScore', avgScore.toString())
+    formData.append("phoneNumber", mobile);
+    formData.append("description", recruitdescription);
+    formData.append("termScore", termScore.toString());
+    formData.append("avgScore", avgScore.toString());
 
-    await dispatch(applyRecruiment(formData))
-    onHide()
-  }
+    await dispatch(applyRecruiment(formData));
+    onHide();
+  };
 
   return (
     <Modal
@@ -128,7 +130,7 @@ const TARegisterPrompt = () => {
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="grade1">
             <Form.Label column sm="2">
-              Điểm môn {termName}: 
+              Điểm môn {termName}:
             </Form.Label>
             <Col sm="10">
               <Form.Control
@@ -140,7 +142,7 @@ const TARegisterPrompt = () => {
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="grade2">
             <Form.Label column sm="2">
-              Điểm trung bình học kỳ: 
+              Điểm trung bình học kỳ:
             </Form.Label>
             <Col sm="10">
               <Form.Control
@@ -155,7 +157,11 @@ const TARegisterPrompt = () => {
               File đính kèm
             </Form.Label>
             <Col sm="10">
-              <DropzoneComponent ref={dropzoneRef} files={applicationInfo?.attachments ?? []} />
+              <DropzoneComponent
+                ref={dropzoneRef}
+                files={applicationInfo?.attachments ?? []}
+                allowEdit={true}
+              />
             </Col>
           </Form.Group>
         </Form>
@@ -164,7 +170,9 @@ const TARegisterPrompt = () => {
         <Button variant="secondary" onClick={onHide}>
           Đóng
         </Button>
-        <Button onClick={onSubmit}>Gửi đơn</Button>
+        <Button onClick={onSubmit}>
+          {applicationInfo ? "Lưu lại" : "Gửi đơn"}
+        </Button>
       </Modal.Footer>
     </Modal>
   );

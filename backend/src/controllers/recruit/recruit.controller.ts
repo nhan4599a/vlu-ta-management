@@ -34,7 +34,7 @@ router.get("/applications", async (req, res) => {
 router.get("/applications/:id", async (req, res) => {
   const { db, params } = createTypedRequest<{}, {}>(req);
 
-  const application = await db.appliactions.findById(params.id);
+  const application = await db.applications.findById(params.id);
 
   responseWithValue(res, application);
 });
@@ -114,7 +114,7 @@ router.post(
     const uploadedFiles =
       (files as Express.Multer.File[])?.map(mapAttachment) ?? [];
 
-    await db.appliactions.updateOne(
+    await db.applications.updateOne(
       {
         scheduleId: params.classId,
         userId: _id,
@@ -144,7 +144,7 @@ router.post(
 router.patch("/applications/:id/approve", async (req, res) => {
   const { db, body, params } = createTypedRequest<ApprovalInfo, {}>(req);
 
-  await db.appliactions.findByIdAndUpdate(params.id, {
+  await db.applications.findByIdAndUpdate(new mongoose.Types.ObjectId(params.id), {
     $set: {
       stage1Approval: body.approved,
     },

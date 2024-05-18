@@ -227,6 +227,13 @@ export const getApplicationsList = (req: Request) => {
           localField: "scheduleId",
           foreignField: "scheduleId",
           as: "applications",
+          pipeline: [
+            {
+              $match: {
+                stage1Approval: false,
+              },
+            },
+          ],
         },
       },
       {
@@ -267,10 +274,11 @@ export const getApplicationsList = (req: Request) => {
 export const getApplicationsOfSchedule = (req: Request) => {
   const { db, params, query } = createTypedRequest<{}, PaginationRequest>(req);
 
-  return paginate(db.appliactions, query, [
+  return paginate(db.applications, query, [
     {
       $match: {
-        scheduleId: params.classid,
+        scheduleId: new mongoose.Types.ObjectId(params.classId),
+        stage1Approval: false,
       },
     },
   ]);

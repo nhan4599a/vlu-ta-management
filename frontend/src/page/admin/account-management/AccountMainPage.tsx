@@ -4,12 +4,13 @@ import AccountsList from "@main/components/lists/AccountsList";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 import { useEffect, useState } from "react";
 import { Role } from "@main/types/user.type";
-import { useAppDispatch } from "@redux/hooks";
-import { getUsersList, setRequest } from "@redux/slices/users.slice";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
+import { getUsersList, selectUsersList, setRequest } from "@redux/slices/users.slice";
 import "@main/index.css";
 
 const AccountMainPage = () => {
   const dispatch = useAppDispatch();
+  const usersResponse = useAppSelector(selectUsersList)
 
   const [page, setPage] = useState(1);
   const [tab, setTab] = useState(Role.Student);
@@ -17,8 +18,8 @@ const AccountMainPage = () => {
   useEffect(() => {
     const request = {
       page,
-      role: tab === Role.StudentAssociate ? Role.Student : tab,
-      isAssistant: tab === Role.StudentAssociate,
+      role: tab === Role.Assistant ? Role.Student : tab,
+      isAssistant: tab === Role.Assistant,
     };
     dispatch(setRequest(request));
     dispatch(getUsersList(request));
@@ -51,7 +52,7 @@ const AccountMainPage = () => {
           <PaginationControl
             page={page}
             between={4}
-            total={250}
+            total={usersResponse.count}
             limit={10}
             changePage={(page) => {
               setPage(page);

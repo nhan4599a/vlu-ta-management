@@ -11,7 +11,7 @@ import { authenticate } from './middlewares/authentication.middleware'
 
 const app: Express = express()
 
-app.use(express.static('public'))
+app.use('/public', express.static('public'))
 app.use(cors())
 app.use(express.json())
 

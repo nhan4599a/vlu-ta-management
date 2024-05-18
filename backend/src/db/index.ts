@@ -16,14 +16,14 @@ export default class DbInstance {
 
     terms: Model<ITerm>
     users: Model<IUser>
-    appliactions: Model<IApplicationForm>
+    applications: Model<IApplicationForm>
     tasks: Model<ITask>
 
     constructor() {
         this.#dbConnection = createConnection(env.CONNECTION_STRING)
         this.terms = this.#dbConnection.model('terms', TermSchema)
         this.users = this.#dbConnection.model('users', UserSchema)
-        this.appliactions = this.#dbConnection.model('applications', ApplicationFormSchema)
+        this.applications = this.#dbConnection.model('applications', ApplicationFormSchema)
         this.tasks = this.#dbConnection.model('tasks', TaskSchema)
     }
 

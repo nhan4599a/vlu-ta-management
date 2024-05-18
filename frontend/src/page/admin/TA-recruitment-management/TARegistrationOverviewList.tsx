@@ -26,7 +26,7 @@ const TARegistrationOverviewList = () => {
         alwaysOpen
       >
         {data.map((item, index) => (
-          <Accordion.Item eventKey={item.scheduleId} key={index}>
+          <Accordion.Item eventKey={item.scheduleId} key={index} className="mb-2">
             <Accordion.Header>
               {item.name} - {item.day} tiết {item.lesson}
             </Accordion.Header>

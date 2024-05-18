@@ -19,6 +19,7 @@ type DropzoneProps = {
   maxFiles?: number;
   files?: Attachment[];
   allowDownload?: boolean;
+  allowEdit: boolean
 };
 
 const images_file_ext = [".jpg", ".jpeg", ".jpe", ".bmp", ".gif", ".png"];
@@ -61,10 +62,15 @@ const DropzoneComponent = forwardRef<
       url: "/file/post",
       createImageThumbnails: true,
       maxThumbnailFilesize: 10,
-      addRemoveLinks: true,
+      addRemoveLinks: props.allowEdit,
+      clickable: props.allowEdit
     });
 
     dropzone.on("addedfile", (file) => {
+      if (!props.allowEdit && file.size) {
+        return
+      }
+
       setIsPreviewVisible(true);
 
       if (props.allowDownload) {

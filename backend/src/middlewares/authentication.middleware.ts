@@ -52,6 +52,11 @@ export const authenticate = (
   res: Response,
   next: NextFunction
 ) => {
+  if (req.url.includes("public")) {
+    next();
+    return
+  }
+
   const authHeader = req.headers.authorization;
 
   const accessToken = authHeader?.split(" ")[1];

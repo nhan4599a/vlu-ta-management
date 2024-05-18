@@ -1,5 +1,5 @@
 import { Table } from "react-bootstrap";
-import ConfirmDelete from "@main/components/prompts/ConfirmDelete";
+// import ConfirmDelete from "@main/components/prompts/ConfirmDelete";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import { selectUsersList, setSelectedUser } from "@redux/slices/users.slice";
 import { IUser } from "@main/types/user.type";
@@ -32,7 +32,7 @@ const AccountsList = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user, index) => (
+          {users.data.map((user, index) => (
             <tr>
               <td>{index + 1}</td>
               <td>{user.email}</td>
@@ -53,7 +53,6 @@ const AccountsList = () => {
           ))}
         </tbody>
       </Table>
-      <ConfirmDeletePrompt />
     </>
   );
 };

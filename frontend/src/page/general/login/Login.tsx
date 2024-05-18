@@ -1,14 +1,20 @@
+import { useEffect } from "react";
 import { Image, Button } from "react-bootstrap";
 import { useMsal } from "@azure/msal-react";
 import { constant } from "@main/constants";
 import { useAppDispatch } from "@redux/hooks";
 import { showMessageDialog } from "@redux/slices/messages.slice";
+import { logout } from "@main/features/slices/authentication.slice";
 import "@main/index.css";
 
 
 const Login = () => {
   const { instance } = useMsal()
   const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(logout())
+  }, [dispatch])
 
   const login = () => {
     instance.loginRedirect(constant.authentication.loginRequest)
