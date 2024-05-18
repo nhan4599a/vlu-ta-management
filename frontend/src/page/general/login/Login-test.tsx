@@ -3,6 +3,7 @@ import { useAppDispatch } from "@redux/hooks";
 import { Role } from "@main/types/user.type";
 import { postLoginCallback, setAccessToken } from "@redux/slices/authentication.slice";
 import "@main/index.css";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -10,8 +11,10 @@ const Login = () => {
   const login = (role: Role) => {
     return async () => {
       dispatch(setAccessToken(Role[role]))
-      await dispatch(postLoginCallback())
-      window.location.href = '/'
+      await dispatch(postLoginCallback()).then(unwrapResult).then((userInfo) => {
+        dispatch(setAccessToken(`${Role[role]}-${userInfo._id}`))
+        window.location.href = '/'
+      })
     }
   }
 

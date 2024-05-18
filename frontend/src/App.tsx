@@ -27,10 +27,10 @@ import { selectIsAuthenticated } from "@redux/slices/authentication.slice";
 import TARecruitmentMainPage from "./page/admin/TA-recruitment-management/TARecruitmentMainPage";
 import TAClassList from "./page/student/ta/TAClassList";
 import { useAdaptiveRoleComponent } from "./hooks/useAdaptiveRoleComponent";
-import "./index.css";
 import { BaseClassList } from "./page/admin/class-management/BaseClassList";
 import TARegistrationOverviewList from "./page/admin/TA-recruitment-management/TARegistrationOverviewList";
 import { TARegistrationList } from "./page/admin/TA-recruitment-management/TARegistrationList";
+import "./index.css";
 
 const Layout = () => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);

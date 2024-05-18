@@ -7,7 +7,7 @@ import {
   getRecruimentInfo,
 } from "./recruit.service";
 import { responseWithValue } from "../../helper/response.helper";
-import { uploadMultipleFilesMiddleware } from "../../helper/upload.helper";
+import { mapAttachment, uploadMultipleFilesMiddleware } from "../../helper/upload.helper";
 import mongoose from "mongoose";
 
 const router = express.Router();
@@ -112,17 +112,17 @@ router.post(
     const { _id, code, class: userClass, name } = user;
 
     const uploadedFiles =
-      (files as Express.Multer.File[])?.map((file) => file.path) ?? [];
+      (files as Express.Multer.File[])?.map(mapAttachment) ?? [];
 
     await db.appliactions.updateOne(
       {
         scheduleId: params.classId,
-        userId: _id.toString(),
+        userId: _id,
       },
       {
         $set: {
           scheduleId: params.classId,
-          userId: _id.toString(),
+          userId: _id,
           code,
           name,
           class: userClass,

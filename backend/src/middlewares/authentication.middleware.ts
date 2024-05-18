@@ -61,13 +61,19 @@ export const authenticate = (
       success: false,
       message: "Invalid access token",
     });
+    return;
   }
 
   const request = req as IBaseRequest;
 
+  // **** This is only for testing purpose ****
+  const id = accessToken.includes("-")
+    ? new mongoose.Types.ObjectId(accessToken.split("-")[1])
+    : new mongoose.Types.ObjectId();
+
   if (accessToken?.includes(Role[Role.StudentAssociate])) {
     request.user = {
-      _id: new mongoose.Types.ObjectId(),
+      _id: id,
       active: true,
       email: "admin@vanlanguni.edu.com",
       name: "admin",
@@ -80,7 +86,7 @@ export const authenticate = (
     return;
   } else if (accessToken?.includes(Role[Role.Student])) {
     request.user = {
-      _id: new mongoose.Types.ObjectId(),
+      _id: id,
       active: true,
       email: "user@vanlanguni.edu.com",
       name: "user",
@@ -93,7 +99,7 @@ export const authenticate = (
     return;
   } else if (accessToken?.includes(Role[Role.Teacher])) {
     request.user = {
-      _id: new mongoose.Types.ObjectId(),
+      _id: id,
       active: true,
       email: "teacher@vanlanguni.edu.com",
       name: "teacher",
@@ -105,6 +111,7 @@ export const authenticate = (
     next();
     return;
   }
+  // **** end testing ****
 
   const decodedToken = decode(accessToken!, {
     complete: true,

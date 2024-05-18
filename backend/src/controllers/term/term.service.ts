@@ -279,7 +279,7 @@ const getTermData = async (req: Request) => {
         pipeline: [
           {
             $match: {
-              userId: user._id.toString(),
+              userId: user._id,
             },
           },
           {
@@ -350,6 +350,7 @@ const getTermData = async (req: Request) => {
         scheduleId: 1,
         isApproved: 1,
         isRegistered: 1,
+        applications: 1,
         _id: 0,
       },
     },

@@ -60,15 +60,15 @@ const StudentSectionClassList = () => {
                 <td>{term.day}</td>
                 <td>{term.lesson}</td>
                 <td>
-                  {applicationInfo?.stage1Approval
-                    ? applicationInfo
-                      ? "Đang chờ xác nhận"
-                      : ""
-                    : "Đã xác nhận"}
+                  {applicationInfo
+                    ? applicationInfo.stage1Approval
+                      ? "Đã xác nhận"
+                      : "Đang chờ xác nhận"
+                    : ""}
                 </td>
                 <td>
-                  {applicationInfo?.stage1Approval ? (
-                    applicationInfo ? (
+                  {applicationInfo ? (
+                    applicationInfo.stage1Approval ? null : (
                       <Button
                         variant="primary"
                         className="w-100 mt-1"
@@ -79,16 +79,16 @@ const StudentSectionClassList = () => {
                       >
                         Cập nhật
                       </Button>
-                    ) : (
-                      <Button
-                        variant="primary"
-                        className="w-100 mt-1"
-                        onClick={openApplyRecruimentPromt(term)}
-                      >
-                        Ứng tuyển
-                      </Button>
                     )
-                  ) : null}
+                  ) : (
+                    <Button
+                      variant="primary"
+                      className="w-100 mt-1"
+                      onClick={openApplyRecruimentPromt(term)}
+                    >
+                      Ứng tuyển
+                    </Button>
+                  )}
                 </td>
               </tr>
             );

@@ -35,12 +35,8 @@ const authenticationSlice = createSlice({
       state.accessToken = payload;
     },
     logout(state) {
+      state.accessToken = undefined;
       state.isAuthenticated = false;
-    },
-    setUserInfo(state, { payload }: PayloadAction<IUser | undefined>) {
-      state.isAuthenticated = true;
-      state.user = payload;
-      state.accessToken = "testing";
     },
   },
   extraReducers: (builder) => {
@@ -52,8 +48,7 @@ const authenticationSlice = createSlice({
   },
 });
 
-export const { setAccessToken, logout, setUserInfo } =
-  authenticationSlice.actions;
+export const { setAccessToken, logout } = authenticationSlice.actions;
 export const authenticationReducer = authenticationSlice.reducer;
 export const selectIsAuthenticated = (state: RootState) =>
   state.authentication.isAuthenticated;
