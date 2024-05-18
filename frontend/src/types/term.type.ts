@@ -1,3 +1,5 @@
+import { MinimalApplicationForm } from "./application-form.type";
+
 export type TermClassInfo = {
     name: string,
     day: string,
@@ -13,9 +15,6 @@ export type TermDataItem = TermClassInfo & {
   scheduleId: string;
   isRegistered: boolean;
   isApproved: boolean;
-  applications?: {
-    _id: string;
-    stage1Approval: boolean;
-    stage2Approval: boolean
-  }[];
+  isWaiting: boolean;
+  applications?: MinimalApplicationForm[];
 };

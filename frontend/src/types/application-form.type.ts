@@ -3,8 +3,13 @@ export type Attachment = {
     originalFileName: string
 }
 
-export type ApplicationForm = {
-    _id: string,
+export type MinimalApplicationForm = {
+    _id: string;
+    stage1Approval: boolean;
+    stage2Approval: boolean
+}
+
+export type ApplicationForm = MinimalApplicationForm & {
     name: string,
     code: string,
     class: string,
@@ -13,8 +18,6 @@ export type ApplicationForm = {
     avgScore: number,
     description: string,
     attachments: Attachment[],
-    stage1Approval: boolean,
-    stage2Approval: boolean,
     scheduleId: string
 }
 

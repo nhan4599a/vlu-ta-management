@@ -6,7 +6,7 @@ import { IBaseRequest, PaginationRequest } from "../../types/integration.types";
 import { paginate } from "../../helper/pagination.helper";
 
 export const getRecruimentInfo = async (req: Request) => {
-  const { db, params } = createTypedRequest<{}, {}>(req);
+  const { db, params } = createTypedRequest(req);
 
   const terms = await db.terms
     .aggregate<IRegistrationInfo | undefined>([

@@ -32,7 +32,7 @@ router.get("/applications", async (req, res) => {
 });
 
 router.get("/applications/:id", async (req, res) => {
-  const { db, params } = createTypedRequest<{}, {}>(req);
+  const { db, params } = createTypedRequest(req);
 
   const application = await db.applications.findById(params.id);
 

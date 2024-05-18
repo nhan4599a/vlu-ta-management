@@ -269,6 +269,9 @@ const getTermData = async (req: Request) => {
         isRegistered: {
           $ne: ["$classes.schedule.registrationInfo", null],
         },
+        isWaiting: {
+          $eq: ["$classes.schedule.registrationInfo.approved", null],
+        },
       },
     },
   ];
@@ -355,6 +358,7 @@ const getTermData = async (req: Request) => {
         scheduleId: 1,
         isApproved: 1,
         isRegistered: 1,
+        isWaiting: 1,
         applications: 1,
         _id: 0,
       },
@@ -381,7 +385,7 @@ const getTermData = async (req: Request) => {
 };
 
 const getAssitantsInfo = (req: Request) => {
-  const { db, params } = createTypedRequest<{}, {}>(req);
+  const { db, params } = createTypedRequest(req);
 
   return db.terms.aggregate([
     {
@@ -442,7 +446,7 @@ const getAssitantsInfo = (req: Request) => {
 };
 
 const getTermClassInfo = async (req: Request) => {
-  const { db, params } = createTypedRequest<{}, {}>(req);
+  const { db, params } = createTypedRequest(req);
 
   const result = await db.terms.aggregate([
     {

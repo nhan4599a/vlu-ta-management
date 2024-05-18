@@ -6,7 +6,24 @@ import {
   setScheduleId,
 } from "@redux/slices/recruiment.slice";
 import { getTermClassInfo } from "@redux/slices/application.slice";
+import { TermDataItem } from "@main/types/term.type";
 import "@main/index.css";
+
+const getTermStatus = (term: TermDataItem) => {
+  if (term.isApproved) {
+    return "Đã hoàn thành"
+  }
+
+  if (term.isRegistered && term.isWaiting) {
+    return "Đang chờ"
+  }
+
+  if (term.isRegistered && !term.isApproved) {
+    return "Đã từ chối"
+  }
+  
+  return ""
+}
 
 const TeacherSectionClassList = () => {
   const dispatch = useAppDispatch();
@@ -47,11 +64,7 @@ const TeacherSectionClassList = () => {
               <td>{term.day}</td>
               <td>{term.lesson}</td>
               <td>
-                {term.isApproved
-                  ? "Đã xong"
-                  : term.isRegistered
-                  ? "Chờ xác nhận"
-                  : ""}
+                {getTermStatus(term)}
               </td>
               <td>
                 {!term.isApproved ? (
