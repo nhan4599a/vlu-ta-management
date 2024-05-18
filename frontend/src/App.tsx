@@ -24,12 +24,13 @@ import { PostLogin } from "./page/general/login/PostLogin";
 import { useEffect } from "react";
 import { useAppSelector } from "@redux/hooks";
 import { selectIsAuthenticated } from "@redux/slices/authentication.slice";
-import TARecruitmentMainPage from "./page/admin/TA-recruitment-management/TARecruitementMainPage";
+import TARecruitmentMainPage from "./page/admin/TA-recruitment-management/TARecruitmentMainPage";
 import TAClassList from "./page/student/ta/TAClassList";
 import { useAdaptiveRoleComponent } from "./hooks/useAdaptiveRoleComponent";
 import "./index.css";
 import { BaseClassList } from "./page/admin/class-management/BaseClassList";
 import TARegistrationOverviewList from "./page/admin/TA-recruitment-management/TARegistrationOverviewList";
+import { TARegistrationList } from "./page/admin/TA-recruitment-management/TARegistrationList";
 
 const Layout = () => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -78,6 +79,7 @@ function App() {
           <Route path="/ta-information-management">
             <Route path="teacher" element={<SectionClassList />} />
             <Route path="assistant" element={<TARegistrationOverviewList />} />
+            <Route path="assistant/:scheduleId" element={<TARegistrationList />} />
             <Route path="schedule" element="" />
             <Route path="ta-register" element="" />
             <Route path="class-information" element="" />

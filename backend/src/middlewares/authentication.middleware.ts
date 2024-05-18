@@ -39,7 +39,7 @@ const getUserInfo = (
         name: schoolUserInfo[1],
         class: schoolUserInfo[2],
         active: true,
-        isAssistant: false
+        isAssistant: false,
       };
 
       callback(null, user);
@@ -65,45 +65,45 @@ export const authenticate = (
 
   const request = req as IBaseRequest;
 
-  if (accessToken?.includes(Role[Role.Student])) {
+  if (accessToken?.includes(Role[Role.StudentAssociate])) {
     request.user = {
-        _id: new mongoose.Types.ObjectId(),
-        active: true,
-        email: 'user@vanlanguni.edu.com',
-        name: 'user',
-        role: Role.Student,
-        class: 'PM2',
-        code: 'user',
-        isAssistant: false
+      _id: new mongoose.Types.ObjectId(),
+      active: true,
+      email: "admin@vanlanguni.edu.com",
+      name: "admin",
+      role: Role.StudentAssociate,
+      class: "PM2",
+      code: "admin",
+      isAssistant: false,
     };
     next();
-    return
+    return;
+  } else if (accessToken?.includes(Role[Role.Student])) {
+    request.user = {
+      _id: new mongoose.Types.ObjectId(),
+      active: true,
+      email: "user@vanlanguni.edu.com",
+      name: "user",
+      role: Role.Student,
+      class: "PM2",
+      code: "user",
+      isAssistant: false,
+    };
+    next();
+    return;
   } else if (accessToken?.includes(Role[Role.Teacher])) {
     request.user = {
-        _id: new mongoose.Types.ObjectId(),
-        active: true,
-        email: 'teacher@vanlanguni.edu.com',
-        name: 'teacher',
-        role: Role.Teacher,
-        class: 'PM2',
-        code: 'teacher',
-        isAssistant: false
+      _id: new mongoose.Types.ObjectId(),
+      active: true,
+      email: "teacher@vanlanguni.edu.com",
+      name: "teacher",
+      role: Role.Teacher,
+      class: "PM2",
+      code: "teacher",
+      isAssistant: false,
     };
     next();
-    return
-  } else if (accessToken?.includes(Role[Role.StudentAssociate])) {
-    request.user = {
-        _id: new mongoose.Types.ObjectId(),
-        active: true,
-        email: 'admin@vanlanguni.edu.com',
-        name: 'admin',
-        role: Role.StudentAssociate,
-        class: 'PM2',
-        code: 'admin',
-        isAssistant: false
-    };
-    next();
-    return
+    return;
   }
 
   const decodedToken = decode(accessToken!, {

@@ -33,7 +33,7 @@ const TARegistrationOverviewList = () => {
             <Accordion.Body>
               <TeacherAssistantsList applications={item.applications} />
               {item.hasMore && (
-                <a href="#" target="_blank">
+                <a href={`/ta-information-management/assistant/${item.scheduleId}`} target="_blank">
                   View more
                 </a>
               )}

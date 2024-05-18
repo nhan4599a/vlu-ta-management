@@ -5,6 +5,7 @@ import {
   getRecuimentInfo,
   setScheduleId,
 } from "@redux/slices/recruiment.slice";
+import { getTermClassInfo } from "@main/features/slices/application.slice";
 import "@main/index.css";
 
 const AdminSectionClassList = () => {
@@ -12,7 +13,8 @@ const AdminSectionClassList = () => {
   const termsResponse = useAppSelector(selectTermsData);
 
   const fetchRecruimentInfo = (payload: string) => {
-    return () => {
+    return async () => {
+      await dispatch(getTermClassInfo(payload))
       dispatch(setScheduleId(payload));
       dispatch(getRecuimentInfo());
     };
