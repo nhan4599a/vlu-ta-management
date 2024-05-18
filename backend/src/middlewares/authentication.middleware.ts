@@ -65,7 +65,7 @@ export const authenticate = (
 
   const request = req as IBaseRequest;
 
-  if (accessToken?.includes('Student')) {
+  if (accessToken?.includes(Role[Role.Student])) {
     request.user = {
         _id: new mongoose.Types.ObjectId(),
         active: true,
@@ -78,7 +78,7 @@ export const authenticate = (
     };
     next();
     return
-  } else if (accessToken?.includes('Teacher')) {
+  } else if (accessToken?.includes(Role[Role.Teacher])) {
     request.user = {
         _id: new mongoose.Types.ObjectId(),
         active: true,
@@ -91,7 +91,7 @@ export const authenticate = (
     };
     next();
     return
-  } else if (accessToken?.includes('Admin')) {
+  } else if (accessToken?.includes(Role[Role.StudentAssociate])) {
     request.user = {
         _id: new mongoose.Types.ObjectId(),
         active: true,

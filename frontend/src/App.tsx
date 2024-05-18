@@ -29,6 +29,7 @@ import TAClassList from "./page/student/ta/TAClassList";
 import { useAdaptiveRoleComponent } from "./hooks/useAdaptiveRoleComponent";
 import "./index.css";
 import { BaseClassList } from "./page/admin/class-management/BaseClassList";
+import TARegistrationOverviewList from "./page/admin/TA-recruitment-management/TARegistrationOverviewList";
 
 const Layout = () => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -76,20 +77,12 @@ function App() {
           <Route path="/user-profile" element={<Profile />} />
           <Route path="/ta-information-management">
             <Route path="teacher" element={<SectionClassList />} />
-            <Route path="assistant" />
+            <Route path="assistant" element={<TARegistrationOverviewList />} />
             <Route path="schedule" element="" />
             <Route path="ta-register" element="" />
             <Route path="class-information" element="" />
             <Route path="ta-register-list" element="" />
             <Route path="import-student-list" element={<ImportStudentList />} />
-          </Route>
-
-          <Route path="/ta-information-management" element="">
-            <Route
-              path="ta-course-information"
-              element={<TARecruitmentMainPage />}
-            />
-            <Route path="feedbacks-ta" element="" />
           </Route>
 
           <Route path="/task-mission-magagement" element="">

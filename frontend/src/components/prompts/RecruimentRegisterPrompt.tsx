@@ -65,15 +65,15 @@ const RecruimentRegisterPrompt = () => {
         <Form>
           <Form.Group className="mb-3" controlId="termname">
             <Form.Label>Môn:</Form.Label>
-            <Form.Control defaultValue={term?.name} type="text" />
+            <Form.Control disabled defaultValue={term?.name} type="text" />
           </Form.Group>
           <Form.Group className="mb-3" controlId="termday">
             <Form.Label>Thứ:</Form.Label>
-            <Form.Control defaultValue={term?.day} type="text" />
+            <Form.Control disabled defaultValue={term?.day} type="text" />
           </Form.Group>
           <Form.Group className="mb-3" controlId="termlesson">
             <Form.Label>Tiết:</Form.Label>
-            <Form.Control value={term?.lesson} type="text" />
+            <Form.Control disabled value={term?.lesson} type="text" />
           </Form.Group>
           <Form.Group className="mb-3" controlId="taquantity">
             <Form.Label>Số lượng:</Form.Label>

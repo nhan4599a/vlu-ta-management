@@ -53,7 +53,7 @@ const StudentSectionClassList = () => {
             );
 
             return (
-              <tr>
+              <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{term.code}</td>
                 <td>{term.name}</td>

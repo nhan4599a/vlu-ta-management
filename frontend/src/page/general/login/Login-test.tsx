@@ -29,7 +29,7 @@ const Login = () => {
       </div>
       <div className="d-flex flex-column justify-content-center align-items-center login-action">
         <h2 className="position-relative display-4 fw-bolder">Đăng nhập</h2>
-        <Button className="btn-sm mt-4 mb-5" onClick={login(Role.Admin)} variant="primary">
+        <Button className="btn-sm mt-4 mb-5" onClick={login(Role.StudentAssociate)} variant="primary">
           Admin
         </Button>
         <Button className="btn-sm mt-4 mb-5" onClick={login(Role.Teacher)} variant="primary">

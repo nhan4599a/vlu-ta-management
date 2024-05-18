@@ -36,7 +36,7 @@ const AdminSectionClassList = () => {
         </thead>
         <tbody>
           {termsResponse.data.map((term, index) => (
-            <tr>
+            <tr key={index}>
               <td>{index + 1}</td>
               <td>{term.code}</td>
               <td>{term.name}</td>

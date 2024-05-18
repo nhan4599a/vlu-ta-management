@@ -36,7 +36,7 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/classes/:classId", async (req, res) => {
-  const termClassInfo = getTermClassInfo(req);
+  const termClassInfo = await getTermClassInfo(req);
 
   responseWithValue(res, termClassInfo);
 });
