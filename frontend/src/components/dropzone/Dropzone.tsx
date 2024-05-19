@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useRef,
@@ -8,6 +9,7 @@ import {
 import Dropzone, { DropzoneFile } from "dropzone";
 import { v4 as uuidv4 } from "uuid";
 import { Attachment } from "@main/types/application-form.type";
+import { downloadAttachment } from "@main/api";
 import "@main/index.css";
 
 export interface DropzoneComponentMethodsRef {
@@ -19,22 +21,10 @@ type DropzoneProps = {
   maxFiles?: number;
   files?: Attachment[];
   allowDownload?: boolean;
-  allowEdit: boolean
+  allowEdit: boolean;
 };
 
 const images_file_ext = [".jpg", ".jpeg", ".jpe", ".bmp", ".gif", ".png"];
-const base_download_url = "http://localhost:5000/public";
-
-const createDownloadButton = (fileName: string, savedFileName: string) => {
-  const button = document.createElement("a");
-
-  button.href = `${base_download_url}/${savedFileName}`;
-  button.style.display = "block";
-  button.download = fileName;
-  button.text = "Download";
-
-  return button;
-};
 
 const DropzoneComponent = forwardRef<
   DropzoneComponentMethodsRef,
@@ -45,6 +35,37 @@ const DropzoneComponent = forwardRef<
   const elementIdRef = useRef(`d-${uuidv4()}`);
 
   const dropzoneRef = useRef<Dropzone>();
+  const downloadUrlsRef = useRef<Map<string, string>>(
+    new Map<string, string>()
+  );
+
+  const createDownloadButton = useCallback(
+    ({ savedFileName, originalFileName }: Attachment) => {
+      const button = document.createElement("a");
+
+      button.href = "#";
+      button.style.display = "block";
+
+      const originalOnclick = button.onclick;
+
+      button.onclick = async () => {
+        if (!downloadUrlsRef.current.has(savedFileName)) {
+          const blob = await downloadAttachment(savedFileName);
+
+          const url = URL.createObjectURL(blob);
+          downloadUrlsRef.current.set(savedFileName, url);
+          button.href = url;
+          button.download = originalFileName;
+        }
+
+        button.onclick = originalOnclick;
+      };
+      button.text = "Download";
+
+      return button;
+    },
+    []
+  );
 
   useImperativeHandle(ref, () => {
     return {
@@ -55,6 +76,8 @@ const DropzoneComponent = forwardRef<
   });
 
   useEffect(() => {
+    const downloadButtonUrls = downloadUrlsRef.current;
+
     const dropzone = new Dropzone(`#${elementIdRef.current}`, {
       acceptedFiles: props.acceptedFiles,
       maxFiles: props.maxFiles,
@@ -63,18 +86,23 @@ const DropzoneComponent = forwardRef<
       createImageThumbnails: true,
       maxThumbnailFilesize: 10,
       addRemoveLinks: props.allowEdit,
-      clickable: props.allowEdit
+      clickable: props.allowEdit,
     });
 
     dropzone.on("addedfile", (file) => {
       if (!props.allowEdit && file.size) {
-        return
+        return;
       }
 
       setIsPreviewVisible(true);
 
       if (props.allowDownload) {
-        file.previewElement.appendChild(createDownloadButton(file.name, file.dataURL ?? ""));
+        const attachment: Attachment = {
+          originalFileName: file.name,
+          savedFileName: file.dataURL!,
+        };
+
+        file.previewElement.appendChild(createDownloadButton(attachment));
       }
     });
 
@@ -89,7 +117,9 @@ const DropzoneComponent = forwardRef<
         dropzone.addFile({
           name: file.originalFileName,
           dataURL: file.savedFileName,
-          type: images_file_ext.includes(file.originalFileName.split(".").at(-1) ?? "")
+          type: images_file_ext.includes(
+            file.originalFileName.split(".").at(-1) ?? ""
+          )
             ? "images/*"
             : "unknown",
         } as DropzoneFile);
@@ -97,9 +127,13 @@ const DropzoneComponent = forwardRef<
     }
 
     return () => {
+      for (const url of downloadButtonUrls.values()) {
+        URL.revokeObjectURL(url);
+      }
+      downloadButtonUrls.clear();
       dropzone.destroy();
     };
-  }, [props]);
+  }, [props, createDownloadButton]);
 
   return (
     <div
