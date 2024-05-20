@@ -1,5 +1,15 @@
-export type ApplicationForm = {
-    _id: string,
+export type Attachment = {
+    savedFileName: string,
+    originalFileName: string
+}
+
+export type MinimalApplicationForm = {
+    _id: string;
+    stage1Approval: boolean;
+    stage2Approval: boolean
+}
+
+export type ApplicationForm = MinimalApplicationForm & {
     name: string,
     code: string,
     class: string,
@@ -7,14 +17,13 @@ export type ApplicationForm = {
     termScore: number,
     avgScore: number,
     description: string,
-    attachments: string[],
-    stage1Approval: boolean,
-    stage2Approval: boolean,
+    attachments: Attachment[],
     scheduleId: string
 }
 
 export type OverviewApplicationFormResponse = {
     name: string,
+    day: string,
     lesson: string,
     scheduleId: string,
     applications: ApplicationForm[],

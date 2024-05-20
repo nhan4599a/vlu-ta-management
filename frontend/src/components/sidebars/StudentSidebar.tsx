@@ -1,8 +1,8 @@
 import { Accordion } from "react-bootstrap";
-import "../../index.css";
 import LinkItem from "../LinkItem";
-import studentListItemData from "../../store/studentListItemData.json";
-import SideBarItemList from "../../types/SideBarItemList";
+import studentListItemData from "@main/store/studentListItemData.json";
+import SideBarItemList from "@main/types/SideBarItemList";
+import "@main/index.css";
 
 const renderMenuItem = (item: SideBarItemList) => {
   if (item.children) {

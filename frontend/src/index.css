@@ -98,11 +98,10 @@ input[type=number] {
 .login-illustrator h2 {
   color: #090914;
   text-align: left;
-  left: 10%;
-  top: 15%;
 }
 .login-illustrator img {
-  width: 718px;
+  /* min-width: 1.2rem; */
+  max-width: 70%;
 }
 
 .login-action {

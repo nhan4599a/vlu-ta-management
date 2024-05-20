@@ -24,13 +24,15 @@ const initialState: InitialState = {
     page: 1,
     role: Role.Student,
     isAssistant: false,
+    needEducated: false
   },
 };
 
 type GetUsersByRoleRequest = {
-  page: number;
-  role: Role;
-  isAssistant: boolean;
+  page?: number;
+  role?: Role;
+  isAssistant?: boolean;
+  needEducated?: boolean
 };
 
 export const getUsersList = createAsyncThunk(

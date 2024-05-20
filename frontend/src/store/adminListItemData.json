@@ -3,8 +3,12 @@
     "title": "Quản lí công tác trợ giảng",
     "children": [
       {
-        "title": "Tuyển dụng trợ giảng",
-        "path": "/ta-recruitment"
+        "title": "Tuyển dụng trợ giảng - giảng viên",
+        "path": "/ta-information-management/teacher"
+      },
+      {
+        "title": "Tuyển dụng trợ giảng - sinh viên",
+        "path": "/ta-information-management/assistant"
       },
       {
         "title": "Công tác sinh viên",

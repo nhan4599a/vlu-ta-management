@@ -36,6 +36,18 @@ export class BadRequestError extends HttpError {
     }
 }
 
+export class UnauthenticatedError extends HttpError {
+    constructor(message: string) {
+        super(401, message)
+    }
+}
+
+export class ForbiddenError extends HttpError {
+    constructor() {
+        super(403, 'Không có quyền')
+    }
+}
+
 export class InternalServerError extends HttpError {
     constructor(message: string) {
         super(500, env.isDev ? message : 'Internal server error')

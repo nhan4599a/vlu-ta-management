@@ -36,7 +36,7 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/classes/:classId", async (req, res) => {
-  const termClassInfo = getTermClassInfo(req);
+  const termClassInfo = await getTermClassInfo(req);
 
   responseWithValue(res, termClassInfo);
 });
@@ -58,7 +58,7 @@ router.get("/classes/:classId/assistants", async (req, res) => {
 });
 
 router.get("/classes/:classId/users/:userId/tasks", async (req, res) => {
-  const { db, params } = createTypedRequest<{}, {}>(req);
+  const { db, params } = createTypedRequest(req);
 
   const tasks = await db.tasks.where({
     _id: params.id,

@@ -1,52 +1,75 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
-import DropzoneComponent, { DropzoneComponentMethodsRef } from "../dropzone/Dropzone";
+import DropzoneComponent, {
+  DropzoneComponentMethodsRef,
+} from "../dropzone/Dropzone";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import { selectCurrentUser } from "@redux/slices/authentication.slice";
 import {
   applyRecruiment,
-  selectActiveTermName,
-  setActiveTermName,
+  selectRecruimentInfo,
+  selectScheduleId,
+  setScheduleId
 } from "@redux/slices/recruiment.slice";
-import "../../index.css";
+import { selectApplicationInfo, selectTermClassInfo } from "@main/features/slices/application.slice";
+import "@main/index.css";
+import { getTermsDataList } from "@main/features/slices/terms.slice";
 
 const TARegisterPrompt = () => {
   const dispatch = useAppDispatch();
-  const termName = useAppSelector(selectActiveTermName);
+  const scheduleId = useAppSelector(selectScheduleId);
+  const termInfo = useAppSelector(selectTermClassInfo)
+  const recruimentInfo = useAppSelector(selectRecruimentInfo)
+  const applicationInfo = useAppSelector(selectApplicationInfo);
   const user = useAppSelector(selectCurrentUser);
 
-  const [recruitdescription, setRecruitDescription] = useState("");
   const [mobile, setMobile] = useState("");
-  const [grade1, setGrade1] = useState<number>();
-  const [grade2, setGrade2] = useState<number>();
+  const [termScore, setTermScore] = useState<number>(0);
+  const [avgScore, setAvgScore] = useState<number>(0);
+  const [description, setDescription] = useState("")
 
-  const dropzoneRef = useRef<DropzoneComponentMethodsRef>(null)
+  const dropzoneRef = useRef<DropzoneComponentMethodsRef>(null);
 
-  const onHide = () => {
-    dispatch(setActiveTermName(undefined));
+  const onHide = async () => {
+    dispatch(setScheduleId(undefined))
+    setMobile("");
+    setTermScore(0);
+    setAvgScore(0);
+    await dispatch(getTermsDataList())
   };
+
+  useEffect(() => {
+    if (applicationInfo) {
+      setMobile(applicationInfo.phoneNumber);
+      setTermScore(applicationInfo.termScore);
+      setAvgScore(applicationInfo.avgScore);
+      setDescription(applicationInfo.description)
+    }
+  }, [applicationInfo]);
 
   const onSubmit = async () => {
     if (!dropzoneRef.current) {
-      return
+      return;
     }
 
-    const formData = new FormData()
+    const formData = new FormData();
 
-    const files = dropzoneRef.current.getFiles()
+    const files = dropzoneRef.current.getFiles();
     for (const file of files) {
-      formData.append('files', file)
+      formData.append("files", file);
     }
-    formData.append('phoneNumber', mobile)
-    formData.append('description', recruitdescription)
+    formData.append("phoneNumber", mobile);
+    formData.append("description", description);
+    formData.append("termScore", termScore.toString());
+    formData.append("avgScore", avgScore.toString());
 
-    await dispatch(applyRecruiment(formData))
-    onHide()
-  }
+    await dispatch(applyRecruiment(formData));
+    onHide();
+  };
 
   return (
     <Modal
-      show={termName !== undefined}
+      show={scheduleId !== undefined}
       onHide={onHide}
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
@@ -54,7 +77,7 @@ const TARegisterPrompt = () => {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Ứng tuyển làm trợ giảng môn {termName}
+          Ứng tuyển làm trợ giảng môn {termInfo?.name}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -65,10 +88,9 @@ const TARegisterPrompt = () => {
           <Form.Group className="my-3" controlId="recruitdescription">
             <Form.Control
               disabled
-              defaultValue={recruitdescription}
+              defaultValue={recruimentInfo?.criteria}
               as="textarea"
               rows={3}
-              onChange={(e) => setRecruitDescription(e.target.value)}
             />
           </Form.Group>
         </Form>
@@ -113,34 +135,47 @@ const TARegisterPrompt = () => {
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="grade1">
             <Form.Label column sm="2">
-              Điểm môn 1: 
+              Điểm môn {termInfo?.name}:
             </Form.Label>
             <Col sm="10">
               <Form.Control
                 type="number"
-                value={grade1}
-                onChange={(e) => setGrade1(Number(e.target.value))}
+                value={termScore}
+                onChange={(e) => setTermScore(Number(e.target.value))}
               />
             </Col>
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="grade2">
             <Form.Label column sm="2">
-              Điểm môn 2: 
+              Điểm trung bình học kỳ:
             </Form.Label>
             <Col sm="10">
               <Form.Control
                 type="number"
-                value={grade2}
-                onChange={(e) => setGrade2(Number(e.target.value))}
+                value={avgScore}
+                onChange={(e) => setAvgScore(Number(e.target.value))}
               />
             </Col>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="recruitdescription">
+            <Form.Label column sm="2">Mô tả</Form.Label>
+            <Form.Control
+              value={description}
+              as="textarea"
+              rows={3}
+              onChange={(e) => setDescription(e.target.value)}
+            />
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="attachment">
             <Form.Label column sm="2">
               File đính kèm
             </Form.Label>
             <Col sm="10">
-              <DropzoneComponent ref={dropzoneRef} />
+              <DropzoneComponent
+                ref={dropzoneRef}
+                files={applicationInfo?.attachments ?? []}
+                allowEdit={true}
+              />
             </Col>
           </Form.Group>
         </Form>
@@ -149,7 +184,9 @@ const TARegisterPrompt = () => {
         <Button variant="secondary" onClick={onHide}>
           Đóng
         </Button>
-        <Button onClick={onSubmit}>Gửi đơn</Button>
+        <Button onClick={onSubmit}>
+          {applicationInfo ? "Lưu lại" : "Gửi đơn"}
+        </Button>
       </Modal.Footer>
     </Modal>
   );

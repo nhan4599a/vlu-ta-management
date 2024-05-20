@@ -3,7 +3,7 @@ import { useLottie } from "lottie-react";
 import LoadingAnimation from "@main/lottie/loading.json";
 import { useAppSelector } from "@redux/hooks";
 import { selectLoadingState } from "@redux/slices/loading.slice";
-import "../../index.css";
+import "@main/index.css";
   
 const options = {
   animationData: LoadingAnimation,

@@ -11,7 +11,6 @@ export interface IUser {
 export enum Role {
     Student,
     Teacher,
-    Assistant,
     StudentAssociate,
-    Admin
+    Assistant
 }

@@ -11,7 +11,7 @@ export const useAdaptiveRoleComponent = (mapping: CompoenentRoleMapping) => {
   const role = useAppSelector(selectCurrentRole);
 
   const component = useMemo(() => {
-    if (!role) {
+    if (role === undefined) {
       return <></>;
     }
 

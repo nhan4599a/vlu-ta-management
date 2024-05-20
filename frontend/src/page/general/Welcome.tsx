@@ -1,10 +1,11 @@
-import AttachmentButton from "@main/components/buttons/AttachmentButton";
+import { useAppSelector } from "@main/features/hooks";
+import { selectCurrentUser } from "@redux/slices/authentication.slice";
 
 const Welcome = () => {
+  const user = useAppSelector(selectCurrentUser)
   return (
     <>
-    <AttachmentButton />
-      <h3 className="mt-2 ms-2">Welcome username!</h3>
+      <h3 className="mt-2 ms-2">Welcome {user?.name}!</h3>
     </>
   );
 };

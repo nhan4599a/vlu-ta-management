@@ -16,7 +16,7 @@ function DropzoneAttachmentModal(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <DropzoneComponent/>
+        <DropzoneComponent allowEdit={true} />
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={props.onHide}>Close</Button>

@@ -1,6 +1,8 @@
 import { Navbar, Image, NavDropdown, Nav, DropdownDivider } from "react-bootstrap";
 import LinkItem from "../LinkItem";
-import { IUser } from "../../types/user.type";
+import { useAppSelector } from "@redux/hooks";
+import { selectCurrentUser } from "@redux/slices/authentication.slice";
+// import { useMsal } from "@azure/msal-react";
 
 const UserMenu = (
   <Image
@@ -13,11 +15,17 @@ const UserMenu = (
   />
 );
 
-type NavBarProps = {
-  user?: IUser
-}
+const MainNavBar = () => {
+  // const { instance } = useMsal()
+  const user = useAppSelector(selectCurrentUser)
 
-const MainNavBar = ({ user }: NavBarProps) => {
+  const onLogoutClick = () => {
+    // instance.logoutRedirect({
+    //   postLogoutRedirectUri: '/login'
+    // })
+    window.location.href = '/login'
+  }
+
   return (
     <Navbar expand="lg" className="px-4 justify-content-between">
       <Navbar.Brand>
@@ -57,7 +65,7 @@ const MainNavBar = ({ user }: NavBarProps) => {
               </LinkItem>
             </NavDropdown.Item>
             <DropdownDivider />
-            <NavDropdown.Item href="/">
+            <NavDropdown.Item onClick={onLogoutClick}>
               <svg
                 width="15"
                 height="15"

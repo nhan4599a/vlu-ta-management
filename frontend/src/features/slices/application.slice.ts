@@ -3,11 +3,9 @@ import {
   ApplicationForm,
   OverviewApplicationFormResponse,
 } from "@main/types/application-form.type";
-import {
-  PaginationResponse,
-} from "@main/types/integration.type";
+import { PaginationResponse } from "@main/types/integration.type";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../store";
+import { RootState } from "@redux/store";
 import { TermClassInfo } from "@main/types/term.type";
 
 type InitialState = {
@@ -81,7 +79,7 @@ export const approveApplicationForm = createAsyncThunk(
       const { applicationId } = (getState() as RootState).application;
 
       return await patch({
-        path: `/tuyen-dung/applications/${applicationId}`,
+        path: `/tuyen-dung/applications/${applicationId}/approve`,
         body: {
           approved: payload,
         },
@@ -126,7 +124,11 @@ const applicationSlice = createSlice({
         state,
         { payload }: PayloadAction<OverviewApplicationFormResponse[]>
       ) => {
-        state.applicationsOverview = payload;
+        state.applicationsOverview = payload.map((item) => {
+          item.scheduleId = item.applications[0].scheduleId;
+
+          return item;
+        });
       }
     );
     builder.addCase(
@@ -153,7 +155,8 @@ const applicationSlice = createSlice({
   },
 });
 
-export const { setPage, setScheduleId, setApplicationId } = applicationSlice.actions;
+export const { setPage, setScheduleId, setApplicationId } =
+  applicationSlice.actions;
 export const applicationReducer = applicationSlice.reducer;
 export const selectScheduleId = (state: RootState) =>
   state.application.scheduleId;

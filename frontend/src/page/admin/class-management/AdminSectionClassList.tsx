@@ -1,20 +1,20 @@
 import { Button, Table } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
-import {
-  selectTermsData,
-} from "@redux/slices/terms.slice";
+import { selectTermsData } from "@redux/slices/terms.slice";
 import {
   getRecuimentInfo,
-  setScheduleId
+  setScheduleId,
 } from "@redux/slices/recruiment.slice";
-import "../../index.css";
+import { getTermClassInfo } from "@main/features/slices/application.slice";
+import "@main/index.css";
 
 const AdminSectionClassList = () => {
   const dispatch = useAppDispatch();
   const termsResponse = useAppSelector(selectTermsData);
 
   const fetchRecruimentInfo = (payload: string) => {
-    return () => {
+    return async () => {
+      await dispatch(getTermClassInfo(payload))
       dispatch(setScheduleId(payload));
       dispatch(getRecuimentInfo());
     };
@@ -22,7 +22,6 @@ const AdminSectionClassList = () => {
 
   return (
     <div>
-      <h2 className="display-5 mt-2 mb-3">Danh sách lớp học phần</h2>
       <Table responsive>
         <thead>
           <tr className="table-header ">
@@ -34,11 +33,12 @@ const AdminSectionClassList = () => {
             <th>Thứ</th>
             <th>Tiết học</th>
             <th>Trạng thái</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           {termsResponse.data.map((term, index) => (
-            <tr>
+            <tr key={index}>
               <td>{index + 1}</td>
               <td>{term.code}</td>
               <td>{term.name}</td>
@@ -47,7 +47,14 @@ const AdminSectionClassList = () => {
               <td>{term.day}</td>
               <td>{term.lesson}</td>
               <td>
-                {!term.isRegistered && !term.isApproved ? (
+                {term.isApproved
+                  ? "Đã xong"
+                  : term.isRegistered
+                  ? "Chờ xác nhận"
+                  : ""}
+              </td>
+              <td>
+                {term.isRegistered && !term.isApproved ? (
                   <Button
                     variant="primary"
                     className="w-100 mt-1"
