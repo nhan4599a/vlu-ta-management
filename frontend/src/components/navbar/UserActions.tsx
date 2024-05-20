@@ -5,7 +5,7 @@ import {
   Navbar,
   DropdownDivider,
 } from "react-bootstrap";
-import "../../index.css";
+import "@main/index.css";
 import LinkItem from "../LinkItem";
 
 const UserActions = () => {

@@ -7,7 +7,8 @@ import {
   getRecruimentInfo,
 } from "./recruit.service";
 import { responseWithValue } from "../../helper/response.helper";
-import { uploadMultipleFilesMiddleware } from "../../helper/upload.helper";
+import { mapAttachment, uploadMultipleFilesMiddleware } from "../../helper/upload.helper";
+import mongoose from "mongoose";
 
 const router = express.Router();
 
@@ -31,9 +32,9 @@ router.get("/applications", async (req, res) => {
 });
 
 router.get("/applications/:id", async (req, res) => {
-  const { db, params } = createTypedRequest<{}, {}>(req);
+  const { db, params } = createTypedRequest(req);
 
-  const application = await db.appliactions.findById(params.id);
+  const application = await db.applications.findById(params.id);
 
   responseWithValue(res, application);
 });
@@ -55,17 +56,22 @@ router.post("/classes/:classId", async (req, res) => {
     req
   );
 
-  await db.terms.findOneAndUpdate(
-    {
-      "classes._id": params.classId,
-    },
+  await db.terms.updateOne(
+    {},
     {
       $set: {
-        "classes.$.registrationInfo": {
+        "classes.$[].schedule.$[i].registrationInfo": {
           ...body,
           approved: null,
         },
       },
+    },
+    {
+      arrayFilters: [
+        {
+          "i._id": new mongoose.Types.ObjectId(params.classId),
+        },
+      ],
     }
   );
 
@@ -75,14 +81,19 @@ router.post("/classes/:classId", async (req, res) => {
 router.patch("/classes/:classId", async (req, res) => {
   const { db, body, params } = createTypedRequest<ApprovalInfo, {}>(req);
 
-  await db.terms.findOneAndUpdate(
-    {
-      "classes._id": params.classId,
-    },
+  await db.terms.updateOne(
+    {},
     {
       $set: {
-        "classes.$.registrationInfo.approved": body.approved,
+        "classes.$[].schedule.$[i].registrationInfo.approved": body.approved,
       },
+    },
+    {
+      arrayFilters: [
+        {
+          "i._id": new mongoose.Types.ObjectId(params.classId),
+        },
+      ],
     }
   );
 
@@ -98,21 +109,33 @@ router.post(
       {}
     >(req);
 
-    const { code, class: userClass, name } = user;
+    const { _id, code, class: userClass, name } = user;
 
     const uploadedFiles =
-      (files as Express.Multer.File[])?.map((file) => file.path) ?? [];
+      (files as Express.Multer.File[])?.map(mapAttachment) ?? [];
 
-    await db.appliactions.create({
-      scheduleId: params.classId,
-      code,
-      name,
-      class: userClass,
-      ...body,
-      attachments: uploadedFiles,
-      stage1Approval: false,
-      stage2Approval: false,
-    });
+    await db.applications.updateOne(
+      {
+        scheduleId: params.classId,
+        userId: _id,
+      },
+      {
+        $set: {
+          scheduleId: params.classId,
+          userId: _id,
+          code,
+          name,
+          class: userClass,
+          ...body,
+          attachments: uploadedFiles,
+          stage1Approval: false,
+          stage2Approval: false,
+        },
+      },
+      {
+        upsert: true,
+      }
+    );
 
     responseWithValue(res, undefined);
   }
@@ -121,7 +144,7 @@ router.post(
 router.patch("/applications/:id/approve", async (req, res) => {
   const { db, body, params } = createTypedRequest<ApprovalInfo, {}>(req);
 
-  await db.appliactions.findByIdAndUpdate(params.classId, {
+  await db.applications.findByIdAndUpdate(new mongoose.Types.ObjectId(params.id), {
     $set: {
       stage1Approval: body.approved,
     },

@@ -6,15 +6,10 @@ import { IBaseRequest, PaginationRequest } from "../../types/integration.types";
 import { paginate } from "../../helper/pagination.helper";
 
 export const getRecruimentInfo = async (req: Request) => {
-  const { db, params } = createTypedRequest<{}, {}>(req);
+  const { db, params } = createTypedRequest(req);
 
   const terms = await db.terms
     .aggregate<IRegistrationInfo | undefined>([
-      {
-        $match: {
-          _id: new mongoose.Types.ObjectId(params.id),
-        },
-      },
       {
         $unwind: {
           path: "$classes",
@@ -223,7 +218,7 @@ export const getApplicationsList = (req: Request) => {
       },
       {
         $match: {
-          isApproved: false,
+          isApproved: true,
         },
       },
       {
@@ -232,6 +227,13 @@ export const getApplicationsList = (req: Request) => {
           localField: "scheduleId",
           foreignField: "scheduleId",
           as: "applications",
+          pipeline: [
+            {
+              $match: {
+                stage1Approval: false,
+              },
+            },
+          ],
         },
       },
       {
@@ -272,10 +274,11 @@ export const getApplicationsList = (req: Request) => {
 export const getApplicationsOfSchedule = (req: Request) => {
   const { db, params, query } = createTypedRequest<{}, PaginationRequest>(req);
 
-  return paginate(db.appliactions, query, [
+  return paginate(db.applications, query, [
     {
       $match: {
-        scheduleId: params.classid,
+        scheduleId: new mongoose.Types.ObjectId(params.classId),
+        stage1Approval: false,
       },
     },
   ]);

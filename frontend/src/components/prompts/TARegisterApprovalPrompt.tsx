@@ -10,7 +10,7 @@ import {
 } from "@redux/slices/application.slice";
 import { AsyncThunk } from "@reduxjs/toolkit";
 import { AsyncThunkConfig } from "node_modules/@reduxjs/toolkit/dist/createAsyncThunk";
-import "../../index.css";
+import "@main/index.css";
 
 type Props<TResponse> = {
   dataFetcherThunk: AsyncThunk<TResponse, undefined, AsyncThunkConfig>
@@ -135,6 +135,7 @@ const TARegisterApprovalPrompt = <TResponse,>({ dataFetcherThunk }: Props<TRespo
             <Col sm="10">
               <DropzoneComponent
                 files={applicationInfo?.attachments}
+                allowEdit={false}
                 allowDownload={true}
               />
             </Col>
@@ -145,8 +146,8 @@ const TARegisterApprovalPrompt = <TResponse,>({ dataFetcherThunk }: Props<TRespo
         <Button variant="secondary" onClick={onHide}>
           Đóng
         </Button>
-        <Button onClick={onSubmit(true)}>Reject</Button>
-        <Button onClick={onSubmit(false)}>Approve</Button>
+        <Button onClick={onSubmit(false)}>Reject</Button>
+        <Button onClick={onSubmit(true)}>Approve</Button>
       </Modal.Footer>
     </Modal>
   );

@@ -14,7 +14,8 @@ import { DayInWeek } from "../../constants/day.enum";
 import { createTypedRequest } from "../../helper/type.helper";
 import { PaginationRequest } from "../../types/integration.types";
 import { paginate } from "../../helper/pagination.helper";
-import mongoose from "mongoose";
+import mongoose, { PipelineStage } from "mongoose";
+import { Role } from "../../constants/role.enum";
 
 type TermDataItem = Omit<ITerm, "classes" | "sessions"> &
   Omit<IScheduleDetail, "startLesson" | "endLesson"> & {
@@ -212,9 +213,9 @@ const readTermData = async (file: Express.Multer.File): Promise<ITerm[]> => {
 };
 
 const getTermData = async (req: Request) => {
-  const { db, query } = createTypedRequest<{}, PaginationRequest>(req);
+  const { db, query, user } = createTypedRequest<{}, PaginationRequest>(req);
 
-  return paginate<ITerm, TermDataItem>(db.terms, query, [
+  const basePipeline: PipelineStage[] = [
     {
       $unwind: {
         path: "$classes",
@@ -261,6 +262,59 @@ const getTermData = async (req: Request) => {
       },
     },
     {
+      $addFields: {
+        isApproved: {
+          $eq: ["$classes.schedule.registrationInfo.approved", true],
+        },
+        isRegistered: {
+          $ne: ["$classes.schedule.registrationInfo", null],
+        },
+        isWaiting: {
+          $eq: ["$classes.schedule.registrationInfo.approved", null],
+        },
+      },
+    },
+  ];
+
+  if (user.role === Role.Teacher) {
+    basePipeline.push({
+      $match: {
+        lecture: user.code,
+      },
+    });
+  } else if (user.role === Role.Student) {
+    basePipeline.push({
+      $match: {
+        isApproved: true,
+      },
+    });
+    basePipeline.push({
+      $lookup: {
+        from: "applications",
+        localField: "classes.schedule._id",
+        foreignField: "scheduleId",
+        as: "applications",
+        pipeline: [
+          {
+            $match: {
+              userId: user._id,
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              stage1Approval: 1,
+              stage2Approval: 1,
+            },
+          },
+        ],
+      },
+    });
+  }
+
+  return paginate<ITerm, TermDataItem>(db.terms, query, [
+    ...basePipeline,
+    {
       $set: {
         scheduleId: "$classes.schedule._id",
         lesson: {
@@ -273,16 +327,6 @@ const getTermData = async (req: Request) => {
               $toString: "$endLesson",
             },
           ],
-        },
-      },
-    },
-    {
-      $addFields: {
-        isApproved: {
-          $eq: ["$classes.schedule.registrationInfo.approved", true],
-        },
-        isRegistered: {
-          $ne: ["$classes.schedule.registrationInfo", null],
         },
       },
     },
@@ -314,6 +358,8 @@ const getTermData = async (req: Request) => {
         scheduleId: 1,
         isApproved: 1,
         isRegistered: 1,
+        isWaiting: 1,
+        applications: 1,
         _id: 0,
       },
     },
@@ -339,7 +385,7 @@ const getTermData = async (req: Request) => {
 };
 
 const getAssitantsInfo = (req: Request) => {
-  const { db, params } = createTypedRequest<{}, {}>(req);
+  const { db, params } = createTypedRequest(req);
 
   return db.terms.aggregate([
     {
@@ -400,7 +446,7 @@ const getAssitantsInfo = (req: Request) => {
 };
 
 const getTermClassInfo = async (req: Request) => {
-  const { db, params } = createTypedRequest<{}, {}>(req);
+  const { db, params } = createTypedRequest(req);
 
   const result = await db.terms.aggregate([
     {
@@ -496,7 +542,7 @@ const getTermClassInfo = async (req: Request) => {
     },
   ]);
 
-  return result[0]
+  return result[0];
 };
 
 export { readTermData, getTermData, getAssitantsInfo, getTermClassInfo };

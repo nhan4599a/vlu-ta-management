@@ -3,9 +3,27 @@ import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import { selectTermsData } from "@redux/slices/terms.slice";
 import {
   getRecuimentInfo,
-  setScheduleId
+  setScheduleId,
 } from "@redux/slices/recruiment.slice";
-import "../../index.css";
+import { getTermClassInfo } from "@redux/slices/application.slice";
+import { TermDataItem } from "@main/types/term.type";
+import "@main/index.css";
+
+const getTermStatus = (term: TermDataItem) => {
+  if (term.isApproved) {
+    return "Đã hoàn thành"
+  }
+
+  if (term.isRegistered && term.isWaiting) {
+    return "Đang chờ"
+  }
+
+  if (term.isRegistered && !term.isApproved) {
+    return "Đã từ chối"
+  }
+  
+  return ""
+}
 
 const TeacherSectionClassList = () => {
   const dispatch = useAppDispatch();
@@ -13,6 +31,7 @@ const TeacherSectionClassList = () => {
 
   const fetchRecruimentInfo = (payload: string) => {
     return () => {
+      dispatch(getTermClassInfo(payload));
       dispatch(setScheduleId(payload));
       dispatch(getRecuimentInfo());
     };
@@ -20,7 +39,6 @@ const TeacherSectionClassList = () => {
 
   return (
     <div>
-      <h2 className="display-5 mt-2 mb-3">Danh sách lớp học phần</h2>
       <Table responsive>
         <thead>
           <tr className="table-header ">
@@ -32,11 +50,12 @@ const TeacherSectionClassList = () => {
             <th>Thứ</th>
             <th>Tiết học</th>
             <th>Trạng thái</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           {termsResponse.data.map((term, index) => (
-            <tr>
+            <tr key={index}>
               <td>{index + 1}</td>
               <td>{term.code}</td>
               <td>{term.name}</td>
@@ -45,13 +64,16 @@ const TeacherSectionClassList = () => {
               <td>{term.day}</td>
               <td>{term.lesson}</td>
               <td>
+                {getTermStatus(term)}
+              </td>
+              <td>
                 {!term.isApproved ? (
                   <Button
-                    variant="primary"
+                    variant={term.isRegistered ? "info" : "primary"}
                     className="w-100"
                     onClick={fetchRecruimentInfo(term.scheduleId)}
                   >
-                    Yêu cầu trợ giảng
+                    {term.isRegistered ? "Cập nhật" : "Yêu cầu trợ giảng"}
                   </Button>
                 ) : (
                   <></>

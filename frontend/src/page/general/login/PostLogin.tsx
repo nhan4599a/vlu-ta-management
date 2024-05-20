@@ -1,6 +1,6 @@
-import { constant } from "../../../constants";
-import { useMsal } from "@azure/msal-react";
 import { useEffect } from "react";
+import { constant } from "@main/constants";
+import { useMsal } from "@azure/msal-react";
 import { useAppDispatch } from "@redux/hooks";
 import {
   postLoginCallback,

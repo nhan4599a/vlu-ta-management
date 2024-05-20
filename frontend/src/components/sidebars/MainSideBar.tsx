@@ -1,6 +1,6 @@
 import { Accordion } from "react-bootstrap";
-import "../../index.css";
 import LinkItem from "../LinkItem";
+import "@main/index.css";
 
 const MainSideBar = () => {
   return (

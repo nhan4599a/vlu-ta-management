@@ -1,13 +1,12 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { post } from "@main/api";
-import { IUser, Role } from "@main/types/user.type";
+import { IUser } from "@main/types/user.type";
 import { RootState } from "@redux/store";
 
 type AuthenticationState = {
   accessToken?: string;
   user?: IUser;
   isAuthenticated: boolean;
-  role?: Role
 };
 
 const initialState: AuthenticationState = {
@@ -35,13 +34,14 @@ const authenticationSlice = createSlice({
       state.accessToken = payload;
     },
     logout(state) {
+      state.user = undefined;
+      state.accessToken = undefined;
       state.isAuthenticated = false;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(postLoginCallback.fulfilled, (state, { payload }) => {
       state.user = payload;
-      state.role = payload?.role;
       state.isAuthenticated = true;
     });
   },
@@ -51,5 +51,7 @@ export const { setAccessToken, logout } = authenticationSlice.actions;
 export const authenticationReducer = authenticationSlice.reducer;
 export const selectIsAuthenticated = (state: RootState) =>
   state.authentication.isAuthenticated;
-export const selectCurrentUser = (state: RootState) => state.authentication.user
-export const selectCurrentRole = (state: RootState) => state.authentication.user?.role
+export const selectCurrentUser = (state: RootState) =>
+  state.authentication.user;
+export const selectCurrentRole = (state: RootState) =>
+  state.authentication.user?.role;

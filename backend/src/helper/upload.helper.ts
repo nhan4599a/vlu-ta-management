@@ -1,5 +1,6 @@
 import multer from 'multer'
 import { v4 as uuidv4 } from 'uuid'
+import { getFileExtension } from './file.helper'
 
 const upload = multer()
 
@@ -8,7 +9,7 @@ const storage = multer.diskStorage({
         cb(null, 'public')
     },
     filename: (req, file, cb) => {
-        cb(null, uuidv4())
+        cb(null, `${uuidv4()}.${getFileExtension(file.originalname)}`)
     }
 })
 const uploadMultiple = multer({
@@ -17,5 +18,12 @@ const uploadMultiple = multer({
 
 const uploadFileMiddleware = upload.single('file')
 const uploadMultipleFilesMiddleware = uploadMultiple.array('files')
+
+export const mapAttachment = (file: Express.Multer.File) => {
+    return {
+        savedFileName: file.filename,
+        originalFileName: file.originalname
+    }
+}
 
 export { uploadFileMiddleware, uploadMultipleFilesMiddleware }

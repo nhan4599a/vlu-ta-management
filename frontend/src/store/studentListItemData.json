@@ -2,7 +2,7 @@
   {
     "title": "Tuyển dụng sinh viên",
     "children": [
-      { "title": "Việc làm", "path": "/jobs" },
+      { "title": "Việc làm", "path": "/ta-information-management/teacher" },
       { "title": "Quản lí đơn ứng tuyển", "path": "/applications" }
     ]
   },

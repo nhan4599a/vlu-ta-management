@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import { PaginationControl } from "react-bootstrap-pagination-control";
-// import TARegisterClassList from "./TARegisterClassList";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import {
   getTermsDataList,

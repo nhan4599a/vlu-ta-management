@@ -9,7 +9,7 @@
   {
     "title": "Quản lí thông tin trợ giảng",
     "children": [
-      { "title": "Đăng tuyển trợ giảng", "path": "/ta-recruitment" },
+      { "title": "Tuyển trợ giảng", "path": "/ta-information-management/teacher" },
       { "title": "Quản lý tin tuyển dụng", "path": "/ta-recruitment-management" },
       {
         "title": "Quản lí trợ giảng",

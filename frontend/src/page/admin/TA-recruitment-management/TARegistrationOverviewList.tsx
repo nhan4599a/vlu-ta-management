@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { Accordion } from "react-bootstrap";
 import { TeacherAssistantsList } from "@main/components/lists/TeacherAssistantsList";
 import TARegisterApprovalPrompt from "@main/components/prompts/TARegisterApprovalPrompt";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
@@ -5,8 +7,6 @@ import {
   getApplicationsOverview,
   selectApplicationsOverview,
 } from "@redux/slices/application.slice";
-import { useEffect, useState } from "react";
-import { Accordion } from "react-bootstrap";
 
 const TARegistrationOverviewList = () => {
   const dispatch = useAppDispatch();
@@ -26,14 +26,14 @@ const TARegistrationOverviewList = () => {
         alwaysOpen
       >
         {data.map((item, index) => (
-          <Accordion.Item eventKey={item.scheduleId}>
+          <Accordion.Item eventKey={item.scheduleId} key={index} className="mb-2">
             <Accordion.Header>
-              {index} {item.name} - {item.lesson}
+              {item.name} - {item.day} tiết {item.lesson}
             </Accordion.Header>
             <Accordion.Body>
               <TeacherAssistantsList applications={item.applications} />
               {item.hasMore && (
-                <a href="#" target="_blank">
+                <a href={`/ta-information-management/assistant/${item.scheduleId}`} target="_blank">
                   View more
                 </a>
               )}

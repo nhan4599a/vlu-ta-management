@@ -30,7 +30,7 @@ const ImportSectionClassList = () => {
       <h2 className="display-5 mt-2 mb-3">Import danh sách lớp học phần</h2>
       <div className="shadow p-5 rounded-5 bg-white">
         <DownloadImportTemplateLink />
-        <DropzoneComponent ref={dropzoneRef} acceptedFiles=".xlsx,.xls" maxFiles={1} />
+        <DropzoneComponent ref={dropzoneRef} acceptedFiles=".xlsx,.xls" maxFiles={1} allowEdit={true} />
         <ImportButton importFileAction={onClickImport} url="/class-management/class-list" />
       </div>
     </div>

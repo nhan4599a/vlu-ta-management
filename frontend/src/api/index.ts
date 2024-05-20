@@ -37,6 +37,11 @@ apiClient.interceptors.response.use(
     if (numberOfRequests === 0) {
       store.dispatch(closeLoadingDialog());
     }
+
+    if (response.config.responseType === "blob") {
+      return response.data;
+    }
+
     return response.data.result;
   },
   async (err: AxiosError<IApiResponse<unknown>>) => {
@@ -75,15 +80,16 @@ export type NetworkRequest = {
   path: string;
   query?: Record<string, unknown>;
   body?: object | FormData;
+  options?: AxiosRequestConfig;
 };
 
-const get = <TResult>({ path, query }: NetworkRequest) => {
+const get = <TResult>({ path, query, options }: NetworkRequest) => {
   const queryString = createQueryString(query);
 
-  return apiClient.get<TResult, TResult>(path + queryString);
+  return apiClient.get<TResult, TResult>(path + queryString, options);
 };
 
-const post = <TResult>({ path, query, body }: NetworkRequest) => {
+const post = <TResult>({ path, query, body, options }: NetworkRequest) => {
   const queryString = createQueryString(query);
 
   const contentType =
@@ -93,10 +99,11 @@ const post = <TResult>({ path, query, body }: NetworkRequest) => {
     headers: {
       "Content-Type": contentType,
     },
+    ...options,
   });
 };
 
-const patch = <TResult>({ path, query, body }: NetworkRequest) => {
+const patch = <TResult>({ path, query, body, options }: NetworkRequest) => {
   const queryString = createQueryString(query);
 
   const contentType =
@@ -106,7 +113,17 @@ const patch = <TResult>({ path, query, body }: NetworkRequest) => {
     headers: {
       "Content-Type": contentType,
     },
+    ...options,
   });
 };
 
-export { get, post, patch };
+const downloadAttachment = async (savedFileName: string) => {
+  return get<Blob>({
+    path: `/public/${savedFileName}`,
+    options: {
+      responseType: "blob",
+    },
+  });
+};
+
+export { get, post, patch, downloadAttachment };
