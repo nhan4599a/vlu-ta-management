@@ -36,8 +36,14 @@ const Login = () => {
       </div>
       <div className="d-flex flex-column justify-content-center align-items-center login-action">
         <h2 className="position-relative display-4 fw-bolder">Đăng nhập</h2>
-        <Button className="btn-lg mt-4 mb-5" onClick={login} variant="primary">
-          Đăng nhập
+        <Button className="btn-lg my-2" onClick={login} variant="primary">
+          Sinh viên
+        </Button>
+        <Button className="btn-lg my-2" onClick={login} variant="primary">
+          Giảng viên 
+        </Button>
+        <Button className="btn-lg mt-2 mb-4" onClick={login} variant="primary">
+          Công tác sinh viên
         </Button>
         <p>Đăng nhập bằng tài khoản Văn Lang để bắt đầu</p>
       </div>
