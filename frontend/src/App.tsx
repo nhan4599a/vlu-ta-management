@@ -5,7 +5,7 @@ const Profile = lazy(() => import("./page/general/user-profile/Profile"));
 import ImportSectionClassList from "./page/admin/class-management/ImportSectionClassList";
 import ImportStudentList from "./page/lecturer/ta-information-management/ImportStudentList";
 import { Col, Container, Row } from "react-bootstrap";
-const Login = lazy(() => import("./page/general/login/Login"));
+const Login = lazy(() => import("./page/general/login/Login-test"));
 import NotFound from "./page/general/error/404NotFound";
 import Error500 from "./page/general/error/500Error";
 import SectionClassList from "./page/admin/class-management/SectionClassList";
