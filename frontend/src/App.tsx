@@ -79,6 +79,7 @@ function App() {
           <Route path="/ta-information-management">
             <Route path="teacher" element={<SectionClassList />} />
             <Route path="assistant" element={<TARegistrationOverviewList />} />
+            <Route path="eligible" element={<TAEligiblePage />} />
             <Route
               path="assistant/:scheduleId"
               element={<TARegistrationList />}

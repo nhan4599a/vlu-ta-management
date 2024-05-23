@@ -11,4 +11,7 @@ export default defineConfig({
       "@redux": path.resolve(__dirname, "./src/features")
     },
   },
+  optimizeDeps: {
+    exclude: ["react-data-export"]
+  }
 });

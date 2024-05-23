@@ -12,8 +12,8 @@ import {
   setScheduleId
 } from "@redux/slices/recruiment.slice";
 import { selectApplicationInfo, selectTermClassInfo } from "@main/features/slices/application.slice";
-import "@main/index.css";
 import { getTermsDataList } from "@main/features/slices/terms.slice";
+import "@main/index.css";
 
 const TARegisterPrompt = () => {
   const dispatch = useAppDispatch();
@@ -23,7 +23,7 @@ const TARegisterPrompt = () => {
   const applicationInfo = useAppSelector(selectApplicationInfo);
   const user = useAppSelector(selectCurrentUser);
 
-  const [mobile, setMobile] = useState("");
+  const [mobile, setMobile] = useState(user?.phoneNumber ?? "");
   const [termScore, setTermScore] = useState<number>(0);
   const [avgScore, setAvgScore] = useState<number>(0);
   const [description, setDescription] = useState("")
@@ -128,6 +128,7 @@ const TARegisterPrompt = () => {
             </Form.Label>
             <Col sm="10">
               <Form.Control
+                disabled={user?.phoneNumber !== undefined}
                 value={mobile}
                 onChange={(e) => setMobile(e.target.value)}
               />

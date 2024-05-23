@@ -1,8 +1,8 @@
+import { useEffect, useState } from "react";
 import { Col, Tab, Tabs } from "react-bootstrap";
 import SearchInput from "@main/components/generic/SearchInput";
 import AccountsList from "@main/components/lists/AccountsList";
 import { PaginationControl } from "react-bootstrap-pagination-control";
-import { useEffect, useState } from "react";
 import { Role } from "@main/types/user.type";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import { getUsersList, selectUsersList, setRequest } from "@redux/slices/users.slice";
@@ -39,13 +39,13 @@ const AccountMainPage = () => {
           justify
         >
           <Tab eventKey={Role.Student} title="Sinh viên">
-            <AccountsList />
+            <AccountsList actionEnabled={true} />
           </Tab>
           <Tab eventKey={Role.Teacher} title="Giảng viên">
-            <AccountsList />
+            <AccountsList actionEnabled={true} />
           </Tab>
           <Tab eventKey={Role.Assistant} title="Trợ giảng">
-            <AccountsList />
+            <AccountsList actionEnabled={true} />
           </Tab>
         </Tabs>
         <div className="text-align">

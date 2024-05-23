@@ -7,6 +7,7 @@ import { authenticationReducer } from "../slices/authentication.slice";
 import { applicationReducer } from "../slices/application.slice";
 import { usersReducer } from "../slices/users.slice";
 import { tasksReducer } from "../slices/tasks.slice";
+import { settingReducer } from "../slices/setting.slice";
 import persistStore from "redux-persist/es/persistStore";
 import storage from "redux-persist/lib/storage";
 import persistReducer from "redux-persist/es/persistReducer";
@@ -19,13 +20,14 @@ const rootReducer = combineReducers({
   authentication: authenticationReducer,
   users: usersReducer,
   tasks: tasksReducer,
-  application: applicationReducer
+  application: applicationReducer,
+  setting: settingReducer
 });
 
 const peristConfig = {
     key: 'root',
     storage,
-    whitelist: ['authentication']
+    whitelist: ['authentication', 'setting']
 }
 
 const persistedRootReducer = persistReducer(peristConfig, rootReducer)

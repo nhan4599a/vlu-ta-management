@@ -2,10 +2,15 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { post } from "@main/api";
 import { IUser } from "@main/types/user.type";
 import { RootState } from "@redux/store";
+import { ISetting } from "@main/types/setting.type";
+
+type UserInfo = IUser & {
+    currentSetting: ISetting | null
+}
 
 type AuthenticationState = {
   accessToken?: string;
-  user?: IUser;
+  user?: UserInfo;
   isAuthenticated: boolean;
 };
 
@@ -17,7 +22,7 @@ export const postLoginCallback = createAsyncThunk(
   "authenticate/post-login",
   async (_, { rejectWithValue }) => {
     try {
-      return await post<IUser>({
+      return await post<UserInfo>({
         path: "/authenticate/post-login",
       });
     } catch (e) {

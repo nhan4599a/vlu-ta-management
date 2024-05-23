@@ -5,18 +5,24 @@ import { selectUsersList, setSelectedUser } from "@redux/slices/users.slice";
 import { IUser } from "@main/types/user.type";
 import "@main/index.css";
 
-const AccountsList = () => {
-  const dispatch = useAppDispatch()
+type AccountsListProps = {
+  actionEnabled: boolean;
+};
+
+const AccountsList = ({ actionEnabled }: AccountsListProps) => {
+  const dispatch = useAppDispatch();
   const users = useAppSelector(selectUsersList);
 
   const onActionButtonClick = ({ _id, active }: IUser) => {
     return () => {
-      dispatch(setSelectedUser({
-        id: _id,
-        active
-      }))
-    }
-  }
+      dispatch(
+        setSelectedUser({
+          id: _id,
+          active,
+        })
+      );
+    };
+  };
 
   return (
     <>
@@ -28,7 +34,7 @@ const AccountsList = () => {
             <th>Họ tên</th>
             <th>MSSV</th>
             <th>Lớp</th>
-            <th></th>
+            {actionEnabled && <th></th>}
           </tr>
         </thead>
         <tbody>
@@ -39,16 +45,18 @@ const AccountsList = () => {
               <td>{user.name}</td>
               <td>{user.code}</td>
               <td>{user.class}</td>
-              <td>
-                <p>
-                  <a
-                    className="link-opacity-100"
-                    onClick={onActionButtonClick(user)}
-                  >
-                    Xóa
-                  </a>
-                </p>
-              </td>
+              {actionEnabled && (
+                <td>
+                  <p>
+                    <a
+                      className="link-opacity-100"
+                      onClick={onActionButtonClick(user)}
+                    >
+                      Xóa
+                    </a>
+                  </p>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

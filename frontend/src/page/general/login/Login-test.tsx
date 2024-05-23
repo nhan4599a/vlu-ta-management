@@ -5,6 +5,7 @@ import { logout, postLoginCallback, setAccessToken } from "@main/features/slices
 import { Role } from "@main/types/user.type";
 import { unwrapResult } from "@reduxjs/toolkit";
 import "@main/index.css";
+import { setCurrentSetting } from "@main/features/slices/setting.slice";
 
 const Login = () => {
   const dispatch = useAppDispatch()
@@ -15,10 +16,13 @@ const Login = () => {
 
   const login = (role: Role) => {
     return () => {
+      console.log('ok')
       dispatch(setAccessToken(`${Role[role]}`))
       dispatch(postLoginCallback())
         .then(unwrapResult)
         .then((user) => {
+          window.location.href = '/'
+          dispatch(setCurrentSetting(user.currentSetting))
           dispatch(setAccessToken(`${Role[role]}-${user._id}`))
         })
     }
