@@ -49,7 +49,9 @@ const DropzoneComponent = forwardRef<
       const originalOnclick = button.onclick;
 
       button.onclick = async () => {
-        if (!downloadUrlsRef.current.has(savedFileName)) {
+        const isFirstTimeClick = !downloadUrlsRef.current.has(savedFileName)
+
+        if (isFirstTimeClick) {
           const blob = await downloadAttachment(savedFileName);
 
           const url = URL.createObjectURL(blob);
@@ -59,6 +61,10 @@ const DropzoneComponent = forwardRef<
         }
 
         button.onclick = originalOnclick;
+
+        if (isFirstTimeClick) {
+          button.click()
+        }
       };
       button.text = "Download";
 
