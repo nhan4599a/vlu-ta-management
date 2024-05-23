@@ -2,19 +2,41 @@ import DropzoneComponent, { DropzoneComponentMethodsRef } from "@main/components
 import ImportButton from "@main/components/buttons/ImportButton";
 import { useRef } from "react";
 import "@main/index.css";
+import { useAppDispatch } from "@main/features/hooks";
+import { importStudentDataList } from "@main/features/slices/application.slice";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { showMessageDialog } from "@main/features/slices/messages.slice";
 
 
 const ImportStudentList = () => {
   const dropzoneRef = useRef<DropzoneComponentMethodsRef>(null)
+
+  const dispatch = useAppDispatch();
+
+  const onClickImport = () => {
+    if (!dropzoneRef.current) {
+      return Promise.reject();
+    }
+
+    const files = dropzoneRef.current.getFiles();
+
+    const formData = new FormData();
+
+    formData.append("file", files[0]);
+
+    return dispatch(importStudentDataList(formData))
+    .then(unwrapResult)
+    .then(() => {
+      dispatch(showMessageDialog('Import thành công'))
+    })
+  }
 
   return (
     <div>
       <h2 className="display-5 mt-2 mb-3">Import danh sách sinh viên đã hoàn thành khóa đào tạo làm trợ lý giảng dạy</h2>
       <div className="shadow p-5 rounded-5 bg-white">
         <DropzoneComponent ref={dropzoneRef} acceptedFiles=".xlsx,.xls" maxFiles={1} allowEdit={true} />
-        <ImportButton url={""} importFileAction={function (): Promise<unknown> {
-          throw new Error("Function not implemented.");
-        } } />
+        <ImportButton url="ta-information/student-list" importFileAction={onClickImport} />
       </div>
     </div>
   );
