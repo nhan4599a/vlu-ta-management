@@ -7,11 +7,13 @@ import { constants } from "../constants";
 import { Role } from "../constants/role.enum";
 import mongoose from "mongoose";
 import axios from "axios";
+import { ISetting } from "../db/models/setting";
 
 type GetUserInfoCallback = (
   err: Error | null,
   user?: IUser & {
     _id: mongoose.Types.ObjectId;
+    setting: ISetting | null;
   }
 ) => void;
 
@@ -21,19 +23,17 @@ const getUserInfo = (
   callback: GetUserInfoCallback
 ) => {
   const email = payload[constants.AUTHENTICATION.EMAIL_CLAIM];
-  db.users
-    .where({
-      email: email,
-    })
-    .exec()
-    .then((users) => {
+  Promise.all([db.users.where({ email: email }).exec(), db.settings.findOne()])
+    .then(([users, setting]) => {
       const schoolUserInfo = payload["name"].split(" - ");
 
       const role = constants.AUTHENTICATION.ADMIN_ACCOUNTS.includes(email)
         ? Role.StudentAssociate
         : Role.Student;
 
-      const user = users[0] ?? {
+      const user = {
+        ...users[0],
+      } ?? {
         code: schoolUserInfo[0],
         email: email,
         role: role,
@@ -43,7 +43,10 @@ const getUserInfo = (
         isAssistant: false,
       };
 
-      callback(null, user);
+      callback(null, {
+        ...user,
+        setting
+      });
     })
     .catch((err) => callback(err, undefined));
 };
@@ -66,7 +69,7 @@ export const authenticate = (
   const accessToken = authHeader?.split(" ")[1];
 
   if (!authHeader || !accessToken) {
-    throw new UnauthenticatedError('Invalid access token')
+    throw new UnauthenticatedError("Invalid access token");
   }
 
   const request = req as IBaseRequest;
@@ -76,75 +79,81 @@ export const authenticate = (
     ? new mongoose.Types.ObjectId(accessToken.split("-")[1])
     : new mongoose.Types.ObjectId();
 
-  if (accessToken?.includes(Role[Role.StudentAssociate])) {
-    request.user = {
-      _id: id,
-      active: true,
-      email: "admin@vanlanguni.edu.com",
-      name: "admin",
-      role: Role.StudentAssociate,
-      class: "PM2",
-      code: "admin",
-      isAssistant: false,
-    };
-    next();
-    return;
-  } else if (accessToken?.includes(Role[Role.Student])) {
-    request.user = {
-      _id: id,
-      active: true,
-      email: "user@vanlanguni.edu.com",
-      name: "user",
-      role: Role.Student,
-      class: "PM2",
-      code: "user",
-      isAssistant: false,
-    };
-    next();
-    return;
-  } else if (accessToken?.includes(Role[Role.Teacher])) {
-    request.user = {
-      _id: id,
-      active: true,
-      email: "teacher@vanlanguni.edu.com",
-      name: "teacher",
-      role: Role.Teacher,
-      class: "PM2",
-      code: "teacher",
-      isAssistant: false,
-    };
-    next();
-    return;
-  }
+  request.db.settings.findOne().then((setting) => {
+    if (accessToken?.includes(Role[Role.StudentAssociate])) {
+      request.user = {
+        _id: id,
+        active: true,
+        email: "admin@vanlanguni.edu.com",
+        name: "admin",
+        role: Role.StudentAssociate,
+        class: "PM2",
+        code: "admin",
+        isAssistant: false,
+        currentSetting: setting
+      };
+      next();
+      return;
+    } else if (accessToken?.includes(Role[Role.Student])) {
+      request.user = {
+        _id: id,
+        active: true,
+        email: "user@vanlanguni.edu.com",
+        name: "user",
+        role: Role.Student,
+        class: "PM2",
+        code: "user",
+        isAssistant: false,
+        currentSetting: setting
+      };
+      next();
+      return;
+    } else if (accessToken?.includes(Role[Role.Teacher])) {
+      request.user = {
+        _id: id,
+        active: true,
+        email: "teacher@vanlanguni.edu.com",
+        name: "teacher",
+        role: Role.Teacher,
+        class: "PM2",
+        code: "teacher",
+        isAssistant: false,
+        currentSetting: setting
+      };
+      next();
+      return;
+    }
+  });
+
   // **** end testing ****
 
-  verifyAccessToken(accessToken!)
-    .then(() => {
-      const request = req as IBaseRequest;
-      const decodedToken = decode(accessToken!, {
-        complete: true,
-      });
+//   verifyAccessToken(accessToken!)
+//     .then(() => {
+//       const request = req as IBaseRequest;
+//       const decodedToken = decode(accessToken!, {
+//         complete: true,
+//       });
 
-      getUserInfo(
-        request.db,
-        decodedToken!.payload as JwtPayload,
-        (err, user) => {
-          if (err) {
-            res.status(500).json({
-              success: false,
-              message: "Internal server error",
-            });
-          } else {
-            request.user = user!;
-            next();
-          }
-        }
-      );
-    })
-    .catch(() => {
-      res.status(401).json({
-        success: false,
-        message: "Invalid token",
-      });
-    });
+//       getUserInfo(
+//         request.db,
+//         decodedToken!.payload as JwtPayload,
+//         (err, user) => {
+//           if (err) {
+//             res.status(500).json({
+//               success: false,
+//               message: "Internal server error",
+//             });
+//           } else {
+//             request.user = user!;
+//             next();
+//           }
+//         }
+//       );
+//     })
+//     .catch(() => {
+//       res.status(401).json({
+//         success: false,
+//         message: "Invalid token",
+//       });
+//     });
 };

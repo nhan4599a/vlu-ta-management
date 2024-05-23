@@ -25,7 +25,7 @@ export const getUsersList = (req: Request) => {
         $group: {
           _id: null,
           users: {
-            $addToSet: "$userId",
+            $addToSet: "$code",
           },
         },
       },
@@ -33,7 +33,7 @@ export const getUsersList = (req: Request) => {
         $lookup: {
           from: "users",
           localField: "users",
-          foreignField: "_id",
+          foreignField: "code",
           as: "mapped_users",
         },
       },

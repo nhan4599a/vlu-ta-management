@@ -1,4 +1,4 @@
-import { get, patch } from "@main/api";
+import { get, patch, post } from "@main/api";
 import {
   ApplicationForm,
   OverviewApplicationFormResponse,
@@ -96,6 +96,22 @@ export const getTermClassInfo = createAsyncThunk(
     try {
       return await get<TermClassInfo>({
         path: `/hoc-phan/classes/${payload}`,
+      });
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
+export const exportEligibleList = createAsyncThunk(
+  "applications/export/eligible",
+  async (_: undefined, { rejectWithValue }) => {
+    try {
+      return await post<Blob>({
+        path: `/application/export-eligible`,
+        options: {
+          responseType: "blob",
+        },
       });
     } catch (e) {
       return rejectWithValue(e);

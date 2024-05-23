@@ -8,6 +8,7 @@ import {
 } from "@redux/slices/authentication.slice";
 import { showMessageDialog } from "@redux/slices/messages.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
+import { setCurrentSetting } from "@main/features/slices/setting.slice";
 
 export const PostLogin = () => {
   const { instance, accounts, inProgress } = useMsal();
@@ -27,15 +28,15 @@ export const PostLogin = () => {
           dispatch(setAccessToken(result.accessToken));
           dispatch(postLoginCallback())
             .then(unwrapResult)
-            .then(() => {
+            .then((user) => {
               window.location.href = "/";
+              dispatch(setCurrentSetting(user.currentSetting))
             })
             .catch((err) => {
               dispatch(showMessageDialog(err));
             });
         })
         .catch((err) => {
-          console.log(err);
           dispatch(showMessageDialog(err));
         });
     }

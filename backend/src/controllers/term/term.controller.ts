@@ -1,5 +1,4 @@
 import express from "express";
-import { IBaseRequest } from "../../types/integration.types";
 import { uploadFileMiddleware } from "../../helper/upload.helper";
 import {
   getAssitantsInfo,
@@ -42,13 +41,30 @@ router.get("/classes/:classId", async (req, res) => {
 });
 
 router.post("/", uploadFileMiddleware, async (req, res) => {
-  const { db, file } = req as IBaseRequest;
+  const { db, file } = createTypedRequest(req);
 
   const terms = await readTermData(file!);
 
+  await db.startTransaction();
+
+  await db.settings.findOneAndUpdate(
+    {},
+    {
+      semester: terms[0].semester,
+      year: terms[0].year,
+    },
+    {
+      upsert: true,
+    }
+  );
   await db.terms.insertMany(terms);
 
-  responseWithValue(res, null);
+  await db.commitTransaction();
+
+  responseWithValue(res, {
+    semester: terms[0].semester,
+    year: terms[0].year,
+  });
 });
 
 router.get("/classes/:classId/assistants", async (req, res) => {

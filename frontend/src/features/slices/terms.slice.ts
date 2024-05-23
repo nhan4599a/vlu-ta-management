@@ -3,7 +3,7 @@ import { get, post } from "@main/api";
 import { PaginationResponse } from "@main/types/integration.type";
 import { TermDataItem } from "@main/types/term.type";
 import { RootState } from "@redux/store";
-
+import { ISetting } from "@main/types/setting.type";
 
 type InitialState = {
   termsResponse: PaginationResponse<TermDataItem>;
@@ -22,7 +22,7 @@ export const importTermsData = createAsyncThunk(
   "terms/import",
   async (payload: FormData, { rejectWithValue }) => {
     try {
-      return await post({
+      return await post<ISetting>({
         path: "/hoc-phan",
         body: payload,
       });
@@ -35,13 +35,18 @@ export const importTermsData = createAsyncThunk(
 export const getTermsDataList = createAsyncThunk(
   "terms/fetch",
   async (_: undefined, { getState, rejectWithValue }) => {
-    const page = (getState() as RootState).terms.currentPage;
+    const { terms, setting } = getState() as RootState;
+
+    if (!setting.currentSetting) {
+      return Promise.resolve(initialState.termsResponse);
+    }
 
     try {
       return await get<PaginationResponse<TermDataItem>>({
         path: "/hoc-phan",
         query: {
-          page,
+          page: terms.currentPage,
+          ...setting.currentSetting,
         },
       });
     } catch (e) {
@@ -65,6 +70,6 @@ const termsSlice = createSlice({
   },
 });
 
-export const { setCurrentPage } = termsSlice.actions
+export const { setCurrentPage } = termsSlice.actions;
 export const termsReducer = termsSlice.reducer;
 export const selectTermsData = (state: RootState) => state.terms.termsResponse;

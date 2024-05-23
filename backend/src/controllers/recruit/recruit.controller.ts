@@ -7,7 +7,10 @@ import {
   getRecruimentInfo,
 } from "./recruit.service";
 import { responseWithValue } from "../../helper/response.helper";
-import { mapAttachment, uploadMultipleFilesMiddleware } from "../../helper/upload.helper";
+import {
+  mapAttachment,
+  uploadMultipleFilesMiddleware,
+} from "../../helper/upload.helper";
 import mongoose from "mongoose";
 
 const router = express.Router();
@@ -109,27 +112,52 @@ router.post(
       {}
     >(req);
 
-    const { _id, code, class: userClass, name } = user;
+    const { code, class: userClass, name } = user;
 
     const uploadedFiles =
       (files as Express.Multer.File[])?.map(mapAttachment) ?? [];
 
+    await db.startTransaction();
+
+    const currentSetting = await db.settings.findOne();
+
+    const registerCount = await db.applications
+      .countDocuments({
+        year: currentSetting!.year,
+        semester: currentSetting!.semester,
+        code: code,
+      })
+      .exec();
+
+    await db.users.updateOne(
+      {
+        code: code,
+      },
+      {
+        $set: {
+          phoneNumber: body.phoneNumber,
+        },
+      }
+    );
     await db.applications.updateOne(
       {
         scheduleId: params.classId,
-        userId: _id,
+        code: code,
       },
       {
         $set: {
           scheduleId: params.classId,
-          userId: _id,
           code,
           name,
           class: userClass,
           ...body,
           attachments: uploadedFiles,
-          stage1Approval: false,
-          stage2Approval: false,
+          stage1Approval: null,
+          stage2Approval: null,
+          isPending: false,
+          priority: registerCount,
+          year: currentSetting!.year,
+          semester: currentSetting!.semester
         },
       },
       {
@@ -137,6 +165,7 @@ router.post(
       }
     );
 
+    await db.commitTransaction();
     responseWithValue(res, undefined);
   }
 );
@@ -144,11 +173,14 @@ router.post(
 router.patch("/applications/:id/approve", async (req, res) => {
   const { db, body, params } = createTypedRequest<ApprovalInfo, {}>(req);
 
-  await db.applications.findByIdAndUpdate(new mongoose.Types.ObjectId(params.id), {
-    $set: {
-      stage1Approval: body.approved,
-    },
-  });
+  await db.applications.findByIdAndUpdate(
+    new mongoose.Types.ObjectId(params.id),
+    {
+      $set: {
+        stage1Approval: body.approved,
+      },
+    }
+  );
 
   responseWithValue(res, undefined);
 });
