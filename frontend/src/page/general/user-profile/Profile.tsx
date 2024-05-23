@@ -1,13 +1,11 @@
-import { Col, Form, Row } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import Image from "react-bootstrap/Image";
 
 const Profile = () => (
   <div className="d-flex flex-column bd-highlight mt-2">
     <div className="d-flex gap-4 align-items-center mb-5">
       <Image
-        src={
-          "/images/user-avatar.png"
-        }
+        src={"/images/user-avatar.png"}
         alt="User profile image"
         roundedCircle
         style={{ width: "150px" }}
@@ -20,7 +18,12 @@ const Profile = () => (
           Họ và tên
         </Form.Label>
         <Col sm="10">
-          <Form.Control size="lg" plaintext readOnly defaultValue="Nguyễn Văn A" />
+          <Form.Control
+            size="lg"
+            plaintext
+            readOnly
+            defaultValue="Nguyễn Văn A"
+          />
         </Col>
       </Form.Group>
       <Form.Group as={Row} className="mb-3 lead" controlId="Email">
@@ -28,15 +31,28 @@ const Profile = () => (
           Email VLU
         </Form.Label>
         <Col sm="10">
-          <Form.Control size="lg" plaintext readOnly defaultValue="email@example.com" />
+          <Form.Control
+            size="lg"
+            plaintext
+            readOnly
+            defaultValue="email@example.com"
+          />
         </Col>
       </Form.Group>
-      <Form.Group as={Row} className="mb-3 lead" controlId="Role">
+      <Form.Group as={Row} className="mb-3 lead" controlId="mobile">
         <Form.Label column sm="2">
-          Vai trò
+          Số điện thoại
         </Form.Label>
         <Col sm="10">
-          <Form.Control size="lg" plaintext readOnly defaultValue="Sinh viên" />
+          <Form.Control size="lg" plaintext defaultValue="" />
+        </Col>
+      </Form.Group>
+      <Form.Group as={Row} className="mb-3 lead" controlId="action">
+        <Form.Label column sm="2"></Form.Label>
+        <Col sm="10">
+          <Button variant="primary" value="">
+            Lưu
+          </Button>
         </Col>
       </Form.Group>
     </Form>
