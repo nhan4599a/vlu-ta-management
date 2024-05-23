@@ -60,7 +60,7 @@ const DropzoneComponent = forwardRef<
 
         button.onclick = originalOnclick;
       };
-      button.text = "Download";
+      button.text = "Tải xuống";
 
       return button;
     },

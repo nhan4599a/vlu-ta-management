@@ -119,6 +119,20 @@ export const exportEligibleList = createAsyncThunk(
   }
 );
 
+export const importStudentDataList = createAsyncThunk(
+  "/application/import-training",
+  async (payload: FormData, { rejectWithValue }) => {
+    try {
+      return await post<Blob>({
+        path: `/application/import-training`,
+        body: payload
+      })
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
 const applicationSlice = createSlice({
   name: "applications",
   initialState,

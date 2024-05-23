@@ -38,9 +38,6 @@ const AccountMainPage = () => {
           className="mb-2"
           justify
         >
-          <Tab eventKey={Role.Student} title="Sinh viên">
-            <AccountsList actionEnabled={true} />
-          </Tab>
           <Tab eventKey={Role.Teacher} title="Giảng viên">
             <AccountsList actionEnabled={true} />
           </Tab>

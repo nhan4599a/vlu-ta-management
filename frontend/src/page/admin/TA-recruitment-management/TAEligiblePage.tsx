@@ -40,14 +40,14 @@ const TAEligiblePage = () => {
   return (
     <>
       <h2 className="display-5 mt-2 mb-3">Danh sách sinh viên đủ điều kiện</h2>
-      <Row>
-        <Col xl={2}>
+      <Row className="mb-2 justify-content-end">
+        <Col xl={3} className="text-end">
           <Button variant="primary" onClick={exportData}>
             <Image src="/images/download.png" height={20}></Image>
             Tải xuống danh sách
           </Button>
         </Col>
-        <Col xl={2}>
+        <Col xl={2} className="text-end" style={{ width: 'fit-content'}}>
           <Button variant="primary">
             <Image src="/images/send.png" height={20}></Image>
             Gửi email
