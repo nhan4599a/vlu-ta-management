@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IUser, Role } from "@main/types/user.type";
-import { get, patch } from "@main/api";
+import { get, patch, post } from "@main/api";
 import { RootState } from "@redux/store";
 import { PaginationResponse } from "@main/types/integration.type";
 
@@ -24,7 +24,7 @@ const initialState: InitialState = {
     page: 1,
     role: Role.Student,
     isAssistant: false,
-    needEducated: false
+    needEducated: false,
   },
 };
 
@@ -32,7 +32,7 @@ type GetUsersByRoleRequest = {
   page?: number;
   role?: Role;
   isAssistant?: boolean;
-  needEducated?: boolean
+  needEducated?: boolean;
 };
 
 export const getUsersList = createAsyncThunk(
@@ -55,15 +55,33 @@ export const getUsersList = createAsyncThunk(
 );
 
 export const activeUser = createAsyncThunk(
-  "users/update",
+  "users/active",
   async (_: undefined, { getState, rejectWithValue }) => {
-    const state = getState() as RootState;
+    const { users } = getState() as RootState;
+
+    try {
+      return await post({
+        path: `/users/${users.selectedUser!.id}/active`,
+        body: {
+          active: !users.selectedUser!.active,
+        },
+      });
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
+export const updateUser = createAsyncThunk(
+  "users/update",
+  async (phoneNumber: string, { getState, rejectWithValue }) => {
+    const { authentication } = getState() as RootState;
 
     try {
       return await patch({
-        path: `/users/${state.users.selectedUser!.id}`,
+        path: `/users/${authentication.user!._id}/active`,
         body: {
-          active: !state.users.selectedUser!.active,
+          phoneNumber: phoneNumber,
         },
       });
     } catch (e) {

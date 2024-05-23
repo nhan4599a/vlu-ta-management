@@ -5,7 +5,7 @@ import { ForbiddenError } from "../../types/integration.types";
 
 const router = express.Router();
 
-router.get(":fileName", (req, res) => {
+router.get("/:fileName", (req, res) => {
   const { user, params } = createTypedRequest(req);
 
   if (user.role !== Role.StudentAssociate) {

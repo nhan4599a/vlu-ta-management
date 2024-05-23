@@ -10,13 +10,17 @@ type UpdateUserStatusRequest = {
   active: boolean;
 };
 
+type UpdateUserInfoRequest = {
+  phoneNumber: string;
+};
+
 router.get("/", async (req, res) => {
   const users = await getUsersList(req);
 
   responseWithValue(res, users);
 });
 
-router.patch("/:userId", async (req, res) => {
+router.post("/:userId/active", async (req, res) => {
   const { db, body, params } = createTypedRequest<UpdateUserStatusRequest, {}>(
     req
   );
@@ -24,6 +28,20 @@ router.patch("/:userId", async (req, res) => {
   await db.users.findByIdAndUpdate(new mongoose.Types.ObjectId(params.userId), {
     $set: {
       active: body.active,
+    },
+  });
+
+  responseWithValue(res, undefined);
+});
+
+router.patch("/:userId", async (req, res) => {
+  const { db, body, params } = createTypedRequest<UpdateUserInfoRequest, {}>(
+    req
+  );
+
+  await db.users.findByIdAndUpdate(new mongoose.Types.ObjectId(params.userId), {
+    $set: {
+      phoneNumber: body.phoneNumber,
     },
   });
 
