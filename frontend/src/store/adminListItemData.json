@@ -13,6 +13,10 @@
       {
         "title": "Công tác sinh viên",
         "path": "/student-affairs"
+      },
+      {
+        "title": "Sinh viên đủ điều kiện",
+        "path": "/ta-information-management/eligible"
       }
     ]
   },

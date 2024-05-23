@@ -30,6 +30,7 @@ import { BaseClassList } from "./page/admin/class-management/BaseClassList";
 import TARegistrationOverviewList from "./page/admin/TA-recruitment-management/TARegistrationOverviewList";
 import { TARegistrationList } from "./page/admin/TA-recruitment-management/TARegistrationList";
 import "./index.css";
+import TAEligiblePage from "./page/admin/TA-recruitment-management/TAEligiblePage";
 
 const Layout = () => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -82,10 +83,7 @@ function App() {
               path="assistant/:scheduleId"
               element={<TARegistrationList />}
             />
-            <Route path="schedule" element="" />
-            <Route path="ta-register" element="" />
-            <Route path="class-information" element="" />
-            <Route path="ta-register-list" element="" />
+            <Route path="eligible" element={<TAEligiblePage />} />
             <Route path="import-student-list" element={<ImportStudentList />} />
           </Route>
 
