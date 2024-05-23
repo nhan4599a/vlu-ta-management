@@ -60,10 +60,9 @@ const Profile = () => {
           <Form.Label column sm="2">
             Số điện thoại
           </Form.Label>
-          <Col sm="10">
+          <Col sm="4">
             <Form.Control
               size="lg"
-              plaintext
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
             />
