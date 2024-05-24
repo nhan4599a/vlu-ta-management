@@ -1,17 +1,17 @@
-import { Schema } from "mongoose"
+import { Schema, mongo } from "mongoose"
 
 export interface ITask {
-    scheduleId: string,
-    assigner: string,
+    scheduleId: mongo.ObjectId,
+    assigner: mongo.ObjectId,
     content: string,
-    assignee: string,
+    assignee: mongo.ObjectId,
     isCompleted: boolean
 }
 
 export const TaskSchema = new Schema<ITask>({
-    scheduleId: { type: String, required: true },
-    assigner: { type: String, required: true },
+    scheduleId: { type: Schema.Types.ObjectId, required: true },
+    assigner: { type: Schema.Types.ObjectId, required: true },
     content: { type: String, required: true },
-    assignee: { type: String, required: true },
+    assignee: { type: Schema.Types.ObjectId, required: true },
     isCompleted: { type: Boolean, required: true }
 })

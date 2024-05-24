@@ -22,6 +22,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import { ITaskItem, TaskAction } from "@main/types/task.type";
 import AttachmentButton from "../buttons/AttachmentButton";
+import { showMessageDialog } from "@main/features/slices/messages.slice";
 
 const TasksPrompt = () => {
   const dispatch = useAppDispatch();
@@ -34,10 +35,30 @@ const TasksPrompt = () => {
   const [edittingTask, setEdittingTask] = useState<string>();
   const [edittingValue, setEdittingValue] = useState("");
 
+  const actionWrapper = (innerAction: () => void) => {
+    return () => {
+      if (edittingTask !== undefined) {
+        dispatch(
+          showMessageDialog({
+            message:
+              "Bạn có muốn lưu nội dung nhiệm vụ hiện tại và để thực hiện hành động mới không?",
+            primaryButtonText: "Có",
+            onPrimaryButtonClick: innerAction,
+            secondaryButtonText: "Không",
+          })
+        );
+      } else {
+        innerAction();
+      }
+    };
+  };
+
   const handleAddTask = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(addTask(inputValue));
-    setInputValue("");
+    return actionWrapper(() => {
+      dispatch(addTask(inputValue));
+      setInputValue("");
+    })();
   };
 
   const handleDelete = (index: number) => {
@@ -47,10 +68,10 @@ const TasksPrompt = () => {
   };
 
   const openEditMode = ({ _id, content }: ITaskItem) => {
-    return () => {
+    return actionWrapper(() => {
       setEdittingTask(_id!);
       setEdittingValue(content);
-    };
+    });
   };
 
   const closeEditMode = (taskId: string) => {
@@ -91,7 +112,7 @@ const TasksPrompt = () => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleAddTask}>
+        <Form onSubmit={e => handleAddTask(e)}>
           <Form.Group className="mb-3" controlId="">
             <Form.Label>Thêm nhiệm vụ:</Form.Label>
             <InputGroup size="lg">

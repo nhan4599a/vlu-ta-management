@@ -3,7 +3,10 @@ import { RootState } from "@redux/store";
 
 export type MessageOption = {
   message: string;
-  onButtonClick?: () => void;
+  onPrimaryButtonClick?: () => void;
+  onSecondaryButtonClick?: () => void;
+  primaryButtonText?: string
+  secondaryButtonText?: string
 };
 
 const initialState = {
