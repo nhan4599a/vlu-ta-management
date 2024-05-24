@@ -8,7 +8,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { showMessageDialog } from "@main/features/slices/messages.slice";
 
 
-const ImportStudentList = () => {
+const ImportPassedTraningTAList = () => {
   const dropzoneRef = useRef<DropzoneComponentMethodsRef>(null)
 
   const dispatch = useAppDispatch();
@@ -42,4 +42,4 @@ const ImportStudentList = () => {
   );
 };
 
-export default ImportStudentList;
+export default ImportPassedTraningTAList;
