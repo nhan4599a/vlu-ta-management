@@ -16,6 +16,7 @@ import { PaginationRequest } from "../../types/integration.types";
 import { paginate } from "../../helper/pagination.helper";
 import mongoose, { PipelineStage } from "mongoose";
 import { Role } from "../../constants/role.enum";
+import { IUser } from "../../db/models/user";
 
 const ValidSemesterTypes = ["HK1", "HK2", "HÈ"];
 
@@ -435,14 +436,9 @@ const getTermData = async (req: Request) => {
 };
 
 const getAssitantsInfo = (req: Request) => {
-  const { db, params } = createTypedRequest(req);
+  const { db, params, query } = createTypedRequest<{}, PaginationRequest>(req);
 
-  return db.terms.aggregate([
-    {
-      $match: {
-        _id: new mongoose.Types.ObjectId(params.id),
-      },
-    },
+  return paginate(db.terms, query, [
     {
       $unwind: {
         path: "$classes",
@@ -486,11 +482,20 @@ const getAssitantsInfo = (req: Request) => {
     },
     {
       $unwind: {
-        path: "users",
+        path: "$users",
       },
     },
     {
-      $unset: ["users"],
+      $replaceRoot: {
+        newRoot: {
+          $mergeObjects: ["$users", "$$ROOT"],
+        },
+      },
+    },
+    {
+      $project: {
+        users: 0,
+      },
     },
   ]);
 };

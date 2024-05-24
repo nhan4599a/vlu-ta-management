@@ -1,10 +1,10 @@
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@main/features/hooks";
 import {
   getTermsDataList,
   selectTermsData,
   setCurrentPage,
 } from "@main/features/slices/terms.slice";
-import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 
@@ -18,6 +18,7 @@ const ClassWithTA = () => {
     dispatch(setCurrentPage(page));
     dispatch(getTermsDataList());
   }, [dispatch, page]);
+
   return (
     <>
       <h2 className="display-5 mt-2 mb-3">Danh sách lớp có trợ giảng</h2>

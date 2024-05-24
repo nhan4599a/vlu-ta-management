@@ -1,28 +1,35 @@
 import { Table } from "react-bootstrap";
 // import ConfirmDelete from "@main/components/prompts/ConfirmDelete";
-import { useAppDispatch, useAppSelector } from "@redux/hooks";
-import { selectUsersList, setSelectedUser } from "@redux/slices/users.slice";
+import { useAppSelector } from "@redux/hooks";
+import { selectUsersList } from "@redux/slices/users.slice";
 import { IUser } from "@main/types/user.type";
 import "@main/index.css";
 
 type AccountsListProps = {
   actionEnabled: boolean;
+  actionButtonText?: string;
+  onActionButtonClick?: (user: IUser) => void
 };
 
-const AccountsList = ({ actionEnabled }: AccountsListProps) => {
-  const dispatch = useAppDispatch();
+const AccountsList = ({ actionEnabled, actionButtonText, onActionButtonClick }: AccountsListProps) => {
   const users = useAppSelector(selectUsersList);
 
-  const onActionButtonClick = ({ _id, active }: IUser) => {
+  // const onActionButtonClick = ({ _id, active }: IUser) => {
+  //   return () => {
+  //     dispatch(
+  //       setSelectedUser({
+  //         id: _id,
+  //         active,
+  //       })
+  //     );
+  //   };
+  // };
+
+  const internalOnActionButtonClick = (user: IUser) => {
     return () => {
-      dispatch(
-        setSelectedUser({
-          id: _id,
-          active,
-        })
-      );
-    };
-  };
+      onActionButtonClick!(user)
+    }
+  }
 
   return (
     <>
@@ -39,7 +46,7 @@ const AccountsList = ({ actionEnabled }: AccountsListProps) => {
         </thead>
         <tbody>
           {users.data.map((user, index) => (
-            <tr>
+            <tr key={index}>
               <td>{index + 1}</td>
               <td>{user.email}</td>
               <td>{user.name}</td>
@@ -50,9 +57,9 @@ const AccountsList = ({ actionEnabled }: AccountsListProps) => {
                   <p>
                     <a
                       className="link-opacity-100"
-                      onClick={onActionButtonClick(user)}
+                      onClick={internalOnActionButtonClick(user)}
                     >
-                      Xóa
+                      {actionButtonText}
                     </a>
                   </p>
                 </td>
