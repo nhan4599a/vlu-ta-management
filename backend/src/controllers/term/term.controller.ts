@@ -78,8 +78,8 @@ router.get("/classes/:classId/users/:userId/tasks", async (req, res) => {
 
   const tasks = await db.tasks.where({
     _id: params.id,
-    scheduleId: params.classId,
-    assignee: params.userId,
+    scheduleId: new mongoose.Types.ObjectId(params.classId),
+    assignee: new mongoose.Types.ObjectId(params.userId)
   });
 
   responseWithValue(res, tasks);
@@ -101,9 +101,9 @@ router.post("/classes/:classId/users/:userId/tasks", async (req, res) => {
           insertOne: {
             document: {
               ...actualTask,
-              scheduleId: params.classId,
-              assigner: user._id.toString(),
-              assignee: params.userId,
+              scheduleId: new mongoose.Types.ObjectId(params.classId),
+              assigner: user._id,
+              assignee: new mongoose.Types.ObjectId(params.userId),
             },
           },
         });

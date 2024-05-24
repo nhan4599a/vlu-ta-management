@@ -27,7 +27,7 @@ export const getTasks = createAsyncThunk(
 
     try {
       return await get<ITaskItem[]>({
-        path: `/classes/${recruiment.scheduleId}/users/${tasks.currentAssignee}/tasks`,
+        path: `/hoc-phan/classes/${recruiment.scheduleId}/users/${tasks.currentAssignee}/tasks`,
       });
     } catch (e) {
       return rejectWithValue(e);
@@ -42,7 +42,7 @@ export const saveTasks = createAsyncThunk(
 
     try {
       return await post({
-        path: `/classes/${recruiment.scheduleId}/users/${tasks.currentAssignee}/tasks`,
+        path: `/hoc-phan/classes/${recruiment.scheduleId}/users/${tasks.currentAssignee}/tasks`,
         body: {
           tasks: tasks.tasks,
         },
@@ -62,6 +62,7 @@ const tasksSlice = createSlice({
     },
     addTask(state, { payload }: PayloadAction<string>) {
       state.tasks.push({
+        _id: state.tasks.length.toString(),
         content: payload,
         isCompleted: false,
         state: TaskAction.Add,
