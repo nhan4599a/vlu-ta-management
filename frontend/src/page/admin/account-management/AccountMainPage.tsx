@@ -13,12 +13,12 @@ const AccountMainPage = () => {
   const usersResponse = useAppSelector(selectUsersList)
 
   const [page, setPage] = useState(1);
-  const [tab, setTab] = useState(Role.Student);
+  const [tab, setTab] = useState(Role.Teacher);
 
   useEffect(() => {
     const request = {
       page,
-      role: tab === Role.Assistant ? Role.Student : tab,
+      role: tab === Role.Assistant ? Role.Teacher : tab,
       isAssistant: tab === Role.Assistant,
     };
     dispatch(setRequest(request));
