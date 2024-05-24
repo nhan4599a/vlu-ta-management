@@ -11,19 +11,19 @@ import "@main/index.css";
 
 const getTermStatus = (term: TermDataItem) => {
   if (term.isApproved) {
-    return "Đã hoàn thành"
+    return "Đã hoàn thành";
   }
 
   if (term.isRegistered && term.isWaiting) {
-    return "Đang chờ"
+    return "Đang chờ";
   }
 
   if (term.isRegistered && !term.isApproved) {
-    return "Đã từ chối"
+    return "Đã từ chối";
   }
-  
-  return ""
-}
+
+  return "";
+};
 
 const TeacherSectionClassList = () => {
   const dispatch = useAppDispatch();
@@ -63,9 +63,7 @@ const TeacherSectionClassList = () => {
               <td>{term.type}</td>
               <td>{term.day}</td>
               <td>{term.lesson}</td>
-              <td>
-                {getTermStatus(term)}
-              </td>
+              <td>{getTermStatus(term)}</td>
               <td>
                 {!term.isApproved ? (
                   <Button
@@ -76,7 +74,13 @@ const TeacherSectionClassList = () => {
                     {term.isRegistered ? "Cập nhật" : "Yêu cầu trợ giảng"}
                   </Button>
                 ) : (
-                  <></>
+                  <a
+                    href={`/class-management/assistants/${term.scheduleId}`}
+                    target="_black"
+                    className="btn btn-primary"
+                  >
+                    Danh sách trợ giảng
+                  </a>
                 )}
               </td>
             </tr>

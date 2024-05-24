@@ -41,12 +41,30 @@ export const getUsersList = createAsyncThunk(
     payload: GetUsersByRoleRequest | undefined = undefined,
     { getState, rejectWithValue }
   ) => {
-    const state = getState() as RootState;
+    const { users } = getState() as RootState;
 
     try {
       return await get<PaginationResponse<IUser>>({
         path: "/users",
-        query: payload ?? state.users.currentRequest,
+        query: payload ?? users.currentRequest,
+      });
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
+export const getAssistantsList = createAsyncThunk(
+  "users/assistants/fetch",
+  async (payload: number, { getState, rejectWithValue }) => {
+    const { recruiment } = getState() as RootState;
+
+    try {
+      return await get<PaginationResponse<IUser>>({
+        path: `/hoc-phan/classes/${recruiment.scheduleId}/assistants`,
+        query: {
+          page: payload,
+        },
       });
     } catch (e) {
       return rejectWithValue(e);
@@ -106,6 +124,9 @@ const usersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(getUsersList.fulfilled, (state, { payload }) => {
+      state.usersResponse = payload;
+    });
+    builder.addCase(getAssistantsList.fulfilled, (state, { payload }) => {
       state.usersResponse = payload;
     });
   },
