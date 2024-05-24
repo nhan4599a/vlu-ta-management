@@ -3,7 +3,7 @@ import MainNavBar from "./components/navbar/MainNavBar";
 import { Routes, Route, Outlet, useNavigate } from "react-router-dom";
 const Profile = lazy(() => import("./page/general/user-profile/Profile"));
 import ImportSectionClassList from "./page/admin/class-management/ImportSectionClassList";
-import ImportPassedTraningTAList from "./page/admin/ta-information-management/ImportPassedTraningTAList";
+import ImportPassedTrainingTAList from "./page/admin/ta-information-management/ImportPassedTrainingTAList";
 import { Col, Container, Row } from "react-bootstrap";
 const Login = lazy(() => import("./page/general/login/Login-test"));
 import NotFound from "./page/general/error/404NotFound";
@@ -85,8 +85,7 @@ function App() {
               path="assistant/:scheduleId"
               element={<TARegistrationList />}
             />
-            <Route path="eligible" element={<TAEligiblePage />} />
-            <Route path="import-student-list" element={<ImportPassedTraningTAList />} />
+            <Route path="import-passed-asistant-training-list" element={<ImportPassedTrainingTAList />} />
           </Route>
 
           <Route path="/task-mission-magagement" element="">
