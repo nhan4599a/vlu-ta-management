@@ -28,7 +28,13 @@ const AttachmentButton = () => {
   const [modalShow, setModalShow] = React.useState(false);
   return (
     <>
-      <Button variant="link" onClick={() => setModalShow(true)}>
+      <Button
+        variant="link"
+        onClick={() => setModalShow(true)}
+        data-bs-toggle="tooltip"
+        data-bs-placement="bottom"
+        title="File đính kèm"
+      >
         <Image src="/images/attach-file.png" height={20}></Image>
       </Button>
 

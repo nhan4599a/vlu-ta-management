@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Button, Form, InputGroup, ListGroup, Modal } from "react-bootstrap";
+import {
+  Button,
+  Form,
+  InputGroup,
+  ListGroup,
+  Modal,
+  Image,
+} from "react-bootstrap";
 import {
   addTask,
   deleteTask,
@@ -130,13 +137,25 @@ const TasksPrompt = () => {
                   ) : (
                     <div>
                       <AttachmentButton />
-                      <Button variant="link" onClick={openEditMode(task)}>
-                        Chỉnh sửa
+                      <Button
+                        variant="link"
+                        onClick={openEditMode(task)}
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        title="Chỉnh sửa"
+                      >
+                        <Image src="/images/edit.png"></Image>
                       </Button>
                     </div>
                   )}
-                  <Button variant="link" onClick={handleDelete(index)}>
-                    Xóa
+                  <Button
+                    variant="link"
+                    onClick={handleDelete(index)}
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    title="Xóa"
+                  >
+                    <Image src="/images/delete.png"></Image>
                   </Button>
                 </div>
               </ListGroup.Item>
