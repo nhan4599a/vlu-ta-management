@@ -6,6 +6,8 @@ import {
   ListGroup,
   Modal,
   Image,
+  Row,
+  Col,
 } from "react-bootstrap";
 import {
   addTask,
@@ -116,48 +118,50 @@ const TasksPrompt = () => {
                 className="d-flex align-items-center justify-content-between"
                 key={index}
               >
-                <div>
-                  <Form.Check aria-label="option" />
-                </div>
-                <div>
-                  {edittingTask === task._id && edittingTask !== undefined ? (
-                    <input
-                      value={edittingValue}
-                      onChange={(e) => setEdittingValue(e.target.value)}
-                    />
-                  ) : (
-                    <>{task.content}</>
-                  )}
-                </div>
-                <div>
-                  {edittingTask === task._id && edittingTask !== undefined ? (
-                    <Button variant="link" onClick={closeEditMode(task._id!)}>
-                      Hoàn tất
-                    </Button>
-                  ) : (
-                    <div>
-                      <AttachmentButton />
-                      <Button
-                        variant="link"
-                        onClick={openEditMode(task)}
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="bottom"
-                        title="Chỉnh sửa"
-                      >
-                        <Image src="/images/edit.png"></Image>
+                <Row>
+                  <Col sm={2}>
+                    <Form.Check aria-label="option" />
+                  </Col>
+                  <Col sm={6}>
+                    {edittingTask === task._id && edittingTask !== undefined ? (
+                      <Form.Control
+                        value={edittingValue}
+                        onChange={(e) => setEdittingValue(e.target.value)}
+                      />
+                    ) : (
+                      <>{task.content}</>
+                    )}
+                  </Col>
+                  <Col sm={4}>
+                    {edittingTask === task._id && edittingTask !== undefined ? (
+                      <Button variant="link" onClick={closeEditMode(task._id!)}>
+                        Hoàn tất
                       </Button>
-                    </div>
-                  )}
-                  <Button
-                    variant="link"
-                    onClick={handleDelete(index)}
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="bottom"
-                    title="Xóa"
-                  >
-                    <Image src="/images/delete.png"></Image>
-                  </Button>
-                </div>
+                    ) : (
+                      <div>
+                        <AttachmentButton />
+                        <Button
+                          variant="link"
+                          onClick={openEditMode(task)}
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="bottom"
+                          title="Chỉnh sửa"
+                        >
+                          <Image src="/images/edit.png" height={20}></Image>
+                        </Button>
+                      </div>
+                    )}
+                    <Button
+                      variant="link"
+                      onClick={handleDelete(index)}
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="bottom"
+                      title="Xóa"
+                    >
+                      <Image src="/images/delete.png" height={20}></Image>
+                    </Button>
+                  </Col>
+                </Row>
               </ListGroup.Item>
             ))}
         </ListGroup>

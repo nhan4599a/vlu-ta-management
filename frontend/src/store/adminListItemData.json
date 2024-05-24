@@ -8,11 +8,20 @@
       },
       {
         "title": "Tuyển dụng trợ giảng - sinh viên",
-        "path": "/ta-information-management/assistant"
-      },
-      {
-        "title": "Sinh viên đủ điều kiện",
-        "path": "/ta-information-management/eligible"
+        "children": [
+          {
+            "title": "Sơ tuyển",
+            "path": "/ta-information"
+          },
+          {
+            "title": "Traning",
+            "path": "/ta-information"
+          },
+          {
+            "title": "Final",
+            "path": "/assistant-eligible"
+          }
+        ]
       }
     ]
   },
