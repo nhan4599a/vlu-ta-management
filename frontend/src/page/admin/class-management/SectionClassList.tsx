@@ -7,8 +7,8 @@ import {
   setCurrentPage,
 } from "@redux/slices/terms.slice";
 import { useAdaptiveRoleComponent } from "@main/hooks/useAdaptiveRoleComponent";
-const StudentSectionClassList = lazy(() => import("./StudentSectionClassList"));
-const TeacherSectionClassList = lazy(() => import("./TeacherSectionClassList"));
+const StudentSectionClassList = lazy(() => import("../../student/StudentSectionClassList"));
+const TeacherSectionClassList = lazy(() => import("../../lecturer/class-management/TeacherSectionClassList"));
 const AdminSectionClassList = lazy(() => import("./AdminSectionClassList"));
 const RecruimentRegisterPrompt = lazy(
   () => import("@main/components/prompts/RecruimentRegisterPrompt")

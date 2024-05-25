@@ -31,7 +31,7 @@ import TARegistrationOverviewList from "./page/admin/TA-recruitment-management/T
 import { TARegistrationList } from "./page/admin/TA-recruitment-management/TARegistrationList";
 import "./index.css";
 import TAEligiblePage from "./page/admin/TA-recruitment-management/TAEligiblePage";
-import { AssistantsList } from "./page/lecturer/class-management/AsssistantsList";
+import { AssistantsList } from "./page/lecturer/assistant-management/AsssistantsList";
 
 const Layout = () => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
