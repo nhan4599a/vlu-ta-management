@@ -7,8 +7,12 @@ import {
   setCurrentPage,
 } from "@redux/slices/terms.slice";
 import { useAdaptiveRoleComponent } from "@main/hooks/useAdaptiveRoleComponent";
-const StudentSectionClassList = lazy(() => import("../../student/StudentSectionClassList"));
-const TeacherSectionClassList = lazy(() => import("../../lecturer/class-management/TeacherSectionClassList"));
+const StudentSectionClassList = lazy(
+  () => import("../../student/StudentSectionClassList")
+);
+const TeacherSectionClassList = lazy(
+  () => import("../../lecturer/class-management/TeacherSectionClassList")
+);
 const AdminSectionClassList = lazy(() => import("./AdminSectionClassList"));
 const RecruimentRegisterPrompt = lazy(
   () => import("@main/components/prompts/RecruimentRegisterPrompt")
@@ -20,10 +24,11 @@ const ApproveRecruimentPrompt = lazy(
   () => import("@main/components/prompts/ApproveRecruimentPrompt")
 );
 import "@main/index.css";
+import TasksPrompt from "@main/components/prompts/TasksPrompt";
 
 const SectionClassList = () => {
   const dispatch = useAppDispatch();
-  const termsResponse = useAppSelector(selectTermsData)
+  const termsResponse = useAppSelector(selectTermsData);
 
   const [page, setPage] = useState(1);
 
@@ -35,10 +40,20 @@ const SectionClassList = () => {
   });
 
   const PromptComponent = useAdaptiveRoleComponent({
-    0: <TARegister />,
+    0: (
+      <>
+        <TARegister />
+        <TasksPrompt />
+      </>
+    ),
     1: <RecruimentRegisterPrompt />,
     2: <ApproveRecruimentPrompt />,
-    3: <TARegister />,
+    3: (
+      <>
+        <TARegister />
+        <TasksPrompt />
+      </>
+    ),
   });
 
   useEffect(() => {

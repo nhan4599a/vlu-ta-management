@@ -11,10 +11,18 @@ import {
   getTermClassInfo,
   setApplicationId,
 } from "@main/features/slices/application.slice";
+import {
+  setScheduleId as setTasksScheduleId,
+  setAssignee,
+  openTasksPrompt,
+  getTasks,
+} from "@main/features/slices/tasks.slice";
+import { selectCurrentUser } from "@main/features/slices/authentication.slice";
 import "@main/index.css";
 
 const StudentSectionClassList = () => {
   const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(selectCurrentUser);
   const termsResponse = useAppSelector(selectTermsData);
 
   const openApplyRecruimentPromt = (
@@ -24,14 +32,23 @@ const StudentSectionClassList = () => {
     return async () => {
       if (applicationId) {
         dispatch(setApplicationId(applicationId));
-        await dispatch(getApplicationInfo())
+        await dispatch(getApplicationInfo());
       }
       dispatch(setScheduleId(term.scheduleId));
 
       await Promise.all([
         dispatch(getRecuimentInfo()),
-        dispatch(getTermClassInfo(term.scheduleId))
-      ])
+        dispatch(getTermClassInfo(term.scheduleId)),
+      ]);
+    };
+  };
+
+  const onOpenTasksPromptClick = (scheduleId: string) => {
+    return async () => {
+      dispatch(setTasksScheduleId(scheduleId));
+      dispatch(setAssignee(currentUser!._id));
+      await dispatch(getTasks());
+      dispatch(openTasksPrompt(true));
     };
   };
 
@@ -69,7 +86,15 @@ const StudentSectionClassList = () => {
                 </td>
                 <td>
                   {applicationInfo ? (
-                    applicationInfo.stage1Approval ? null : (
+                    applicationInfo.stage1Approval ? (
+                      applicationInfo.stage2Approval ? (
+                        <Button
+                          onClick={onOpenTasksPromptClick(term.scheduleId)}
+                        >
+                          Nhiệm vụ
+                        </Button>
+                      ) : null
+                    ) : (
                       <Button
                         variant="info"
                         className="w-100 mt-1"

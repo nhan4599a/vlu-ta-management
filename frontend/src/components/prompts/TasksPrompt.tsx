@@ -13,10 +13,10 @@ import {
   addTask,
   deleteTask,
   getTasks,
+  openTasksPrompt,
   saveTasks,
-  selectAssignee,
+  selectIsOpenTasksPrompt,
   selectTasks,
-  setAssignee,
   updateTask,
 } from "@redux/slices/tasks.slice";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
@@ -27,8 +27,8 @@ import { showMessageDialog } from "@main/features/slices/messages.slice";
 const TasksPrompt = () => {
   const dispatch = useAppDispatch();
 
+  const isTasksPromptOpen = useAppSelector(selectIsOpenTasksPrompt)
   const tasks = useAppSelector(selectTasks);
-  const assignee = useAppSelector(selectAssignee);
 
   const [inputValue, setInputValue] = useState("");
 
@@ -89,7 +89,7 @@ const TasksPrompt = () => {
   };
 
   const onHide = () => {
-    dispatch(setAssignee(undefined));
+    dispatch(openTasksPrompt(false));
   };
 
   const onSaveButtonClick = async () => {
@@ -102,7 +102,7 @@ const TasksPrompt = () => {
     <Modal
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
-      show={assignee !== undefined}
+      show={isTasksPromptOpen}
       onHide={onHide}
       centered
     >

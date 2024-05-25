@@ -2,6 +2,7 @@ import AccountsList from "@main/components/lists/AccountsList";
 import TasksPrompt from "@main/components/prompts/TasksPrompt";
 import { useAppDispatch, useAppSelector } from "@main/features/hooks";
 import { setScheduleId } from "@main/features/slices/recruiment.slice";
+import { openTasksPrompt, setScheduleId as setTasksScheduleId } from "@main/features/slices/tasks.slice";
 import { setAssignee, getTasks } from "@main/features/slices/tasks.slice";
 import { getAssistantsList, selectUsersList } from "@main/features/slices/users.slice";
 import { IUser } from "@main/types/user.type";
@@ -19,12 +20,14 @@ export const AssistantsList = () => {
 
   useEffect(() => {
     dispatch(setScheduleId(scheduleId));
+    dispatch(setTasksScheduleId(scheduleId));
     dispatch(getAssistantsList(page))
   }, [dispatch, scheduleId, page]);
 
   const onActionButtonClick = async (user: IUser) => {
     dispatch(setAssignee(user._id));
     await dispatch(getTasks())
+    dispatch(openTasksPrompt(true));
   };
 
   return (

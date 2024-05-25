@@ -4,12 +4,15 @@ import { RootState } from "@redux/store";
 import { ITaskItem, TaskAction } from "@main/types/task.type";
 
 type InitialState = {
+  currentScheduleId?: string;
   currentAssignee?: string;
   tasks: ITaskItem[];
+  isTasksPromptOpen: boolean;
 };
 
 const initialState: InitialState = {
   tasks: [],
+  isTasksPromptOpen: false,
 };
 
 type UpdateTaskItemAction = {
@@ -19,15 +22,12 @@ type UpdateTaskItemAction = {
 
 export const getTasks = createAsyncThunk(
   "tasks/fetch",
-  async (
-    _: undefined,
-    { getState, rejectWithValue }
-  ) => {
-    const { recruiment, tasks } = getState() as RootState;
+  async (_: undefined, { getState, rejectWithValue }) => {
+    const { tasks } = getState() as RootState;
 
     try {
       return await get<ITaskItem[]>({
-        path: `/hoc-phan/classes/${recruiment.scheduleId}/users/${tasks.currentAssignee}/tasks`,
+        path: `/hoc-phan/classes/${tasks.currentScheduleId}/users/${tasks.currentAssignee}/tasks`,
       });
     } catch (e) {
       return rejectWithValue(e);
@@ -38,11 +38,11 @@ export const getTasks = createAsyncThunk(
 export const saveTasks = createAsyncThunk(
   "tasks/update",
   async (_: undefined, { getState, rejectWithValue }) => {
-    const { recruiment, tasks } = getState() as RootState;
+    const { tasks } = getState() as RootState;
 
     try {
       return await post({
-        path: `/hoc-phan/classes/${recruiment.scheduleId}/users/${tasks.currentAssignee}/tasks`,
+        path: `/hoc-phan/classes/${tasks.currentScheduleId}/users/${tasks.currentAssignee}/tasks`,
         body: {
           tasks: tasks.tasks,
         },
@@ -59,6 +59,12 @@ const tasksSlice = createSlice({
   reducers: {
     setAssignee(state, { payload }: PayloadAction<string | undefined>) {
       state.currentAssignee = payload;
+    },
+    setScheduleId(state, { payload }: PayloadAction<string | undefined>) {
+      state.currentScheduleId = payload;
+    },
+    openTasksPrompt(state, { payload }: PayloadAction<boolean>) {
+      state.isTasksPromptOpen = payload;
     },
     addTask(state, { payload }: PayloadAction<string>) {
       state.tasks.push({
@@ -93,8 +99,15 @@ const tasksSlice = createSlice({
   },
 });
 
-export const { setAssignee, addTask, updateTask, deleteTask } =
-  tasksSlice.actions;
+export const {
+  setScheduleId,
+  setAssignee,
+  openTasksPrompt,
+  addTask,
+  updateTask,
+  deleteTask,
+} = tasksSlice.actions;
 export const tasksReducer = tasksSlice.reducer;
-export const selectAssignee = (state: RootState) => state.tasks.currentAssignee;
+export const selectIsOpenTasksPrompt = (state: RootState) =>
+  state.tasks.isTasksPromptOpen;
 export const selectTasks = (state: RootState) => state.tasks.tasks;
