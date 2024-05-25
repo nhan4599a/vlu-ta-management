@@ -109,7 +109,7 @@ const RecruimentRegisterPrompt = () => {
         <Button variant="secondary" onClick={closeModal}>
           Đóng
         </Button>
-        <Button onClick={onSubmitSave}>Lưu</Button>
+        <Button variant="primary" onClick={onSubmitSave}>Lưu</Button>
       </Modal.Footer>
     </Modal>
   );

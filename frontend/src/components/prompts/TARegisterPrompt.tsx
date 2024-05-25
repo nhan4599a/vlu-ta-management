@@ -185,7 +185,7 @@ const TARegisterPrompt = () => {
         <Button variant="secondary" onClick={onHide}>
           Đóng
         </Button>
-        <Button onClick={onSubmit}>
+        <Button variant="primary" onClick={onSubmit}>
           {applicationInfo ? "Lưu lại" : "Gửi đơn"}
         </Button>
       </Modal.Footer>

@@ -25,11 +25,11 @@ const AttendanceLinkPrompt = (props: AttendanceLinkPromptProps) => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary">
-          <LinkItem to={props.url}>Xem link điểm danh</LinkItem>
+        <Button variant="secondary" onClick={props.onHide}>
+          Đóng
         </Button>
-        <Button variant="primary" onClick={props.onHide}>
-          Close
+        <Button variant="primary">
+          <LinkItem to={props.url}>Xem link điểm danh</LinkItem>
         </Button>
       </Modal.Footer>
     </Modal>
