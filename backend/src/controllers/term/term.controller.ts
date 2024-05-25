@@ -73,23 +73,25 @@ router.get("/classes/:classId/assistants", async (req, res) => {
   responseWithValue(res, assistants);
 });
 
-router.get("/classes/:classId/users/:userId/tasks", async (req, res) => {
+router.get("/classes/:classId/users/:userCode/tasks", async (req, res) => {
   const { db, params } = createTypedRequest(req);
 
   const tasks = await db.tasks.where({
     scheduleId: new mongoose.Types.ObjectId(params.classId),
-    assignee: new mongoose.Types.ObjectId(params.userId)
+    assignee: params.userCode
   });
 
   responseWithValue(res, tasks);
 });
 
-router.post("/classes/:classId/users/:userId/tasks", async (req, res) => {
+router.post("/classes/:classId/users/:userCode/tasks", async (req, res) => {
   const { db, params, body, user } = createTypedRequest<CreateTaskRequest, {}>(
     req
   );
 
   const actions: AnyBulkWriteOperation<ITask>[] = [];
+
+  const classId = new mongoose.Types.ObjectId(params.classId)
 
   for (const taskItem of body.tasks.filter((item) => item.state !== null)) {
     const { state, _id, ...actualTask } = taskItem;
@@ -100,9 +102,9 @@ router.post("/classes/:classId/users/:userId/tasks", async (req, res) => {
           insertOne: {
             document: {
               ...actualTask,
-              scheduleId: new mongoose.Types.ObjectId(params.classId),
-              assigner: user._id,
-              assignee: new mongoose.Types.ObjectId(params.userId),
+              scheduleId: classId,
+              assigner: user.code!,
+              assignee: params.userCode,
             },
           },
         });
@@ -139,8 +141,8 @@ router.post("/classes/:classId/users/:userId/tasks", async (req, res) => {
   await db.tasks.bulkWrite(actions);
 
   const tasks = await db.tasks.where({
-    scheduleId: params.classId,
-    assignee: params.userId,
+    scheduleId: classId,
+    assignee: params.userCode,
   });
 
   responseWithValue(res, tasks);

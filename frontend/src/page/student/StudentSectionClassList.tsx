@@ -46,7 +46,7 @@ const StudentSectionClassList = () => {
   const onOpenTasksPromptClick = (scheduleId: string) => {
     return async () => {
       dispatch(setTasksScheduleId(scheduleId));
-      dispatch(setAssignee(currentUser!._id));
+      dispatch(setAssignee(currentUser!.code));
       await dispatch(getTasks());
       dispatch(openTasksPrompt(true));
     };

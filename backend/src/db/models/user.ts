@@ -13,10 +13,10 @@ export interface IUser {
 }
 
 export const UserSchema = new Schema<IUser>({
-    code: { type: String, required: false },
+    code: { type: String, required: false, unique: true },
     class: { type: String, required: false },
     phoneNumber: { type: String, required: false },
-    email: { type: String, required: true, index: true },
+    email: { type: String, required: true },
     active: { type: Boolean, required: true },
     name: { type: String, required: true },
     role: { type: Number, required: true },

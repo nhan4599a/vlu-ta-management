@@ -28,9 +28,9 @@ const TAClassList = () => {
     dispatch(getUsersList(request));
   }, [dispatch, page]);
 
-  const openTaskModal = (userId: string) => {
+  const openTaskModal = (userCode: string) => {
     return () => {
-      dispatch(setAssignee(userId));
+      dispatch(setAssignee(userCode));
       dispatch(getTasks())
     };
   };
@@ -58,7 +58,7 @@ const TAClassList = () => {
               <td>{user.code}</td>
               <td>{user.class}</td>
               <td>
-                <Button variant="primary" onClick={openTaskModal(user._id)}>
+                <Button variant="primary" onClick={openTaskModal(user.code!)}>
                   Nhiệm vụ
                 </Button>
               </td>
