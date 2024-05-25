@@ -7,12 +7,6 @@
     ]
   },
   {
-    "title": "Quản lí thông tin trợ giảng",
-    "children": [
-      { "title": "Thông tin lớp học phần", "path": "/ta-course-information" }
-    ]
-  },
-  {
     "title": "Quản lí nhiệm vụ trợ giảng",
     "children": [
       { "title": "Điểm danh sinh viên", "path": "/ta-attendance" },
