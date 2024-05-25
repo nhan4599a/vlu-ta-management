@@ -11,15 +11,15 @@
         "children": [
           {
             "title": "Sơ tuyển",
-            "path": "/ta-information"
+            "path": "/ta-information-management/assistant"
           },
           {
             "title": "Traning",
-            "path": "/ta-information"
+            "path": "/ta-information-management/eligible"
           },
           {
             "title": "Final",
-            "path": "/assistant-eligible"
+            "path": "/"
           }
         ]
       }
@@ -48,6 +48,19 @@
       {
         "title": "Danh sách account",
         "path": "/account-management/accounts-list"
+      }
+    ]
+  },
+  {
+    "title": "Đánh giá & thống kê",
+    "children": [
+      {
+        "title": "Đánh giá",
+        "path": "/"
+      },
+      {
+        "title": "Thống kê",
+        "path": "/"
       }
     ]
   }

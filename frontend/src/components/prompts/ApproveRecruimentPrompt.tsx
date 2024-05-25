@@ -83,11 +83,11 @@ const ApproveRecruimentPrompt = () => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={closeModal}>
+        <Button variant="light" onClick={closeModal}>
           Đóng
         </Button>
-        <Button onClick={onSubmitApprove(true)}>Approve</Button>
-        <Button onClick={onSubmitApprove(false)}>Reject</Button>
+        <Button variant="secondary" onClick={onSubmitApprove(false)}>Từ chối</Button>
+        <Button variant="primary" onClick={onSubmitApprove(true)}>Chấp thuận</Button>
       </Modal.Footer>
     </Modal>
   );

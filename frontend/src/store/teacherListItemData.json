@@ -2,34 +2,45 @@
   {
     "title": "Tuyển dụng sinh viên",
     "children": [
-      { "title": "Việc làm", "path": "/jobs" },
-      { "title": "Quản lí đơn ứng tuyển", "path": "/applications" }
-    ]
-  },
-  {
-    "title": "Quản lí thông tin trợ giảng",
-    "children": [
-      { "title": "Tuyển trợ giảng", "path": "/ta-information-management/teacher" },
-      { "title": "Quản lý tin tuyển dụng", "path": "/ta-recruitment-management" },
       {
-        "title": "Quản lí trợ giảng",
-        "children": [
-          { "title": "Thông tin trợ giảng", "path": "/ta-information" }, 
-          {
-            "title": "Công việc trợ giảng",
-            "children": [
-              { "title": "Giao task cho trợ giảng", "path": "/assign-ta-task" },
-              { "title": "Quản lí task", "path": "/ta-task-management" }
-            ]
-          }
-        ]
+        "title": "Tuyển trợ giảng",
+        "path": "/ta-information-management/teacher"
+      },
+      {
+        "title": "Quản lý tin tuyển dụng",
+        "path": "/ta-recruitment-management"
       }
     ]
   },
   {
-    "title": "Quản lí giảng dạy",
+    "title": "Quản lý lớp giảng dạy",
     "children": [
-      { "title": "Xem thời khoá biểu", "path": "/teaching-schedule" }
+      {
+        "title": "Thông tin trợ giảng",
+        "path": "/ta-information"
+      }
+    ]
+  },
+  {
+    "title": "Quản lí nhiệm vụ",
+    "children": [
+      {
+        "title": "Nhiệm vụ cho trợ giảng",
+        "path": "/"
+      }
+    ]
+  },
+  {
+    "title": "Đánh giá & thống kê",
+    "children": [
+      {
+        "title": "Đánh giá",
+        "path": "/"
+      },
+      {
+        "title": "Thống kê",
+        "path": "/"
+      }
     ]
   }
 ]
