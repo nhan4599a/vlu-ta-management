@@ -65,7 +65,7 @@ router.post("/classes/:classId", async (req, res) => {
       $set: {
         "classes.$[].schedule.$[i].registrationInfo": {
           ...body,
-          approved: null,
+          approved: true,
         },
       },
     },
