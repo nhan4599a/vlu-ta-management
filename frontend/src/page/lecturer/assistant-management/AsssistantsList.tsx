@@ -2,7 +2,7 @@ import AccountsList from "@main/components/lists/AccountsList";
 import TasksPrompt from "@main/components/prompts/TasksPrompt";
 import { useAppDispatch, useAppSelector } from "@main/features/hooks";
 import { setScheduleId } from "@main/features/slices/recruiment.slice";
-import { setAssignee } from "@main/features/slices/tasks.slice";
+import { setAssignee, getTasks } from "@main/features/slices/tasks.slice";
 import { getAssistantsList, selectUsersList } from "@main/features/slices/users.slice";
 import { IUser } from "@main/types/user.type";
 import { useEffect, useState } from "react";
@@ -22,8 +22,9 @@ export const AssistantsList = () => {
     dispatch(getAssistantsList(page))
   }, [dispatch, scheduleId, page]);
 
-  const onActionButtonClick = (user: IUser) => {
+  const onActionButtonClick = async (user: IUser) => {
     dispatch(setAssignee(user._id));
+    await dispatch(getTasks())
   };
 
   return (

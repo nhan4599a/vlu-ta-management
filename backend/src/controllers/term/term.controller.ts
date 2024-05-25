@@ -77,7 +77,6 @@ router.get("/classes/:classId/users/:userId/tasks", async (req, res) => {
   const { db, params } = createTypedRequest(req);
 
   const tasks = await db.tasks.where({
-    _id: params.id,
     scheduleId: new mongoose.Types.ObjectId(params.classId),
     assignee: new mongoose.Types.ObjectId(params.userId)
   });
