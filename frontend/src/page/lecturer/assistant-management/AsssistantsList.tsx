@@ -46,7 +46,7 @@ export const AssistantsList = () => {
     <>
       <h2 className="display-5 mt-2 mb-3">
         Danh sách trợ giảng lớp {termClass?.name} - {termClass?.day}{" "}
-        {termClass?.lesson}
+        tiết {termClass?.lesson}
       </h2>
       <AccountsList
         actionEnabled={true}

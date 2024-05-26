@@ -34,7 +34,7 @@ const TARegistrationOverviewList = () => {
               <TeacherAssistantsList applications={item.applications} />
               {item.hasMore && (
                 <a href={`/ta-information-management/assistant/${item.scheduleId}`} target="_blank">
-                  View more
+                  Xem thêm
                 </a>
               )}
             </Accordion.Body>
