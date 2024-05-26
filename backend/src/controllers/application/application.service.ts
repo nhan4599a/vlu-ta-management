@@ -8,6 +8,7 @@ import mongoose, { AnyBulkWriteOperation } from "mongoose";
 import { IApplicationForm } from "../../db/models/application-form";
 import DbInstance from "../../db";
 import { IScheduleDetail, ITerm } from "../../db/models/term";
+import { orderBy } from "lodash";
 
 const mapping: ColumnMapping<IUser> = {
   name: { column: 1, headerName: "Tên sinh viên" },
@@ -16,14 +17,9 @@ const mapping: ColumnMapping<IUser> = {
   phoneNumber: { column: 4, headerName: "Số điện thoại" },
 };
 
-type GroupedResult<TKey> = {
-  _id: TKey;
+type GroupedResult = {
+  _id: string;
   applications: IApplicationForm[];
-};
-
-type GroupedResultV2 = {
-  scheduleGroup: GroupedResult<mongoose.Types.ObjectId>[];
-  userGroup: GroupedResult<string>[];
 };
 
 const readPassTrainingFile = async (
@@ -34,68 +30,6 @@ const readPassTrainingFile = async (
   return data.map((item) => {
     return item[1].toString();
   });
-};
-
-const getMaxCandidatesCount = async (
-  db: DbInstance,
-  scheduleId: mongoose.Types.ObjectId
-): Promise<number> => {
-  const result = await db.terms.aggregate<{ candidatesCount: number }>([
-    {
-      $unwind: {
-        path: "$classes",
-        includeArrayIndex: "classIndex",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-    {
-      $unwind: {
-        path: "$classes.schedule",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-    {
-      $replaceRoot: {
-        newRoot: {
-          $mergeObjects: ["$$ROOT", "$classes"],
-        },
-      },
-    },
-    {
-      $replaceRoot: {
-        newRoot: {
-          $mergeObjects: ["$$ROOT", "$schedule"],
-        },
-      },
-    },
-    {
-      $replaceRoot: {
-        newRoot: {
-          $mergeObjects: ["$$ROOT", "$classes"],
-        },
-      },
-    },
-    {
-      $replaceRoot: {
-        newRoot: {
-          $mergeObjects: ["$$ROOT", "$schedule"],
-        },
-      },
-    },
-    {
-      $match: {
-        "schedule._id": scheduleId,
-      },
-    },
-    {
-      $project: {
-        candidatesCount: "$shedule.registrationInfo.candidatesCount",
-        _id: 0,
-      },
-    },
-  ]);
-
-  return result[0].candidatesCount;
 };
 
 const getScheduleInfo = async (
@@ -220,8 +154,8 @@ export const importPassTrainingList = async (req: Request) => {
 
   const { currentSetting } = user;
 
-  const applications = await db.applications
-    .aggregate<GroupedResult<mongoose.Types.ObjectId>>([
+  const groupData = await db.applications
+    .aggregate<GroupedResult>([
       {
         $match: {
           year: currentSetting!.year,
@@ -233,218 +167,43 @@ export const importPassTrainingList = async (req: Request) => {
       },
       {
         $sort: {
-          termScore: -1,
-          avgScore: -1,
-          priority: -1,
+          priority: 1,
         },
       },
       {
         $group: {
-          _id: "$scheduleId",
+          _id: "$code",
           applications: {
             $push: {
               _id: "$_id",
               code: "$code",
+              scheduleId: "$scheduleId",
+              termScore: "$termScore",
+              avgScore: "$avgScore",
+              priority: "$priority",
             },
           },
         },
       },
     ])
     .exec();
-
-  await db.startTransaction();
-
-  const applicationActions: AnyBulkWriteOperation<IApplicationForm>[] = [];
-  const usersActions: AnyBulkWriteOperation<IUser>[] = [];
-  const termsActions: AnyBulkWriteOperation<ITerm>[] = [];
-
-  for (const group of applications) {
-    const numberOfCandidates = await getMaxCandidatesCount(db, group._id);
-
-    const applications: IApplicationForm[] = [];
-
-    for (const application of group.applications) {
-      if (!passedTrainingCode.includes(application.code)) {
-        applicationActions.push({
-          updateOne: {
-            filter: {
-              _id: application._id,
-            },
-            update: {
-              $set: {
-                stage2Approval: false,
-              },
-            },
-          },
-        });
-      } else {
-        applications.push(application);
-      }
-    }
-
-    if (applications.length > numberOfCandidates) {
-      applicationActions.push(
-        ...applications.map((e) => {
-          return {
-            updateOne: {
-              filter: {
-                _id: e._id,
-              },
-              update: {
-                $set: {
-                  isPending: true,
-                },
-              },
-            },
-          };
-        })
-      );
-      continue;
-    }
-
-    for (const application of applications) {
-      applicationActions.push({
-        updateOne: {
-          filter: {
-            _id: application._id,
-          },
-          update: {
-            $set: {
-              stage2Approval: true,
-            },
-          },
-        },
-      });
-      usersActions.push({
-        updateOne: {
-          filter: {
-            code: application.code,
-          },
-          update: {
-            isAssistant: true,
-          },
-        },
-      });
-      termsActions.push({
-        updateOne: {
-          filter: {
-            "classes.schedule._id": group._id,
-          },
-          update: {
-            $push: {
-              "classes.$[].schedule.$[i].assistants": application.code,
-            },
-          },
-          arrayFilters: [
-            {
-              "i._id": group._id,
-            },
-          ],
-        },
-      });
-    }
-  }
-
-  await Promise.all([
-    db.applications.bulkWrite(applicationActions),
-    db.users.bulkWrite(usersActions),
-    db.terms.bulkWrite(termsActions),
-  ]);
-
-  await db.commitTransaction();
-};
-
-export const importPassTrainingListv2 = async (req: Request) => {
-  const { db, file, user } = createTypedRequest(req);
-
-  const passedTrainingCode = await readPassTrainingFile(file!);
-
-  const { currentSetting } = user;
-
-  const groups = await db.applications
-    .aggregate<GroupedResultV2>([
-      {
-        $facet: {
-          scheduleGroup: [
-            {
-              $match: {
-                year: currentSetting!.year,
-                semester: currentSetting!.semester,
-                stage1Approval: true,
-                stage2Approval: null,
-                isPending: false,
-              },
-            },
-            {
-              $sort: {
-                termScore: -1,
-                avgScore: -1,
-                priority: -1,
-              },
-            },
-            {
-              $group: {
-                _id: "$scheduleId",
-                applications: {
-                  $push: {
-                    _id: "$_id",
-                    code: "$code",
-                  },
-                },
-              },
-            },
-          ],
-          userGroup: [
-            {
-              $match: {
-                year: currentSetting!.year,
-                semester: currentSetting!.semester,
-                stage1Approval: true,
-                stage2Approval: null,
-                isPending: false,
-              },
-            },
-            {
-              $sort: {
-                priority: -1,
-                termScore: -1,
-                avgScore: -1,
-              },
-            },
-            {
-              $group: {
-                _id: "$code",
-                applications: {
-                  $push: {
-                    _id: "$_id",
-                    scheduleId: "$scheduleId",
-                  },
-                },
-              },
-            },
-          ],
-        },
-      },
-    ])
-    .exec();
-
-  const data = groups[0];
-
-  await db.startTransaction();
-
-  const applicationActions: AnyBulkWriteOperation<IApplicationForm>[] = [];
-  const usersActions: AnyBulkWriteOperation<IUser>[] = [];
-  const termsActions: AnyBulkWriteOperation<ITerm>[] = [];
 
   const scheduleInfoMap = new Map<mongoose.Types.ObjectId, IScheduleDetail>();
+  const scheduleApplicationsMap = new Map<
+    mongoose.Types.ObjectId,
+    IApplicationForm[]
+  >();
 
-  for (const {
-    _id: userCode,
-    applications: applicationsOfUser,
-  } of data.userGroup) {
-    if (!passedTrainingCode.includes(userCode)) {
+  const applicationActions: AnyBulkWriteOperation<IApplicationForm>[] = [];
+  const usersActions: AnyBulkWriteOperation<IUser>[] = [];
+  const termsActions: AnyBulkWriteOperation<ITerm>[] = [];
+
+  await db.startTransaction();
+
+  for (const { _id, applications } of groupData) {
+    if (!passedTrainingCode.includes(_id)) {
       applicationActions.push(
-        ...applicationsOfUser.map((application) => {
+        ...applications.map((application) => {
           return {
             updateOne: {
               filter: {
@@ -462,25 +221,149 @@ export const importPassTrainingListv2 = async (req: Request) => {
       continue;
     }
 
-    for (const userApplication of applicationsOfUser) {
-      const scheduleInfo =
-        scheduleInfoMap.get(userApplication.scheduleId) ??
-        (await getScheduleInfo(db, userApplication.scheduleId));
+    const scheduleMap = new Map<number, [number, number][]>();
 
-      const { applications } = data.scheduleGroup.find(
-        (e) => e._id === userApplication.scheduleId
-      )!;
+    for (const application of applications) {
+      if (!scheduleInfoMap.has(application.scheduleId)) {
+        scheduleInfoMap.set(
+          application.scheduleId,
+          await getScheduleInfo(db, application.scheduleId)
+        );
+      }
 
-      const applicationsOfSchedule = applications.filter((e) =>
-        passedTrainingCode.includes(e.code)
-      );
+      const scheduleInfo = scheduleInfoMap.get(application.scheduleId);
+
+      const schedule = scheduleMap.get(scheduleInfo!.day);
+
+      // Check if time is overlapsed
+      if (
+        !schedule ||
+        !schedule.some(
+          ([start, end]) =>
+            scheduleInfo!.startLesson >= start &&
+            scheduleInfo!.startLesson <= end
+        )
+      ) {
+        const savedApplications =
+          scheduleApplicationsMap.get(application.scheduleId) ?? [];
+
+        scheduleApplicationsMap.set(application.scheduleId, [
+          ...savedApplications,
+          application,
+        ]);
+
+        if (!schedule) {
+          scheduleMap.set(scheduleInfo!.day, [
+            [scheduleInfo!.startLesson, scheduleInfo!.endLesson],
+          ]);
+        } else {
+          scheduleMap.set(scheduleInfo!.day, [
+            ...schedule,
+            [scheduleInfo!.startLesson, scheduleInfo!.endLesson],
+          ]);
+        }
+      } else {
+        applicationActions.push({
+          updateOne: {
+            filter: {
+              _id: application._id,
+            },
+            update: {
+              $set: {
+                stage2Approval: false,
+              },
+            },
+          },
+        });
+      }
+    }
+  }
+
+  for (const [scheduleId, uoApplications] of scheduleApplicationsMap) {
+    const applications = orderBy(
+      uoApplications,
+      ["termScore", "avgScore", "priority"],
+      ["desc", "desc", "asc"]
+    );
+
+    let matchedCount = 1;
+
+    for (let i = 1; i < applications.length; i++) {
+      const { termScore, avgScore, priority } = applications[i];
 
       if (
-        applicationsOfSchedule.length >
-        scheduleInfo.registrationInfo!.candidatesCount
+        termScore === applications[0].termScore &&
+        avgScore === applications[0].avgScore &&
+        priority === applications[0].priority
       ) {
+        matchedCount++;
+        continue;
+      }
+
+      break;
+    }
+
+    const { candidatesCount } =
+      scheduleInfoMap.get(scheduleId)!.registrationInfo!;
+
+    if (applications.length <= candidatesCount) {
+      applicationActions.push(
+        ...applications.map((e) => {
+          return {
+            updateOne: {
+              filter: {
+                _id: e._id,
+              },
+              update: {
+                $set: {
+                  stage2Approval: true,
+                },
+              },
+            },
+          };
+        })
+      );
+      usersActions.push(
+        ...applications.map((application) => {
+          return {
+            updateOne: {
+              filter: {
+                code: application.code,
+              },
+              update: {
+                $set: {
+                  isAssistant: true,
+                },
+              },
+            },
+          };
+        })
+      );
+      termsActions.push(
+        ...applications.map((application) => {
+          return {
+            updateOne: {
+              filter: {
+                "classes.schedule._id": scheduleId,
+              },
+              update: {
+                $push: {
+                  "classes.$[].schedule.$[i].assistants": application.code,
+                },
+              },
+              arrayFilters: [
+                {
+                  "i._id": scheduleId,
+                },
+              ],
+            },
+          };
+        })
+      );
+    } else {
+      if (matchedCount > candidatesCount) {
         applicationActions.push(
-          ...applicationsOfSchedule.map((e) => {
+          ...applications.slice(0, matchedCount).map((e) => {
             return {
               updateOne: {
                 filter: {
@@ -489,6 +372,92 @@ export const importPassTrainingListv2 = async (req: Request) => {
                 update: {
                   $set: {
                     isPending: true,
+                  },
+                },
+              },
+            };
+          })
+        );
+        applicationActions.push(
+          ...applications.slice(matchedCount).map((e) => {
+            return {
+              updateOne: {
+                filter: {
+                  _id: e._id,
+                },
+                update: {
+                  $set: {
+                    stage2Approval: false,
+                  },
+                },
+              },
+            };
+          })
+        );
+      } else {
+        applicationActions.push(
+          ...applications.slice(0, candidatesCount).map((e) => {
+            return {
+              updateOne: {
+                filter: {
+                  _id: e._id,
+                },
+                update: {
+                  $set: {
+                    stage2Approval: true,
+                  },
+                },
+              },
+            };
+          })
+        );
+        usersActions.push(
+          ...applications.slice(0, candidatesCount).map((application) => {
+            return {
+              updateOne: {
+                filter: {
+                  code: application.code,
+                },
+                update: {
+                  $set: {
+                    isAssistant: true,
+                  },
+                },
+              },
+            };
+          })
+        );
+        termsActions.push(
+          ...applications.slice(0, candidatesCount).map((application) => {
+            return {
+              updateOne: {
+                filter: {
+                  "classes.schedule._id": scheduleId,
+                },
+                update: {
+                  $push: {
+                    "classes.$[].schedule.$[i].assistants": application.code,
+                  },
+                },
+                arrayFilters: [
+                  {
+                    "i._id": scheduleId,
+                  },
+                ],
+              },
+            };
+          })
+        );
+        applicationActions.push(
+          ...applications.slice(candidatesCount).map((e) => {
+            return {
+              updateOne: {
+                filter: {
+                  _id: e._id,
+                },
+                update: {
+                  $set: {
+                    stage2Approval: false,
                   },
                 },
               },
