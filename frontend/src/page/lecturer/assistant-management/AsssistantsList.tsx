@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 import { useParams } from "react-router-dom";
 
-export const AssistantsList = () => {
+const AssistantsList = () => {
   const dispatch = useAppDispatch();
   const usersResponse = useAppSelector(selectUsersList);
   const termClass = useAppSelector(selectTermClassInfo);
@@ -69,3 +69,5 @@ export const AssistantsList = () => {
     </>
   );
 };
+
+export default AssistantsList

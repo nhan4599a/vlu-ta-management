@@ -8,7 +8,7 @@ import {
 import { Table } from "react-bootstrap";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 
-export const BaseClassList = () => {
+const BaseClassList = () => {
   const dispatch = useAppDispatch();
   const termsResponse = useAppSelector(selectTermsData);
 
@@ -65,3 +65,5 @@ export const BaseClassList = () => {
     </>
   );
 };
+
+export default BaseClassList

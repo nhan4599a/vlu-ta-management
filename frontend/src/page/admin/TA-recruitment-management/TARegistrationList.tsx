@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 import { useParams } from "react-router-dom";
 
-export const TARegistrationList = () => {
+const TARegistrationList = () => {
   const dispatch = useAppDispatch();
   const applicationsResponse = useAppSelector(selectApplicationsData);
 
@@ -53,3 +53,5 @@ export const TARegistrationList = () => {
     </>
   );
 };
+
+export default TARegistrationList

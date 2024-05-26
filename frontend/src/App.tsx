@@ -1,15 +1,23 @@
+import { useEffect } from "react";
 import { Suspense, lazy } from "react";
+import { Col, Container, Row } from "react-bootstrap";
 import MainNavBar from "./components/navbar/MainNavBar";
 import { Routes, Route, Outlet, useNavigate } from "react-router-dom";
 const Profile = lazy(() => import("./page/general/user-profile/Profile"));
-import ImportSectionClassList from "./page/admin/class-management/ImportSectionClassList";
-import ImportPassedTrainingTAList from "./page/admin/ta-information-management/ImportPassedTrainingTAList";
-import { Col, Container, Row } from "react-bootstrap";
+const ImportSectionClassList = lazy(
+  () => import("./page/admin/class-management/ImportSectionClassList")
+);
+const ImportPassedTrainingTAList = lazy(
+  () =>
+    import("./page/admin/ta-information-management/ImportPassedTrainingTAList")
+);
 const Login = lazy(() => import("./page/general/login/Login-test"));
-import NotFound from "./page/general/error/404NotFound";
-import Error500 from "./page/general/error/500Error";
-import SectionClassList from "./page/admin/class-management/SectionClassList";
-import Welcome from "./page/general/Welcome";
+const NotFound = lazy(() => import("./page/general/error/404NotFound"));
+const Error500 = lazy(() => import("./page/general/error/500Error"));
+const SectionClassList = lazy(
+  () => import("./page/admin/class-management/SectionClassList")
+);
+const Welcome = lazy(() => import("./page/general/Welcome"));
 const StudentSidebar = lazy(
   () => import("./components/sidebars/StudentSidebar")
 );
@@ -19,20 +27,34 @@ const TeacherSidebar = lazy(
 const AdminSidebar = lazy(() => import("./components/sidebars/AdminSidebar"));
 import Loading from "./components/loading/Loading";
 import MessagePromt from "./components/prompts/MessagePrompt";
-import AccountMainPage from "./page/admin/account-management/AccountMainPage";
-import { PostLogin } from "./page/general/login/PostLogin";
-import { useEffect } from "react";
+const AccountMainPage = lazy(
+  () => import("./page/admin/account-management/AccountMainPage")
+);
+const PostLogin = lazy(() => import("./page/general/login/PostLogin"));
 import { useAppSelector } from "@redux/hooks";
 import { selectIsAuthenticated } from "@redux/slices/authentication.slice";
-import TAClassList from "./page/student/ta/TAClassList";
+const TAClassList = lazy(() => import("./page/student/ta/TAClassList"));
 import { useAdaptiveRoleComponent } from "./hooks/useAdaptiveRoleComponent";
-import { BaseClassList } from "./page/admin/class-management/BaseClassList";
-import TARegistrationOverviewList from "./page/admin/TA-recruitment-management/TARegistrationOverviewList";
-import { TARegistrationList } from "./page/admin/TA-recruitment-management/TARegistrationList";
+const BaseClassList = lazy(
+  () => import("./page/admin/class-management/BaseClassList")
+);
+const TARegistrationOverviewList = lazy(
+  () =>
+    import("./page/admin/TA-recruitment-management/TARegistrationOverviewList")
+);
+const TARegistrationList = lazy(
+  () => import("./page/admin/TA-recruitment-management/TARegistrationList")
+);
+const TAEligiblePage = lazy(
+  () => import("./page/admin/TA-recruitment-management/TAEligiblePage")
+);
+const AssistantsList = lazy(
+  () => import("./page/lecturer/assistant-management/AsssistantsList")
+);
+const TAFinalPage = lazy(
+  () => import("./page/admin/TA-recruitment-management/TAFinalPage")
+);
 import "./index.css";
-import TAEligiblePage from "./page/admin/TA-recruitment-management/TAEligiblePage";
-import { AssistantsList } from "./page/lecturer/assistant-management/AsssistantsList";
-import { TAFinalPage } from "./page/admin/TA-recruitment-management/TAFinalPage";
 
 const Layout = () => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -86,7 +108,10 @@ function App() {
               path="assistant/:scheduleId"
               element={<TARegistrationList />}
             />
-            <Route path="import-passed-asistant-training-list" element={<ImportPassedTrainingTAList />} />
+            <Route
+              path="import-passed-asistant-training-list"
+              element={<ImportPassedTrainingTAList />}
+            />
             <Route path="final" element={<TAFinalPage />} />
           </Route>
 
