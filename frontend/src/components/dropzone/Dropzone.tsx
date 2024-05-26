@@ -24,7 +24,28 @@ type DropzoneProps = {
   allowEdit: boolean;
 };
 
-const images_file_ext = [".jpg", ".jpeg", ".jpe", ".bmp", ".gif", ".png"];
+const images_file_ext = [".jpg", ".jpeg", ".bmp", ".gif", ".png", ".svg"];
+
+const getFileExt = (fileName: string) => {
+  return fileName.split(".").at(-1) ?? "";
+};
+
+const fileIcons = {
+  doc: "/images/microsoft-word-icon.svg",
+  docx: "/images/microsoft-word-icon.svg",
+  xls: "/images/microsoft-excel-icon.svg",
+  xlsx: "/images/microsoft-excel-icon.svg",
+  txt: "/images/txt-svgrepo-com.svg",
+  pptx: "/images/microsoft-powerpoint-icon.svg",
+  ppt: "/images/microsoft-powerpoint-icon.svg",
+  pdf: "/images/pdf.png",
+  default: "/images/blank-svgrepo-com.svg",
+};
+
+const getFileIcon = (fileName: string) => {
+  const ext = getFileExt(fileName) as keyof typeof fileIcons;
+  return fileIcons[ext] || fileIcons.default;
+};
 
 const DropzoneComponent = forwardRef<
   DropzoneComponentMethodsRef,
@@ -49,7 +70,7 @@ const DropzoneComponent = forwardRef<
       const originalOnclick = button.onclick;
 
       button.onclick = async () => {
-        const isFirstTimeClick = !downloadUrlsRef.current.has(savedFileName)
+        const isFirstTimeClick = !downloadUrlsRef.current.has(savedFileName);
 
         if (isFirstTimeClick) {
           const blob = await downloadAttachment(savedFileName);
@@ -63,11 +84,10 @@ const DropzoneComponent = forwardRef<
         button.onclick = originalOnclick;
 
         if (isFirstTimeClick) {
-          button.click()
+          button.click();
         }
       };
       button.text = "Tải xuống";
-
       return button;
     },
     []
@@ -100,7 +120,16 @@ const DropzoneComponent = forwardRef<
         return;
       }
 
-      setIsPreviewVisible(true);
+      setIsPreviewVisible(true);      
+
+      const fileIconSrc = getFileIcon(file.name);
+      const dzImageElement = file.previewElement.querySelector(".dz-image");
+      if (dzImageElement) {
+        dzImageElement.style.backgroundImage = `url(${fileIconSrc})`;
+        dzImageElement.style.backgroundRepeat = "no-repeat";
+        dzImageElement.style.backgroundPosition = "center";
+        dzImageElement.style.backgroundSize = "contain";
+      }
 
       if (props.allowDownload) {
         const attachment: Attachment = {
@@ -123,9 +152,7 @@ const DropzoneComponent = forwardRef<
         dropzone.addFile({
           name: file.originalFileName,
           dataURL: file.savedFileName,
-          type: images_file_ext.includes(
-            file.originalFileName.split(".").at(-1) ?? ""
-          )
+          type: images_file_ext.includes(getFileExt(file.originalFileName))
             ? "images/*"
             : "unknown",
         } as DropzoneFile);
