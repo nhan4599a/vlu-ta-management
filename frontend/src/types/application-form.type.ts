@@ -22,6 +22,7 @@ export type ApplicationForm = MinimalApplicationForm & {
 }
 
 export type OverviewApplicationFormResponse = {
+    _id: string,
     name: string,
     day: string,
     lesson: string,
