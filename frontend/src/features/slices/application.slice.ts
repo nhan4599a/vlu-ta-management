@@ -16,6 +16,7 @@ type InitialState = {
   scheduleId?: string;
   page: number;
   applicationsOverview: OverviewApplicationFormResponse[];
+  applicationsFinalData: OverviewApplicationFormResponse[];
 };
 
 const initialState: InitialState = {
@@ -25,6 +26,7 @@ const initialState: InitialState = {
   },
   page: 1,
   applicationsOverview: [],
+  applicationsFinalData: [],
 };
 
 export const getApplicationsOverview = createAsyncThunk(
@@ -125,8 +127,34 @@ export const importStudentDataList = createAsyncThunk(
     try {
       return await post<Blob>({
         path: `/application/import-training`,
-        body: payload
-      })
+        body: payload,
+      });
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
+export const getApplicationsFinalData = createAsyncThunk(
+  "applications/fetch/final",
+  async (_: undefined, { rejectWithValue }) => {
+    try {
+      return await get<OverviewApplicationFormResponse[]>({
+        path: `/application`,
+      });
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
+export const approveFinal = createAsyncThunk(
+  "applications/approve/stage2",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      return await post({
+        path: `/application/approve/${id}`,
+      });
     } catch (e) {
       return rejectWithValue(e);
     }
@@ -182,6 +210,15 @@ const applicationSlice = createSlice({
         state.termClassInfo = payload;
       }
     );
+    builder.addCase(
+      getApplicationsFinalData.fulfilled,
+      (
+        state,
+        { payload }: PayloadAction<OverviewApplicationFormResponse[]>
+      ) => {
+        state.applicationsFinalData = payload;
+      }
+    );
   },
 });
 
@@ -200,3 +237,5 @@ export const selectTermClassInfo = (state: RootState) =>
   state.application.termClassInfo;
 export const selectApplicationsOverview = (state: RootState) =>
   state.application.applicationsOverview;
+export const selectApplicationsFinalData = (state: RootState) =>
+  state.application.applicationsFinalData;

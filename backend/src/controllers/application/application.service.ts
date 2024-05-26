@@ -40,7 +40,6 @@ const getScheduleInfo = async (
     {
       $unwind: {
         path: "$classes",
-        includeArrayIndex: "classIndex",
         preserveNullAndEmptyArrays: true,
       },
     },
@@ -467,6 +466,128 @@ export const importPassTrainingList = async (req: Request) => {
       }
     }
   }
+
+  await Promise.all([
+    db.applications.bulkWrite(applicationActions),
+    db.users.bulkWrite(usersActions),
+    db.terms.bulkWrite(termsActions),
+  ]);
+
+  await db.commitTransaction();
+};
+
+export const getImportPassTrainingResult = (req: Request) => {
+  const { db, user } = createTypedRequest(req);
+
+  return db.terms
+    .aggregate([
+      {
+        $match: {
+          year: user.currentSetting?.year,
+          semester: user.currentSetting?.semester,
+        },
+      },
+      {
+        $unwind: {
+          path: "$classes",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $unwind: {
+          path: "$classes.schedule",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "applications",
+          localField: "classes.schedule._id",
+          foreignField: "scheduleId",
+          as: "applications",
+          pipeline: [
+            {
+              $match: {
+                year: user.currentSetting?.year,
+                semester: user.currentSetting?.semester,
+                $or: [{ isPending: true }, { stage2Approval: true }],
+              },
+            },
+          ],
+        },
+      },
+      {
+        $set: {
+          _id: "$classes.schedule._id",
+        },
+      },
+      {
+        $project: {
+          classes: 0,
+          semester: 0,
+          year: 0,
+          credits: 0,
+        },
+      },
+    ])
+    .exec();
+};
+
+export const approveFinal = async (req: Request) => {
+  const { db, params } = createTypedRequest(req);
+
+  const id = new mongoose.Types.ObjectId(params.id);
+
+  const application = await db.applications.findById(id);
+
+  const applicationActions: AnyBulkWriteOperation<IApplicationForm>[] = [];
+  const usersActions: AnyBulkWriteOperation<IUser>[] = [];
+  const termsActions: AnyBulkWriteOperation<ITerm>[] = [];
+
+  await db.startTransaction();
+
+  applicationActions.push({
+    updateOne: {
+      filter: {
+        _id: id,
+      },
+      update: {
+        $set: {
+          stage2Approval: true,
+          isPending: false
+        },
+      },
+    },
+  });
+  usersActions.push({
+    updateOne: {
+      filter: {
+        code: application!.code,
+      },
+      update: {
+        $set: {
+          isAssistant: true,
+        },
+      },
+    },
+  });
+  termsActions.push({
+    updateOne: {
+      filter: {
+        "classes.schedule._id": application!.scheduleId,
+      },
+      update: {
+        $push: {
+          "classes.$[].schedule.$[i].assistants": application!.code,
+        },
+      },
+      arrayFilters: [
+        {
+          "i._id": application!.scheduleId,
+        },
+      ],
+    },
+  });
 
   await Promise.all([
     db.applications.bulkWrite(applicationActions),
