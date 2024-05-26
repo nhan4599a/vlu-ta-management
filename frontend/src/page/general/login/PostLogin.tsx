@@ -10,7 +10,7 @@ import { showMessageDialog } from "@redux/slices/messages.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { setCurrentSetting } from "@main/features/slices/setting.slice";
 
-export const PostLogin = () => {
+const PostLogin = () => {
   const { instance, accounts, inProgress } = useMsal();
 
   const dispatch = useAppDispatch();
@@ -44,3 +44,5 @@ export const PostLogin = () => {
 
   return <></>;
 };
+
+export default PostLogin

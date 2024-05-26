@@ -7,7 +7,7 @@ import {
 import { useEffect, useState } from "react";
 import { Accordion } from "react-bootstrap";
 
-export const TAFinalPage = () => {
+const TAFinalPage = () => {
   const dispatch = useAppDispatch();
   const data = useAppSelector(selectApplicationsFinalData);
 
@@ -36,3 +36,5 @@ export const TAFinalPage = () => {
     </Accordion>
   );
 };
+
+export default TAFinalPage
