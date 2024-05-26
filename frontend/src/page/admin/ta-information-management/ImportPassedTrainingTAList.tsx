@@ -1,4 +1,6 @@
-import DropzoneComponent, { DropzoneComponentMethodsRef } from "@main/components/dropzone/Dropzone";
+import DropzoneComponent, {
+  DropzoneComponentMethodsRef,
+} from "@main/components/dropzone/Dropzone";
 import ImportButton from "@main/components/buttons/ImportButton";
 import { useRef } from "react";
 import "@main/index.css";
@@ -7,9 +9,8 @@ import { importStudentDataList } from "@main/features/slices/application.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { showMessageDialog } from "@main/features/slices/messages.slice";
 
-
 const ImportPassedTrainingTAList = () => {
-  const dropzoneRef = useRef<DropzoneComponentMethodsRef>(null)
+  const dropzoneRef = useRef<DropzoneComponentMethodsRef>(null);
 
   const dispatch = useAppDispatch();
 
@@ -25,18 +26,29 @@ const ImportPassedTrainingTAList = () => {
     formData.append("file", files[0]);
 
     return dispatch(importStudentDataList(formData))
-    .then(unwrapResult)
-    .then(() => {
-      dispatch(showMessageDialog('Import thành công'))
-    })
-  }
+      .then(unwrapResult)
+      .then(() => {
+        dispatch(showMessageDialog("Import thành công"));
+      });
+  };
 
   return (
     <div>
-      <h2 className="display-5 mt-2 mb-3">Import danh sách sinh viên đã hoàn thành khóa đào tạo làm trợ lý giảng dạy</h2>
+      <h2 className="display-5 mt-2 mb-3">
+        Import danh sách sinh viên đã hoàn thành khóa đào tạo làm trợ lý giảng
+        dạy
+      </h2>
       <div className="shadow p-5 rounded-5 bg-white">
-        <DropzoneComponent ref={dropzoneRef} acceptedFiles=".xlsx,.xls" maxFiles={1} allowEdit={true} />
-        <ImportButton url="ta-information/student-list" importFileAction={onClickImport} />
+        <DropzoneComponent
+          ref={dropzoneRef}
+          acceptedFiles=".xlsx,.xls"
+          maxFiles={1}
+          allowEdit={true}
+        />
+        <ImportButton
+          url="/ta-information-management/final"
+          importFileAction={onClickImport}
+        />
       </div>
     </div>
   );

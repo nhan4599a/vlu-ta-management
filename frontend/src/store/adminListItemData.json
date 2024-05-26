@@ -20,6 +20,10 @@
           {
             "title": "Final",
             "path": "/ta-information-management/import-passed-asistant-training-list"
+          },
+          {
+            "title": "Danh sách kết quả final",
+            "path": "/ta-information-management/final"
           }
         ]
       }

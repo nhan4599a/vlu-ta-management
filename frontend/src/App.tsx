@@ -32,6 +32,7 @@ import { TARegistrationList } from "./page/admin/TA-recruitment-management/TAReg
 import "./index.css";
 import TAEligiblePage from "./page/admin/TA-recruitment-management/TAEligiblePage";
 import { AssistantsList } from "./page/lecturer/assistant-management/AsssistantsList";
+import { TAFinalPage } from "./page/admin/TA-recruitment-management/TAFinalPage";
 
 const Layout = () => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -86,6 +87,7 @@ function App() {
               element={<TARegistrationList />}
             />
             <Route path="import-passed-asistant-training-list" element={<ImportPassedTrainingTAList />} />
+            <Route path="final" element={<TAFinalPage />} />
           </Route>
 
           <Route path="/task-mission-magagement" element="">
