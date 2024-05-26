@@ -7,6 +7,7 @@ import {
 } from "@main/features/slices/terms.slice";
 import { Button, Table } from "react-bootstrap";
 import { PaginationControl } from "react-bootstrap-pagination-control";
+import LinkItem from "@main/components/LinkItem";
 
 const ClassWithTA = () => {
   const dispatch = useAppDispatch();
@@ -48,7 +49,7 @@ const ClassWithTA = () => {
                 <td>{term.lesson}</td>
                 <td>
                   <Button variant="primary">
-                    Xem danh sách trợ giảng
+                    <LinkItem to="">Xem danh sách trợ giảng</LinkItem>
                   </Button>
                 </td>
               </tr>
