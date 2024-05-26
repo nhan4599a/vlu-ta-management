@@ -3,7 +3,6 @@ import {
   Button,
   Form,
   InputGroup,
-  ListGroup,
   Modal,
   Image,
   Row,
@@ -22,12 +21,15 @@ import {
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import { ITaskItem, TaskAction } from "@main/types/task.type";
 import AttachmentButton from "../buttons/AttachmentButton";
-import { showMessageDialog } from "@main/features/slices/messages.slice";
+import { showMessageDialog } from "@redux/slices/messages.slice";
+import { selectCurrentRole } from "@redux/slices/authentication.slice";
+import { Role } from "@main/types/user.type";
 
 const TasksPrompt = () => {
   const dispatch = useAppDispatch();
 
-  const isTasksPromptOpen = useAppSelector(selectIsOpenTasksPrompt)
+  const role = useAppSelector(selectCurrentRole);
+  const isTasksPromptOpen = useAppSelector(selectIsOpenTasksPrompt);
   const tasks = useAppSelector(selectTasks);
 
   const [inputValue, setInputValue] = useState("");
@@ -64,6 +66,8 @@ const TasksPrompt = () => {
   const handleDelete = (index: number) => {
     return () => {
       dispatch(deleteTask(index));
+      setEdittingTask(undefined);
+      setEdittingValue("");
     };
   };
 
@@ -112,38 +116,37 @@ const TasksPrompt = () => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={e => handleAddTask(e)}>
-          <Form.Group className="mb-3" controlId="">
-            <Form.Label>Thêm nhiệm vụ:</Form.Label>
-            <InputGroup size="lg">
-              <Form.Control
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-              />
-              <Button
-                variant="outline-success"
-                id="button-addtask"
-                type="submit"
-              >
-                Thêm nhiệm vụ
-              </Button>
-            </InputGroup>
-          </Form.Group>
-        </Form>
-        <ListGroup className="task-list">
+        {role === Role.Teacher && (
+          <Form onSubmit={(e) => handleAddTask(e)}>
+            <Form.Group className="mb-3" controlId="">
+              <Form.Label>Thêm nhiệm vụ:</Form.Label>
+              <InputGroup size="lg">
+                <Form.Control
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                />
+                <Button
+                  variant="outline-success"
+                  id="button-addtask"
+                  type="submit"
+                >
+                  Thêm nhiệm vụ
+                </Button>
+              </InputGroup>
+            </Form.Group>
+          </Form>
+        )}
+        <div className="container">
           {tasks
             .filter((task) => task.state !== TaskAction.Delete)
             .map((task, index) => (
-              <ListGroup.Item
-                className="d-flex align-items-center justify-content-between"
-                key={index}
-              >
-                <Row>
-                  <Col sm={2}>
-                    <Form.Check aria-label="option" />
-                  </Col>
-                  <Col sm={6}>
+              <Row>
+                <Col sm={1}>
+                  <Form.Check aria-label="option" />
+                </Col>
+                {role === Role.Teacher && (
+                  <Col sm={8}>
                     {edittingTask === task._id && edittingTask !== undefined ? (
                       <Form.Control
                         value={edittingValue}
@@ -153,39 +156,39 @@ const TasksPrompt = () => {
                       <>{task.content}</>
                     )}
                   </Col>
-                  <Col sm={4}>
-                    {edittingTask === task._id && edittingTask !== undefined ? (
-                      <Button variant="link" onClick={closeEditMode(task._id!)}>
-                        Hoàn tất
-                      </Button>
-                    ) : (
-                      <div>
-                        <AttachmentButton />
-                        <Button
-                          variant="link"
-                          onClick={openEditMode(task)}
-                          data-bs-toggle="tooltip"
-                          data-bs-placement="bottom"
-                          title="Chỉnh sửa"
-                        >
-                          <Image src="/images/edit.png" height={20}></Image>
-                        </Button>
-                      </div>
-                    )}
-                    <Button
-                      variant="link"
-                      onClick={handleDelete(index)}
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="bottom"
-                      title="Xóa"
-                    >
-                      <Image src="/images/delete.png" height={20}></Image>
+                )}
+                <Col sm={3}>
+                  {edittingTask === task._id && edittingTask !== undefined ? (
+                    <Button variant="link" onClick={closeEditMode(task._id!)}>
+                      Hoàn tất
                     </Button>
-                  </Col>
-                </Row>
-              </ListGroup.Item>
+                  ) : (
+                    <>
+                      <AttachmentButton />
+                      <Button
+                        variant="link"
+                        onClick={openEditMode(task)}
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        title="Chỉnh sửa"
+                      >
+                        <Image src="/images/edit.png" height={20}></Image>
+                      </Button>
+                      <Button
+                        variant="link"
+                        onClick={handleDelete(index)}
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        title="Xóa"
+                      >
+                        <Image src="/images/delete.png" height={20}></Image>
+                      </Button>
+                    </>
+                  )}
+                </Col>
+              </Row>
             ))}
-        </ListGroup>
+        </div>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>
