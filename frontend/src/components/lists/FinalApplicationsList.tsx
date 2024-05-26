@@ -42,14 +42,16 @@ export const FinalApplicationsList = ({
             <th>{application.code}</th>
             <th>{application.description}</th>
             <th>{application.stage2Approval ? "Đã đậu" : "Chờ liên hệ"}</th>
-            <th>
-              <Button
-                variant="primary"
-                onClick={showApprovalDialog(application._id)}
-              >
-                Approve
-              </Button>
-            </th>
+            {!application.stage2Approval && (
+              <th>
+                <Button
+                  variant="primary"
+                  onClick={showApprovalDialog(application._id)}
+                >
+                  Approve
+                </Button>
+              </th>
+            )}
           </tr>
         ))}
       </tbody>

@@ -24,7 +24,7 @@ const TAFinalPage = () => {
       alwaysOpen
     >
       {data.map((item, index) => (
-        <Accordion.Item eventKey={item.scheduleId} key={index} className="mb-2">
+        <Accordion.Item eventKey={item._id} key={index} className="mb-2">
           <Accordion.Header>
             {item.name} - {item.day} tiết {item.lesson}
           </Accordion.Header>

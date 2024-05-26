@@ -60,7 +60,7 @@ export const getUsersList = (req: Request) => {
 
   const matchPipeline: PipelineStage = {
     $match: {
-      role: query.role,
+      role: Number(query.role),
     },
   };
 

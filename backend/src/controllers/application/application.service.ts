@@ -519,6 +519,66 @@ export const getImportPassTrainingResult = (req: Request) => {
       {
         $set: {
           _id: "$classes.schedule._id",
+          day: {
+            $switch: {
+              branches: [
+                {
+                  case: {
+                    $eq: ["$classes.schedule.day", 0],
+                  },
+                  then: "Thứ 2",
+                },
+                {
+                  case: {
+                    $eq: ["$classes.schedule.day", 1],
+                  },
+                  then: "Thứ 3",
+                },
+                {
+                  case: {
+                    $eq: ["$classes.schedule.day", 2],
+                  },
+                  then: "Thứ 4",
+                },
+                {
+                  case: {
+                    $eq: ["$classes.schedule.day", 3],
+                  },
+                  then: "Thứ 5",
+                },
+                {
+                  case: {
+                    $eq: ["$classes.schedule.day", 4],
+                  },
+                  then: "Thứ 6",
+                },
+                {
+                  case: {
+                    $eq: ["$classes.schedule.day", 5],
+                  },
+                  then: "Thứ 7",
+                },
+                {
+                  case: {
+                    $eq: ["$classes.schedule.day", 6],
+                  },
+                  then: "Chủ nhật",
+                },
+              ],
+              default: "",
+            },
+          },
+          lesson: {
+            $concat: [
+              {
+                $toString: "$classes.schedule.startLesson",
+              },
+              "-",
+              {
+                $toString: "$classes.schedule.endLesson",
+              },
+            ],
+          },
         },
       },
       {
@@ -527,6 +587,7 @@ export const getImportPassTrainingResult = (req: Request) => {
           semester: 0,
           year: 0,
           credits: 0,
+          sessions: 0,
         },
       },
     ])
@@ -554,7 +615,7 @@ export const approveFinal = async (req: Request) => {
       update: {
         $set: {
           stage2Approval: true,
-          isPending: false
+          isPending: false,
         },
       },
     },

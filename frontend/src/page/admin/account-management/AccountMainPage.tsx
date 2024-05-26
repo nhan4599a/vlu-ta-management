@@ -18,8 +18,8 @@ const AccountMainPage = () => {
   useEffect(() => {
     const request = {
       page,
-      role: tab === Role.Assistant ? Role.Teacher : tab,
-      isAssistant: tab === Role.Assistant,
+      role: tab === Role.Assistant ? Role.Student : tab,
+      isAssistant: tab === Role.Assistant ? true : undefined,
     };
     dispatch(setRequest(request));
     dispatch(getUsersList(request));
