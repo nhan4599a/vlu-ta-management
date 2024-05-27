@@ -142,11 +142,15 @@ export const writeEligibleList = async (req: Request, res: Response) => {
   const wb = new Workbook();
   const ws = wb.addWorksheet("Danh sách đào tạo trợ giảng");
   writeExcelData(ws, data, mapping);
-  ws.cell(1, 1, 1, 4).style({
+  const headerStyle = wb.createStyle({
     fill: {
-      bgColor: "yellow",
+      type: "pattern",
+      patternType: "solid",
+      fgColor: "#FFFF00",
+      bgColor: "#FFFF00"
     },
   });
+  ws.cell(1, 1, 1, 4).style(headerStyle);
   wb.write("Danh sách đào tạo trợ giảng.xlsx", res);
 };
 
