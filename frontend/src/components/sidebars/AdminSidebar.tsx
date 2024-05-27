@@ -3,8 +3,11 @@ import LinkItem from "../LinkItem";
 import adminListItemData from "@main/store/adminListItemData.json";
 import SideBarItemList from "@main/types/SideBarItemList";
 import "@main/index.css";
+import { useLocation } from "react-router-dom";
 
 const renderMenuItem = (item: SideBarItemList) => {
+  const location = useLocation();
+  
   if (item.children) {
     return (
       <Accordion.Item eventKey={item.title}>
@@ -13,7 +16,12 @@ const renderMenuItem = (item: SideBarItemList) => {
       </Accordion.Item>
     );
   } else {
-    return <LinkItem key={item.title} to={item.path}>{item.title}</LinkItem>;
+    return (
+      <LinkItem key={item.title} to={item.path}
+      isActive={location.pathname === item.path}>
+        {item.title}
+      </LinkItem>
+    );
   }
 };
 

@@ -121,7 +121,6 @@ input[type="number"] {
   display: none !important;
 }
 
-.dropdown-item.active,
 .dropdown-item:active {
   background-color: #d14444 !important;
 }
@@ -175,6 +174,7 @@ input[type="number"] {
   margin-bottom: 4px !important;
 }
 
+.accordion-body .active, 
 .accordion-body a:hover {
   color: #fff;
   background-color: #d14444;
