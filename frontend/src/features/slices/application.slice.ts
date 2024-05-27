@@ -9,7 +9,8 @@ import { RootState } from "@redux/store";
 import { TermClassInfo } from "@main/types/term.type";
 
 type ApplicationFinalResponse = OverviewApplicationFormResponse & {
-  count: number;
+  count?: number;
+  maxAllowedCandidates?: number
 };
 
 type InitialState = {

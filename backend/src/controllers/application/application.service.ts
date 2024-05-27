@@ -22,6 +22,19 @@ type GroupedResult = {
   applications: IApplicationForm[];
 };
 
+enum FinalResultRecordStatus {
+  Redundant,
+  Slack,
+  Fit,
+  None,
+}
+
+type FinalResultOrdering = {
+  count?: number;
+  maxAllowedCandidates?: number;
+  status: FinalResultRecordStatus;
+};
+
 const readPassTrainingFile = async (
   file: Express.Multer.File
 ): Promise<string[]> => {
@@ -147,7 +160,7 @@ export const writeEligibleList = async (req: Request, res: Response) => {
       type: "pattern",
       patternType: "solid",
       fgColor: "#FFFF00",
-      bgColor: "#FFFF00"
+      bgColor: "#FFFF00",
     },
   });
   ws.cell(1, 1, 1, 4).style(headerStyle);
@@ -484,11 +497,11 @@ export const importPassTrainingList = async (req: Request) => {
   await db.commitTransaction();
 };
 
-export const getImportPassTrainingResult = (req: Request) => {
+export const getImportPassTrainingResult = async (req: Request) => {
   const { db, user } = createTypedRequest(req);
 
-  return db.terms
-    .aggregate([
+  const data = await db.terms
+    .aggregate<FinalResultOrdering>([
       {
         $match: {
           year: user.currentSetting?.year,
@@ -596,6 +609,8 @@ export const getImportPassTrainingResult = (req: Request) => {
               },
             },
           },
+          maxAllowedCandidates:
+            "$classes.schedule.registrationInfo.candidatesCount",
         },
       },
       {
@@ -609,6 +624,23 @@ export const getImportPassTrainingResult = (req: Request) => {
       },
     ])
     .exec();
+
+  for (const item of data) {
+    if (!item.maxAllowedCandidates || item.count === undefined) {
+      item.status = FinalResultRecordStatus.None;
+      continue;
+    }
+
+    if (item.count > item.maxAllowedCandidates) {
+      item.status = FinalResultRecordStatus.Redundant;
+    } else if (item.count < item.maxAllowedCandidates) {
+      item.status = FinalResultRecordStatus.Slack;
+    } else {
+      item.status = FinalResultRecordStatus.Fit;
+    }
+  }
+
+  return orderBy(data, ["status"], ["asc"]);
 };
 
 export const approveFinal = async (req: Request) => {
