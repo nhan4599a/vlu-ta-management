@@ -1,4 +1,5 @@
 import { Schema, mongo } from "mongoose";
+import { Attachment, AttachmentSchema } from "./common";
 
 export interface IApplicationForm {
   _id: mongo.ObjectId;
@@ -12,7 +13,7 @@ export interface IApplicationForm {
   termScore: number;
   avgScore: number;
   description: string;
-  attachments: string[];
+  attachments: Attachment[];
   stage1Approval: boolean | null;
   stage2Approval: boolean | null;
   isPending: boolean;
@@ -32,12 +33,7 @@ export const ApplicationFormSchema = new Schema<IApplicationForm>({
   avgScore: { type: Number, required: true },
   description: { type: String, required: false },
   attachments: {
-    type: [
-      {
-        savedFileName: String,
-        originalFileName: String,
-      },
-    ],
+    type: [AttachmentSchema],
     required: false,
   },
   stage1Approval: { type: Boolean, required: true },

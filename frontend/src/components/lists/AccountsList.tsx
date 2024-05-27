@@ -8,10 +8,16 @@ import "@main/index.css";
 type AccountsListProps = {
   actionEnabled: boolean;
   actionButtonText?: string;
-  onActionButtonClick?: (user: IUser) => void
+  onActionButtonClick?: (user: IUser) => void;
+  assistantsMode: boolean;
 };
 
-const AccountsList = ({ actionEnabled, actionButtonText, onActionButtonClick }: AccountsListProps) => {
+const AccountsList = ({
+  actionEnabled,
+  actionButtonText,
+  onActionButtonClick,
+  assistantsMode,
+}: AccountsListProps) => {
   const users = useAppSelector(selectUsersList);
 
   // const onActionButtonClick = ({ _id, active }: IUser) => {
@@ -27,9 +33,9 @@ const AccountsList = ({ actionEnabled, actionButtonText, onActionButtonClick }: 
 
   const internalOnActionButtonClick = (user: IUser) => {
     return () => {
-      onActionButtonClick!(user)
-    }
-  }
+      onActionButtonClick!(user);
+    };
+  };
 
   return (
     <>
@@ -41,6 +47,7 @@ const AccountsList = ({ actionEnabled, actionButtonText, onActionButtonClick }: 
             <th>Họ tên</th>
             <th>MSSV</th>
             <th>Lớp</th>
+            {assistantsMode && <th>SĐT</th>}
             {actionEnabled && <th></th>}
           </tr>
         </thead>
@@ -52,6 +59,7 @@ const AccountsList = ({ actionEnabled, actionButtonText, onActionButtonClick }: 
               <td>{user.name}</td>
               <td>{user.code}</td>
               <td>{user.class}</td>
+              {assistantsMode && <td>{user.phoneNumber}</td>}
               {actionEnabled && (
                 <td>
                   <p>

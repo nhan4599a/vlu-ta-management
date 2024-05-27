@@ -1,5 +1,9 @@
 import express from "express";
-import { uploadFileMiddleware } from "../../helper/upload.helper";
+import {
+  mapAttachment,
+  uploadFileMiddleware,
+  uploadMultipleFilesMiddleware,
+} from "../../helper/upload.helper";
 import {
   getAssitantsInfo,
   getTermClassInfo,
@@ -22,6 +26,7 @@ enum TaskAction {
 type TaskItem = ITask & {
   state: TaskAction | null;
   _id: string | null;
+  attachmentsMap: Express.Multer.File[];
 };
 
 type CreateTaskRequest = {
@@ -78,74 +83,84 @@ router.get("/classes/:classId/users/:userCode/tasks", async (req, res) => {
 
   const tasks = await db.tasks.where({
     scheduleId: new mongoose.Types.ObjectId(params.classId),
-    assignee: params.userCode
-  });
-
-  responseWithValue(res, tasks);
-});
-
-router.post("/classes/:classId/users/:userCode/tasks", async (req, res) => {
-  const { db, params, body, user } = createTypedRequest<CreateTaskRequest, {}>(
-    req
-  );
-
-  const actions: AnyBulkWriteOperation<ITask>[] = [];
-
-  const classId = new mongoose.Types.ObjectId(params.classId)
-
-  for (const taskItem of body.tasks.filter((item) => item.state !== null)) {
-    const { state, _id, ...actualTask } = taskItem;
-
-    switch (state) {
-      case TaskAction.Add:
-        actions.push({
-          insertOne: {
-            document: {
-              ...actualTask,
-              scheduleId: classId,
-              assigner: user.code!,
-              assignee: params.userCode,
-            },
-          },
-        });
-        break;
-
-      case TaskAction.Update:
-        actions.push({
-          updateOne: {
-            filter: {
-              _id: new mongoose.Types.ObjectId(_id!),
-            },
-            update: {
-              $set: {
-                content: actualTask.content,
-                isCompleted: actualTask.isCompleted,
-              },
-            },
-          },
-        });
-        break;
-
-      case TaskAction.Delete:
-        actions.push({
-          deleteOne: {
-            filter: {
-              _id: new mongoose.Types.ObjectId(_id!),
-            },
-          },
-        });
-        break;
-    }
-  }
-
-  await db.tasks.bulkWrite(actions);
-
-  const tasks = await db.tasks.where({
-    scheduleId: classId,
     assignee: params.userCode,
   });
 
   responseWithValue(res, tasks);
 });
+
+router.post(
+  "/classes/:classId/users/:userCode/tasks",
+  uploadMultipleFilesMiddleware,
+  async (req, res) => {
+    const { db, params, body, user } = createTypedRequest<
+      CreateTaskRequest,
+      {}
+    >(req);
+
+    const actions: AnyBulkWriteOperation<ITask>[] = [];
+
+    const classId = new mongoose.Types.ObjectId(params.classId);
+
+    for (const taskItem of body.tasks.filter((item) => item.state !== null)) {
+      const { state, _id, attachmentsMap, ...actualTask } = taskItem;
+
+      const uploadedFiles =
+        (attachmentsMap as Express.Multer.File[])?.map(mapAttachment) ?? [];
+
+      switch (state) {
+        case TaskAction.Add:
+          actions.push({
+            insertOne: {
+              document: {
+                ...actualTask,
+                scheduleId: classId,
+                assigner: user.code!,
+                assignee: params.userCode,
+                attachments: uploadedFiles,
+              },
+            },
+          });
+          break;
+
+        case TaskAction.Update:
+          actions.push({
+            updateOne: {
+              filter: {
+                _id: new mongoose.Types.ObjectId(_id!),
+              },
+              update: {
+                $set: {
+                  content: actualTask.content,
+                  isCompleted: actualTask.isCompleted,
+                  attachments: uploadedFiles,
+                },
+              },
+            },
+          });
+          break;
+
+        case TaskAction.Delete:
+          actions.push({
+            deleteOne: {
+              filter: {
+                _id: new mongoose.Types.ObjectId(_id!),
+              },
+            },
+          });
+          break;
+      }
+    }
+
+    await db.tasks.bulkWrite(actions);
+
+    const tasks = await db.tasks.where({
+      scheduleId: classId,
+      assignee: params.userCode,
+    });
+
+    responseWithValue(res, tasks);
+  }
+);
 
 export default router;

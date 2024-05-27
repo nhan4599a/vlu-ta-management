@@ -26,15 +26,18 @@ const TAFinalPage = () => {
         alwaysOpen
       >
         {data.map((item, index) => (
-          <Accordion.Item eventKey={item._id} key={index} className="mb-2">
-            <Accordion.Header>
-              {item.name} - {item.day} tiết {item.lesson}
-            </Accordion.Header>
-            <Accordion.Body>
-              <FinalApplicationsList applications={item.applications} />
-            </Accordion.Body>
-          </Accordion.Item>
-        ))}
+        <Accordion.Item eventKey={item._id} key={index} className="mb-2">
+          <Accordion.Header>
+            <div className="d-flex justify-content-between w-100">
+              <p className="mb-0">{item.name} - {item.day} tiết {item.lesson}</p>
+              <p className="mb-0">{item.count} ứng viên</p>
+            </div>
+          </Accordion.Header>
+          <Accordion.Body>
+            <FinalApplicationsList applications={item.applications} />
+          </Accordion.Body>
+        </Accordion.Item>
+      ))}
       </Accordion>
     </>
   );

@@ -37,20 +37,20 @@ export const FinalApplicationsList = ({
       <tbody>
         {applications.map((application, index) => (
           <tr key={index}>
-            <th>{index + 1}</th>
-            <th>{application.name}</th>
-            <th>{application.code}</th>
-            <th>{application.description}</th>
-            <th>{application.stage2Approval ? "Đã đậu" : "Chờ liên hệ"}</th>
+            <td>{index + 1}</td>
+            <td>{application.name}</td>
+            <td>{application.code}</td>
+            <td>{application.description}</td>
+            <td>{application.stage2Approval ? "Đã đậu" : "Chờ liên hệ"}</td>
             {!application.stage2Approval && (
-              <th>
+              <td>
                 <Button
                   variant="primary"
                   onClick={showApprovalDialog(application._id)}
                 >
                   Approve
                 </Button>
-              </th>
+              </td>
             )}
           </tr>
         ))}

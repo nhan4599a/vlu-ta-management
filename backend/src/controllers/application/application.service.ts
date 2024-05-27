@@ -142,7 +142,11 @@ export const writeEligibleList = async (req: Request, res: Response) => {
   const wb = new Workbook();
   const ws = wb.addWorksheet("Danh sách đào tạo trợ giảng");
   writeExcelData(ws, data, mapping);
-
+  ws.cell(1, 1, 1, 4).style({
+    fill: {
+      bgColor: "yellow",
+    },
+  });
   wb.write("Danh sách đào tạo trợ giảng.xlsx", res);
 };
 
@@ -510,7 +514,6 @@ export const getImportPassTrainingResult = (req: Request) => {
               $match: {
                 year: user.currentSetting?.year,
                 semester: user.currentSetting?.semester,
-                $or: [{ isPending: true }, { stage2Approval: true }],
               },
             },
           ],
@@ -578,6 +581,16 @@ export const getImportPassTrainingResult = (req: Request) => {
                 $toString: "$classes.schedule.endLesson",
               },
             ],
+          },
+          count: { $size: "$applications" },
+          applications: {
+            $filter: {
+              input: "$applications",
+              as: "applications",
+              cond: {
+                $or: [{ isPending: true }, { stage2Approval: true }],
+              },
+            },
           },
         },
       },

@@ -54,7 +54,7 @@ const TAEligiblePage = () => {
           </Button>
         </Col>
       </Row>
-      <AccountsList actionEnabled={false} />
+      <AccountsList actionEnabled={false} assistantsMode={false} />
       <div className="text-align">
         <PaginationControl
           page={page}

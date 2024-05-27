@@ -71,6 +71,7 @@ const tasksSlice = createSlice({
         _id: state.tasks.length.toString(),
         content: payload,
         isCompleted: false,
+        attachments: null,
         state: TaskAction.Add,
       });
     },

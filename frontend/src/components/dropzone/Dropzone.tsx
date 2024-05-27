@@ -123,7 +123,7 @@ const DropzoneComponent = forwardRef<
       setIsPreviewVisible(true);      
 
       const fileIconSrc = getFileIcon(file.name);
-      const dzImageElement = file.previewElement.querySelector(".dz-image");
+      const dzImageElement = file.previewElement.querySelector(".dz-image") as HTMLElement;
       if (dzImageElement) {
         dzImageElement.style.backgroundImage = `url(${fileIconSrc})`;
         dzImageElement.style.backgroundRepeat = "no-repeat";

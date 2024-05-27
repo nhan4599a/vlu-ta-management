@@ -20,10 +20,11 @@ import {
 } from "@redux/slices/tasks.slice";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import { ITaskItem, TaskAction } from "@main/types/task.type";
-import AttachmentButton from "../buttons/AttachmentButton";
 import { showMessageDialog } from "@redux/slices/messages.slice";
 import { selectCurrentRole } from "@redux/slices/authentication.slice";
 import { Role } from "@main/types/user.type";
+import DropzoneComponent from "../dropzone/Dropzone";
+import { Attachment } from "@main/types/application-form.type";
 
 const TasksPrompt = () => {
   const dispatch = useAppDispatch();
@@ -36,6 +37,7 @@ const TasksPrompt = () => {
 
   const [edittingTask, setEdittingTask] = useState<string>();
   const [edittingValue, setEdittingValue] = useState("");
+  const [attachments, setAttachments] = useState<Attachment[]>();
 
   const actionWrapper = (innerAction: () => void) => {
     return () => {
@@ -103,51 +105,53 @@ const TasksPrompt = () => {
   };
 
   return (
-    <Modal
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      show={isTasksPromptOpen}
-      onHide={onHide}
-      centered
-    >
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Nhiệm vụ của trợ giảng
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {role === Role.Teacher && (
-          <Form onSubmit={(e) => handleAddTask(e)}>
-            <Form.Group className="mb-3" controlId="">
-              <Form.Label>Thêm nhiệm vụ:</Form.Label>
-              <InputGroup size="lg">
-                <Form.Control
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                />
-                <Button
-                  variant="outline-success"
-                  id="button-addtask"
-                  type="submit"
-                >
-                  Thêm nhiệm vụ
-                </Button>
-              </InputGroup>
-            </Form.Group>
-          </Form>
-        )}
-        <div className="container">
-          {tasks
-            .filter((task) => task.state !== TaskAction.Delete)
-            .map((task, index) => (
-              <Row>
-                <Col sm={1}>
-                  <Form.Check aria-label="option" />
-                </Col>
-                {role === Role.Teacher && (
+    <>
+      <Modal
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        show={isTasksPromptOpen}
+        onHide={onHide}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Nhiệm vụ của trợ giảng
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {role === Role.Teacher && (
+            <Form onSubmit={(e) => handleAddTask(e)}>
+              <Form.Group className="mb-3" controlId="">
+                <Form.Label>Thêm nhiệm vụ:</Form.Label>
+                <InputGroup size="lg">
+                  <Form.Control
+                    type="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                  />
+                  <Button
+                    variant="outline-success"
+                    id="button-addtask"
+                    type="submit"
+                  >
+                    Thêm nhiệm vụ
+                  </Button>
+                </InputGroup>
+              </Form.Group>
+            </Form>
+          )}
+          <div className="container">
+            {tasks
+              .filter((task) => task.state !== TaskAction.Delete)
+              .map((task, index) => (
+                <Row>
+                  <Col sm={1}>
+                    <Form.Check aria-label="option" />
+                  </Col>
                   <Col sm={8}>
-                    {edittingTask === task._id && edittingTask !== undefined ? (
+                    {role === Role.Teacher &&
+                    edittingTask === task._id &&
+                    edittingTask !== undefined ? (
                       <Form.Control
                         value={edittingValue}
                         onChange={(e) => setEdittingValue(e.target.value)}
@@ -156,49 +160,85 @@ const TasksPrompt = () => {
                       <>{task.content}</>
                     )}
                   </Col>
-                )}
-                <Col sm={3}>
-                  {edittingTask === task._id && edittingTask !== undefined ? (
-                    <Button variant="link" onClick={closeEditMode(task._id!)}>
-                      Hoàn tất
-                    </Button>
-                  ) : (
-                    <>
-                      <AttachmentButton />
-                      <Button
-                        variant="link"
-                        onClick={openEditMode(task)}
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="bottom"
-                        title="Chỉnh sửa"
-                      >
-                        <Image src="/images/edit.png" height={20}></Image>
+                  <Col sm={3}>
+                    {edittingTask === task._id && edittingTask !== undefined ? (
+                      <Button variant="link" onClick={closeEditMode(task._id!)}>
+                        Hoàn tất
                       </Button>
-                      <Button
-                        variant="link"
-                        onClick={handleDelete(index)}
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="bottom"
-                        title="Xóa"
-                      >
-                        <Image src="/images/delete.png" height={20}></Image>
-                      </Button>
-                    </>
-                  )}
-                </Col>
-              </Row>
-            ))}
-        </div>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="light" onClick={onHide}>
-          Đóng
-        </Button>
-        <Button variant="primary" onClick={onSaveButtonClick}>
-          Lưu nhiệm vụ
-        </Button>
-      </Modal.Footer>
-    </Modal>
+                    ) : (
+                      <>
+                        <Button
+                          variant="link"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="bottom"
+                          title="File đính kèm"
+                          onClick={() => setAttachments(task.attachments ?? [])}
+                        >
+                          <Image
+                            src="/images/attach-file.png"
+                            height={20}
+                          ></Image>
+                        </Button>
+                        {role === Role.Teacher && (
+                          <>
+                            <Button
+                              variant="link"
+                              onClick={openEditMode(task)}
+                              data-bs-toggle="tooltip"
+                              data-bs-placement="bottom"
+                              title="Chỉnh sửa"
+                            >
+                              <Image src="/images/edit.png" height={20}></Image>
+                            </Button>
+                            <Button
+                              variant="link"
+                              onClick={handleDelete(index)}
+                              data-bs-toggle="tooltip"
+                              data-bs-placement="bottom"
+                              title="Xóa"
+                            >
+                              <Image
+                                src="/images/delete.png"
+                                height={20}
+                              ></Image>
+                            </Button>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </Col>
+                </Row>
+              ))}
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={onHide}>
+            Đóng
+          </Button>
+          <Button variant="primary" onClick={onSaveButtonClick}>
+            Lưu nhiệm vụ
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        show={attachments !== undefined}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            File đính kèm
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <DropzoneComponent allowEdit={true} files={attachments} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => setAttachments(undefined)}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 };
 

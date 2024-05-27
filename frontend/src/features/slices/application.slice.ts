@@ -8,6 +8,10 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "@redux/store";
 import { TermClassInfo } from "@main/types/term.type";
 
+type ApplicationFinalResponse = OverviewApplicationFormResponse & {
+  count: number;
+};
+
 type InitialState = {
   applicationId?: string;
   applicationInfo?: ApplicationForm;
@@ -16,7 +20,7 @@ type InitialState = {
   scheduleId?: string;
   page: number;
   applicationsOverview: OverviewApplicationFormResponse[];
-  applicationsFinalData: OverviewApplicationFormResponse[];
+  applicationsFinalData: ApplicationFinalResponse[];
 };
 
 const initialState: InitialState = {
@@ -139,7 +143,7 @@ export const getApplicationsFinalData = createAsyncThunk(
   "applications/fetch/final",
   async (_: undefined, { rejectWithValue }) => {
     try {
-      return await get<OverviewApplicationFormResponse[]>({
+      return await get<ApplicationFinalResponse[]>({
         path: `/application`,
       });
     } catch (e) {
@@ -214,7 +218,7 @@ const applicationSlice = createSlice({
       getApplicationsFinalData.fulfilled,
       (
         state,
-        { payload }: PayloadAction<OverviewApplicationFormResponse[]>
+        { payload }: PayloadAction<ApplicationFinalResponse[]>
       ) => {
         state.applicationsFinalData = payload;
       }

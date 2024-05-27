@@ -37,7 +37,7 @@ const AssistantsList = () => {
   }, [dispatch, scheduleId, page]);
 
   const onActionButtonClick = async (user: IUser) => {
-    dispatch(setAssignee(user._id));
+    dispatch(setAssignee(user.code));
     await dispatch(getTasks());
     dispatch(openTasksPrompt(true));
   };
@@ -52,6 +52,7 @@ const AssistantsList = () => {
         actionEnabled={true}
         actionButtonText="Giao nhiệm vụ"
         onActionButtonClick={onActionButtonClick}
+        assistantsMode={true}
       />
       <div className="text-align">
         <PaginationControl
