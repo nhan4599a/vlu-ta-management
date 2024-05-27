@@ -64,11 +64,11 @@ export const attachAttendanceRecordFile = createAsyncThunk(
   "terms/attendance/update",
   async (payload: string | null, { getState, rejectWithValue }) => {
     const { terms } = getState() as RootState;
-    const { scheduleId } = terms.termsResponse.data[terms.currentSchedule!]
+    const { classId } = terms.termsResponse.data[terms.currentSchedule!]
 
     try {
       return await patch({
-        path: `/hoc-phan/classes/${scheduleId}/attendant`,
+        path: `/hoc-phan/classes/${classId}/attendant`,
         body: {
           attendantUrl: payload,
         },

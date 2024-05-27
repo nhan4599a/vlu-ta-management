@@ -281,6 +281,7 @@ const getTermData = async (req: Request) => {
           ],
         },
         rootId: "$_id",
+        classId: "$classes._id"
       },
     },
     {
@@ -429,6 +430,7 @@ const getTermData = async (req: Request) => {
         isRegistered: 1,
         isWaiting: 1,
         applications: 1,
+        classId: 1,
         attendanceRecordFile: 1,
         _id: 0,
       },
@@ -629,7 +631,7 @@ const updateAttendantUrl = (req: Request) => {
     {},
     {
       $set: {
-        "classes.$[].schedule.$[i].attendanceRecordFile": body.attendantUrl,
+        "classes.$[i].attendanceRecordFile": body.attendantUrl,
       },
     },
     {

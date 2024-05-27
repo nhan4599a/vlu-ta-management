@@ -19,6 +19,7 @@ const AttendanceLinkPrompt = () => {
 
   const closeModal = () => {
     dispatch(setCurrentSchedule(undefined));
+    setAttendantUrl(null)
   };
 
   const saveAttendantUrl = async () => {
