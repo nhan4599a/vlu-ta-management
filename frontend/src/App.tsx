@@ -55,6 +55,7 @@ const TAFinalPage = lazy(
   () => import("./page/admin/TA-recruitment-management/TAFinalPage")
 );
 import "./index.css";
+import ClassWithTA from "./page/lecturer/ClassWithTA";
 
 const Layout = () => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -122,6 +123,11 @@ function App() {
 
           <Route path="/account-management" element="">
             <Route path="accounts-list" element={<AccountMainPage />} />
+          </Route>
+
+          <Route path="" element="">
+            <Route path="class-with-assistant" element={<ClassWithTA />} />
+            <Route path="/class-management/assistants" element={<ClassWithTA />} />
           </Route>
 
           <Route path="/ta-classlist" element="">

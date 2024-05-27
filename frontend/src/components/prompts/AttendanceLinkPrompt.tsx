@@ -25,7 +25,7 @@ const AttendanceLinkPrompt = (props: AttendanceLinkPromptProps) => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={props.onHide}>
+        <Button variant="light" onClick={props.onHide}>
           Đóng
         </Button>
         <Button variant="primary">

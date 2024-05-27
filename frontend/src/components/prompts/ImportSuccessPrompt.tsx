@@ -20,10 +20,10 @@ const ImportSuccessPrompt = (props: ImportSuccessPromtProps) => {
         <p>Import danh sách thành công</p>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="primary" onClick={props.onHide}>
+        <Button variant="light" onClick={props.onHide}>
           Đóng
         </Button>
-        <Button variant="secondary">
+        <Button variant="primary">
           <LinkItem to={props.url}>Xem danh sách</LinkItem>
         </Button>
       </Modal.Footer>

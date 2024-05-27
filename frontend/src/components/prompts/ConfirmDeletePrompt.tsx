@@ -36,7 +36,7 @@ const ConfirmDeletePrompt = () => {
         <p>Bạn có muốn xóa người dùng này</p>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
+        <Button variant="light" onClick={onHide}>
           Đóng
         </Button>
         <Button variant="primary" onClick={onActionButtonClick}>

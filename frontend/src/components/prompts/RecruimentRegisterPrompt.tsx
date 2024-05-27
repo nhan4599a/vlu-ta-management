@@ -106,7 +106,7 @@ const RecruimentRegisterPrompt = () => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={closeModal}>
+        <Button variant="light" onClick={closeModal}>
           Đóng
         </Button>
         <Button variant="primary" onClick={onSubmitSave}>Lưu</Button>

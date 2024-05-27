@@ -182,7 +182,7 @@ const TARegisterPrompt = () => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
+        <Button variant="light" onClick={onHide}>
           Đóng
         </Button>
         <Button variant="primary" onClick={onSubmit}>
