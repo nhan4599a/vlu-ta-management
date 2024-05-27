@@ -17,6 +17,7 @@ import {
   selectIsOpenTasksPrompt,
   selectTasks,
   updateTask,
+  markAsCompleted as markAsCompletedAction,
 } from "@redux/slices/tasks.slice";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import { ITaskItem, TaskAction } from "@main/types/task.type";
@@ -98,6 +99,17 @@ const TasksPrompt = () => {
     dispatch(openTasksPrompt(false));
   };
 
+  const markAsCompleted = (taskId: string) => {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      dispatch(
+        markAsCompletedAction({
+          taskId: taskId,
+          isCompleted: e.target.checked,
+        })
+      );
+    };
+  };
+
   const onSaveButtonClick = async () => {
     await dispatch(saveTasks());
     await dispatch(getTasks());
@@ -144,9 +156,18 @@ const TasksPrompt = () => {
             {tasks
               .filter((task) => task.state !== TaskAction.Delete)
               .map((task, index) => (
-                <Row>
+                <Row
+                  style={{
+                    background: task.isCompleted ? "lightgray" : "none",
+                  }}
+                >
                   <Col sm={1}>
-                    <Form.Check aria-label="option" />
+                    <Form.Check
+                      aria-label="option"
+                      disabled={role === Role.Teacher}
+                      checked={task.isCompleted}
+                      onChange={markAsCompleted(task._id!)}
+                    />
                   </Col>
                   <Col sm={8}>
                     {role === Role.Teacher &&
@@ -212,7 +233,7 @@ const TasksPrompt = () => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={onHide}>
+          <Button variant="light" onClick={onHide}>
             Đóng
           </Button>
           <Button variant="primary" onClick={onSaveButtonClick}>

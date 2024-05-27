@@ -18,6 +18,10 @@
       {
         "title": "Thông tin trợ giảng",
         "path": "/class-with-assistant"
+      },
+      {
+        "title": "Điểm danh",
+        "path": "/class-management/attendance"
       }
     ]
   },

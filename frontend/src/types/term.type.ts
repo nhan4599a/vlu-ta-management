@@ -17,4 +17,5 @@ export type TermDataItem = TermClassInfo & {
   isApproved: boolean;
   isWaiting: boolean;
   applications?: MinimalApplicationForm[];
+  attendanceRecordFile: string | null
 };

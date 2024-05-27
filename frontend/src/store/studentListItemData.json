@@ -10,7 +10,7 @@
     "title": "Quản lí nhiệm vụ trợ giảng",
     "children": [
       { "title": "Điểm danh sinh viên", "path": "/ta-attendance" },
-      { "title": "Nhiệm vụ trợ giảng", "path": "/ta-tasks" },
+      { "title": "Nhiệm vụ trợ giảng", "path": "/ta-classlist/task-ta" },
       { "title": "Tài liệu", "path": "/ta-documents" }
     ]
   },

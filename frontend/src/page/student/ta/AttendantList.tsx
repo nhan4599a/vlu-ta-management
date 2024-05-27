@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@main/features/hooks";
+import { Table } from "react-bootstrap";
+import { PaginationControl } from "react-bootstrap-pagination-control";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import {
   getTermsDataList,
   selectTermsData,
   setCurrentPage,
-} from "@main/features/slices/terms.slice";
-import { Table } from "react-bootstrap";
-import { PaginationControl } from "react-bootstrap-pagination-control";
+} from "@redux/slices/terms.slice";
 
-const ClassWithTA = () => {
+const AttendantList = () => {
   const dispatch = useAppDispatch();
   const termsResponse = useAppSelector(selectTermsData);
 
@@ -16,12 +16,11 @@ const ClassWithTA = () => {
 
   useEffect(() => {
     dispatch(setCurrentPage(page));
-    dispatch(getTermsDataList(true));
+    dispatch(getTermsDataList());
   }, [dispatch, page]);
 
   return (
     <>
-      <h2 className="display-5 mt-2 mb-3">Danh sách lớp có trợ giảng</h2>
       <div>
         <Table responsive>
           <thead>
@@ -47,13 +46,17 @@ const ClassWithTA = () => {
                 <td>{term.day}</td>
                 <td>{term.lesson}</td>
                 <td>
-                  <a
-                    className="btn btn-primary"
-                    href={`/class-management/assistants/${term.scheduleId}`}
-                    target="_blank"
-                  >
-                    Xem danh sách trợ giảng
-                  </a>
+                  {term.attendanceRecordFile ? (
+                    <a
+                      className="btn btn-primary"
+                      target="_blank"
+                      href={term.attendanceRecordFile}
+                    >
+                      Điểm danh
+                    </a>
+                  ) : (
+                    "Chưa có link điểm danh"
+                  )}
                 </td>
               </tr>
             ))}
@@ -76,4 +79,4 @@ const ClassWithTA = () => {
   );
 };
 
-export default ClassWithTA;
+export default AttendantList;

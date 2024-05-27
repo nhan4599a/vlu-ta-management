@@ -54,8 +54,10 @@ const AssistantsList = lazy(
 const TAFinalPage = lazy(
   () => import("./page/admin/TA-recruitment-management/TAFinalPage")
 );
+const ClassWithTA = lazy(() => import("./page/lecturer/ClassWithTA"));
+const ClassAttendant = lazy(() => import("./page/lecturer/class-management/ClassAttendant"));
+const AttendantList = lazy(() => import("./page/student/ta/AttendantList"));
 import "./index.css";
-import ClassWithTA from "./page/lecturer/ClassWithTA";
 
 const Layout = () => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -116,8 +118,8 @@ function App() {
             <Route path="final" element={<TAFinalPage />} />
           </Route>
 
-          <Route path="/task-mission-magagement" element="">
-            <Route path="task-mission" element="" />
+          <Route path="/task-mission-management" element="">
+            <Route path="attendant" element={<AttendantList />} />
             <Route path="feedbacks-ta" element="" />
           </Route>
 
@@ -140,7 +142,7 @@ function App() {
               path="import-class-list"
               element={<ImportSectionClassList />}
             />
-            <Route path="attendance" element="" />
+            <Route path="attendance" element={<ClassAttendant />} />
             <Route path="assistants/:scheduleId" element={<AssistantsList />} />
           </Route>
 

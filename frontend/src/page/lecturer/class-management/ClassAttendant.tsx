@@ -1,27 +1,29 @@
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@main/features/hooks";
-import {
-  getTermsDataList,
-  selectTermsData,
-  setCurrentPage,
-} from "@main/features/slices/terms.slice";
-import { Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
+import { getTermsDataList, selectTermsData, setCurrentPage, setCurrentSchedule } from "@redux/slices/terms.slice";
+import AttendanceLinkPrompt from "@main/components/prompts/AttendanceLinkPrompt";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 
-const ClassWithTA = () => {
+const ClassAttendant = () => {
   const dispatch = useAppDispatch();
   const termsResponse = useAppSelector(selectTermsData);
-
+  
   const [page, setPage] = useState(1);
+
+  const openAttendantPrompt = (index: number) => {
+    return () => {
+      dispatch(setCurrentSchedule(index));
+    };
+  };
 
   useEffect(() => {
     dispatch(setCurrentPage(page));
-    dispatch(getTermsDataList(true));
+    dispatch(getTermsDataList());
   }, [dispatch, page]);
 
   return (
     <>
-      <h2 className="display-5 mt-2 mb-3">Danh sách lớp có trợ giảng</h2>
       <div>
         <Table responsive>
           <thead>
@@ -47,18 +49,18 @@ const ClassWithTA = () => {
                 <td>{term.day}</td>
                 <td>{term.lesson}</td>
                 <td>
-                  <a
-                    className="btn btn-primary"
-                    href={`/class-management/assistants/${term.scheduleId}`}
-                    target="_blank"
+                  <Button
+                    variant="primary"
+                    onClick={openAttendantPrompt(index)}
                   >
-                    Xem danh sách trợ giảng
-                  </a>
+                    Cập nhật link điểm danh
+                  </Button>
                 </td>
               </tr>
             ))}
           </tbody>
         </Table>
+        <AttendanceLinkPrompt />
       </div>
       <div className="text-align">
         <PaginationControl
@@ -76,4 +78,4 @@ const ClassWithTA = () => {
   );
 };
 
-export default ClassWithTA;
+export default ClassAttendant;

@@ -20,6 +20,11 @@ type UpdateTaskItemAction = {
   content: string;
 };
 
+type CompleteTaskItemAction = {
+  taskId: string;
+  isCompleted: boolean;
+};
+
 export const getTasks = createAsyncThunk(
   "tasks/fetch",
   async (_: undefined, { getState, rejectWithValue }) => {
@@ -83,6 +88,11 @@ const tasksSlice = createSlice({
         task!.state = TaskAction.Update;
       }
     },
+    markAsCompleted(state, { payload }: PayloadAction<CompleteTaskItemAction>) {
+      const task = state.tasks.find((task) => task._id === payload.taskId);
+      task!.isCompleted = payload.isCompleted;
+      task!.state = TaskAction.Update;
+    },
     deleteTask(state, { payload }: PayloadAction<number>) {
       const task = state.tasks[payload];
 
@@ -107,6 +117,7 @@ export const {
   addTask,
   updateTask,
   deleteTask,
+  markAsCompleted
 } = tasksSlice.actions;
 export const tasksReducer = tasksSlice.reducer;
 export const selectIsOpenTasksPrompt = (state: RootState) =>

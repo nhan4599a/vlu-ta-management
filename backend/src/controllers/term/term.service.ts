@@ -23,6 +23,7 @@ const ValidSemesterTypes = ["HK1", "HK2", "HÈ"];
 type TermQuery = PaginationRequest & {
   semester: number | undefined;
   year: number;
+  assistantsAvailableOnly: boolean;
 };
 
 type TermDataItem = Omit<ITerm, "classes" | "sessions"> &
@@ -30,6 +31,10 @@ type TermDataItem = Omit<ITerm, "classes" | "sessions"> &
     lesson: string;
     classId: string;
   };
+
+type UpdateAttendantUrlRequest = {
+  attendantUrl: string;
+};
 
 const parseNumberOptions: ParseNumberOption = {
   allowDecimal: false,
@@ -363,6 +368,23 @@ const getTermData = async (req: Request) => {
     });
   }
 
+  if (query.assistantsAvailableOnly) {
+    basePipeline.push({
+      $set: {
+        assistantsCount: {
+          $size: "$assistants",
+        },
+      },
+    });
+    basePipeline.push({
+      $match: {
+        assistantsCount: {
+          $gt: 0,
+        },
+      },
+    });
+  }
+
   return paginate<ITerm, TermDataItem>(db.terms, query, [
     ...basePipeline,
     {
@@ -379,10 +401,6 @@ const getTermData = async (req: Request) => {
             },
           ],
         },
-      },
-    },
-    {
-      $set: {
         name: "$className",
         id: "$rootId",
       },
@@ -411,6 +429,7 @@ const getTermData = async (req: Request) => {
         isRegistered: 1,
         isWaiting: 1,
         applications: 1,
+        attendanceRecordFile: 1,
         _id: 0,
       },
     },
@@ -600,4 +619,33 @@ const getTermClassInfo = async (req: Request) => {
   return result[0];
 };
 
-export { readTermData, getTermData, getAssitantsInfo, getTermClassInfo };
+const updateAttendantUrl = (req: Request) => {
+  const { db, body, params } =
+    createTypedRequest<UpdateAttendantUrlRequest>(req);
+
+  const id = new mongoose.Types.ObjectId(params.classId);
+
+  return db.terms.findOneAndUpdate(
+    {},
+    {
+      $set: {
+        "classes.$[].schedule.$[i].attendanceRecordFile": body.attendantUrl,
+      },
+    },
+    {
+      arrayFilters: [
+        {
+          "i._id": id,
+        },
+      ],
+    }
+  );
+};
+
+export {
+  readTermData,
+  getTermData,
+  getAssitantsInfo,
+  getTermClassInfo,
+  updateAttendantUrl,
+};

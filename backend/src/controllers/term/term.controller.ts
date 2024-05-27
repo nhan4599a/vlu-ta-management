@@ -9,6 +9,7 @@ import {
   getTermClassInfo,
   getTermData,
   readTermData,
+  updateAttendantUrl,
 } from "./term.service";
 import { responseWithValue } from "../../helper/response.helper";
 import { createTypedRequest } from "../../helper/type.helper";
@@ -162,5 +163,11 @@ router.post(
     responseWithValue(res, tasks);
   }
 );
+
+router.patch("/classes/:classId/attendant", async (req, res) => {
+  await updateAttendantUrl(req);
+
+  responseWithValue(res, null);
+});
 
 export default router;
