@@ -11,6 +11,8 @@ import { v4 as uuidv4 } from "uuid";
 import { Attachment } from "@main/types/application-form.type";
 import { downloadAttachment } from "@main/api";
 import "@main/index.css";
+import { showMessageDialog } from "@main/features/slices/messages.slice";
+import { useAppDispatch } from "@main/features/hooks";
 
 export interface DropzoneComponentMethodsRef {
   getFiles: () => File[];
@@ -54,6 +56,12 @@ const DropzoneComponent = forwardRef<
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
 
   const elementIdRef = useRef(`d-${uuidv4()}`);
+  
+  const dispatch = useAppDispatch();
+
+  const closeModal = () => {
+    dispatch()
+  }
 
   const dropzoneRef = useRef<Dropzone>();
   const downloadUrlsRef = useRef<Map<string, string>>(
@@ -120,10 +128,20 @@ const DropzoneComponent = forwardRef<
         return;
       }
 
-      setIsPreviewVisible(true);      
+      if (props.maxFiles && dropzone.files.length > props.maxFiles) {
+        dropzone.removeFile(file);
+      }
+
+      if (props.acceptedFiles != dropzone.files) {
+        dropzone.removeFile(file);
+        dispatch(showMessageDialog("File không đúng định dạng. Vui lòng thử lại"));
+        setIsPreviewVisible(false);
+      }
 
       const fileIconSrc = getFileIcon(file.name);
-      const dzImageElement = file.previewElement.querySelector(".dz-image") as HTMLElement;
+      const dzImageElement = file.previewElement.querySelector(
+        ".dz-image"
+      ) as HTMLElement;
       if (dzImageElement) {
         dzImageElement.style.backgroundImage = `url(${fileIconSrc})`;
         dzImageElement.style.backgroundRepeat = "no-repeat";

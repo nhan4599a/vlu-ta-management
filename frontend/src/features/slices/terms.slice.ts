@@ -101,6 +101,6 @@ export const { setCurrentPage, setCurrentSchedule } = termsSlice.actions;
 export const termsReducer = termsSlice.reducer;
 export const selectTermsData = (state: RootState) => state.terms.termsResponse;
 export const selectActiveSchedule = (state: RootState) =>
-  state.terms.currentSchedule
+  state.terms.currentSchedule !== undefined
     ? state.terms.termsResponse.data[state.terms.currentSchedule]
     : undefined;
