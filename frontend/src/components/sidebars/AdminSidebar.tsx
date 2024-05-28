@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 
 const renderMenuItem = (item: SideBarItemList) => {
   const location = useLocation();
-  
+
   if (item.children) {
     return (
       <Accordion.Item eventKey={item.title}>
@@ -17,8 +17,11 @@ const renderMenuItem = (item: SideBarItemList) => {
     );
   } else {
     return (
-      <LinkItem key={item.title} to={item.path}
-      isActive={location.pathname === item.path}>
+      <LinkItem
+        key={item.title}
+        to={item.path}
+        isActive={location.pathname === item.path}
+      >
         {item.title}
       </LinkItem>
     );
