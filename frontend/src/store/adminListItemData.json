@@ -30,7 +30,7 @@
     ]
   },
   {
-    "title": "Quản lí công tác giảng dạy",
+    "title": "Quản lí giảng dạy",
     "children": [
       {
         "title": "Import danh sách học phần",
@@ -60,11 +60,11 @@
     "children": [
       {
         "title": "Đánh giá",
-        "path": "/"
+        "path": "/feedback-and-statistic/feedbacks"
       },
       {
         "title": "Thống kê",
-        "path": "/"
+        "path": "/feedback-and-statistic/statistic"
       }
     ]
   }
