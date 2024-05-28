@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Button,
   Form,
@@ -18,14 +18,18 @@ import {
   selectTasks,
   updateTask,
   markAsCompleted as markAsCompletedAction,
+  attachFile,
 } from "@redux/slices/tasks.slice";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import { ITaskItem, TaskAction } from "@main/types/task.type";
 import { showMessageDialog } from "@redux/slices/messages.slice";
 import { selectCurrentRole } from "@redux/slices/authentication.slice";
 import { Role } from "@main/types/user.type";
-import DropzoneComponent from "../dropzone/Dropzone";
+import DropzoneComponent, {
+  DropzoneComponentMethodsRef,
+} from "../dropzone/Dropzone";
 import { Attachment } from "@main/types/application-form.type";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 const TasksPrompt = () => {
   const dispatch = useAppDispatch();
@@ -38,7 +42,10 @@ const TasksPrompt = () => {
 
   const [edittingTask, setEdittingTask] = useState<string>();
   const [edittingValue, setEdittingValue] = useState("");
-  const [attachments, setAttachments] = useState<Attachment[]>();
+  const [attachments, setAttachments] = useState<Attachment[] | File[]>();
+
+  const attachmentTaskIdRef = useRef<string>();
+  const dropzoneRef = useRef<DropzoneComponentMethodsRef>(null);
 
   const actionWrapper = (innerAction: () => void) => {
     return () => {
@@ -110,8 +117,26 @@ const TasksPrompt = () => {
     };
   };
 
+  const openAttachment = ({ _id, attachments }: ITaskItem) => {
+    return () => {
+      attachmentTaskIdRef.current = _id!;
+      setAttachments(attachments ?? []);
+    };
+  };
+
+  const closeAttachmentDialog = () => {
+    dispatch(
+      attachFile({
+        taskId: attachmentTaskIdRef!.current!,
+        attachments: dropzoneRef.current!.getFiles(),
+      })
+    );
+    attachmentTaskIdRef!.current = undefined;
+    setAttachments(undefined);
+  };
+
   const onSaveButtonClick = async () => {
-    await dispatch(saveTasks());
+    await dispatch(saveTasks()).then(unwrapResult);
     await dispatch(getTasks());
     onHide();
   };
@@ -160,6 +185,7 @@ const TasksPrompt = () => {
                   style={{
                     background: task.isCompleted ? "lightgray" : "none",
                   }}
+                  key={task._id}
                 >
                   <Col sm={1}>
                     <Form.Check
@@ -193,14 +219,14 @@ const TasksPrompt = () => {
                           data-bs-toggle="tooltip"
                           data-bs-placement="bottom"
                           title="File đính kèm"
-                          onClick={() => setAttachments(task.attachments ?? [])}
+                          onClick={openAttachment(task)}
                         >
                           <Image
                             src="/images/attach-file.png"
                             height={20}
                           ></Image>
                         </Button>
-                        {role === Role.Teacher && (
+                        {role === Role.Teacher && !task.isCompleted && (
                           <>
                             <Button
                               variant="link"
@@ -246,6 +272,7 @@ const TasksPrompt = () => {
         aria-labelledby="contained-modal-title-vcenter"
         centered
         show={attachments !== undefined}
+        onHide={() => setAttachments(undefined)}
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
@@ -253,10 +280,15 @@ const TasksPrompt = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <DropzoneComponent allowEdit={true} files={attachments} />
+          <DropzoneComponent
+            allowDownload={true}
+            allowEdit={true}
+            files={attachments}
+            ref={dropzoneRef}
+          />
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => setAttachments(undefined)}>Close</Button>
+          <Button onClick={closeAttachmentDialog}>Close</Button>
         </Modal.Footer>
       </Modal>
     </>

@@ -32,7 +32,12 @@ const TAFinalPage = () => {
                 <p className="mb-0">
                   {item.name} - {item.day} tiết {item.lesson}
                 </p>
-                <p className="mb-0">{ item.count ?? 0 } ứng viên</p>
+                <div className="mb-0">
+                  ứng viên:{" "}
+                  <span>
+                    {item.count ?? 0} / {item.maxAllowedCandidates ?? 0}
+                  </span>
+                </div>
               </div>
             </Accordion.Header>
             <Accordion.Body>

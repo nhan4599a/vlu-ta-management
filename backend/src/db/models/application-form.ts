@@ -8,6 +8,7 @@ export interface IApplicationForm {
   year: number;
   name: string;
   code: string;
+  email: string;
   class: string;
   phoneNumber: string;
   termScore: number;
@@ -29,6 +30,7 @@ export const ApplicationFormSchema = new Schema<IApplicationForm>({
   phoneNumber: { type: String, required: true },
   class: { type: String, required: true },
   code: { type: String, required: true },
+  email: { type: String, required: true },
   termScore: { type: Number, required: true },
   avgScore: { type: Number, required: true },
   description: { type: String, required: false },

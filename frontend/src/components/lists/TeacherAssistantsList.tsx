@@ -37,13 +37,13 @@ export const TeacherAssistantsList = ({
       <tbody>
         {applications.map((application, index) => (
           <tr key={index}>
-            <th>{index + 1}</th>
-            <th>{application.name}</th>
-            <th>{application.code}</th>
-            <th>{application.description}</th>
-            <th>
+            <td>{index + 1}</td>
+            <td>{application.name}</td>
+            <td>{application.code}</td>
+            <td>{application.email}</td>
+            <td>
               <Button variant="primary" onClick={showApprovalDialog(application)}>Xem</Button>
-            </th>
+            </td>
           </tr>
         ))}
       </tbody>

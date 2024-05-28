@@ -13,5 +13,10 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: ["react-data-export"]
+  },
+  esbuild: {
+    supported: {
+      'top-level-await': true //browsers can handle top-level-await features
+    },
   }
 });

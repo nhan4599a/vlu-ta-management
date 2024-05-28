@@ -7,6 +7,7 @@ COPY . .
 ENV PORT=5000
 ENV CONNECTION_STRING=mongodb://mongo:27017/vlu-ta-management
 
+RUN mkdir -p public
 RUN npm install
 RUN npm run build
 

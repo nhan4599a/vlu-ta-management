@@ -68,9 +68,9 @@ const createQueryString = (query?: Record<string, unknown>) => {
   }
 
   return Object.entries(query).reduce((accumulate, [key, value]) => {
-    let result = accumulate === "" ? "?" : ((key && value) ? "&" : "");
+    let result = accumulate === "" ? "?" : ((key && (value !== null && value !== undefined)) ? "&" : "");
 
-    if (key && value) {
+    if (key && (value !== null && value !== undefined)) {
       result += `${key}=${value}`;
     }
 

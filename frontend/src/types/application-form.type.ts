@@ -13,6 +13,7 @@ export type ApplicationForm = MinimalApplicationForm & {
     name: string,
     code: string,
     class: string,
+    email: string,
     phoneNumber: string,
     termScore: number,
     avgScore: number,

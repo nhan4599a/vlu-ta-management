@@ -25,15 +25,22 @@ type CompleteTaskItemAction = {
   isCompleted: boolean;
 };
 
+type AttachFilesAction = {
+  taskId: string;
+  attachments: File[];
+};
+
 export const getTasks = createAsyncThunk(
   "tasks/fetch",
   async (_: undefined, { getState, rejectWithValue }) => {
     const { tasks } = getState() as RootState;
 
     try {
-      return await get<ITaskItem[]>({
+      const data = await get<ITaskItem[]>({
         path: `/hoc-phan/classes/${tasks.currentScheduleId}/users/${tasks.currentAssignee}/tasks`,
       });
+
+      return data.map((item) => ({ ...item, state: null }));
     } catch (e) {
       return rejectWithValue(e);
     }
@@ -43,16 +50,55 @@ export const getTasks = createAsyncThunk(
 export const saveTasks = createAsyncThunk(
   "tasks/update",
   async (_: undefined, { getState, rejectWithValue }) => {
-    const { tasks } = getState() as RootState;
-
     try {
+      const { tasks } = getState() as RootState;
+      const formData = new FormData();
+
+      let fileCount = 0;
+
+      for (let i = 0; i < tasks.tasks.length; i++) {
+        const task = tasks.tasks[i];
+        formData.append(`tasks[${i}][_id]`, task._id!);
+        formData.append(`tasks[${i}][content]`, task.content);
+        formData.append(
+          `tasks[${i}][isCompleted]`,
+          task.isCompleted.toString()
+        );
+        if (task.state !== null) {
+          formData.append(`tasks[${i}][state]`, task.state.toString());
+        }
+
+        if (task.attachments) {
+          for (
+            let fileIndex = 0;
+            fileIndex < task.attachments?.length;
+            fileIndex++
+          ) {
+            const file = task.attachments[fileIndex];
+
+            if (file instanceof File) {
+              formData.append(`files`, file);
+              formData.append(`tasks[${i}][attachments]`, fileCount.toString());
+              fileCount += 1;
+            } else {
+              formData.append(
+                `tasks[${i}][attachments][${fileIndex}][originalFileName]`,
+                file.originalFileName
+              );
+              formData.append(
+                `tasks[${i}][attachments][${fileIndex}][savedFileName]`,
+                file.savedFileName
+              );
+            }
+          }
+        }
+      }
       return await post({
         path: `/hoc-phan/classes/${tasks.currentScheduleId}/users/${tasks.currentAssignee}/tasks`,
-        body: {
-          tasks: tasks.tasks,
-        },
+        body: formData,
       });
     } catch (e) {
+      console.log(e);
       return rejectWithValue(e);
     }
   }
@@ -102,6 +148,15 @@ const tasksSlice = createSlice({
         state.tasks.splice(payload, 1);
       }
     },
+    attachFile(state, { payload }: PayloadAction<AttachFilesAction>) {
+      const task = state.tasks.find((task) => task._id === payload.taskId);
+
+      task!.attachments = payload.attachments;
+
+      if (task!.state !== TaskAction.Add) {
+        task!.state = TaskAction.Update;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getTasks.fulfilled, (state, { payload }) => {
@@ -111,13 +166,14 @@ const tasksSlice = createSlice({
 });
 
 export const {
+  attachFile,
   setScheduleId,
   setAssignee,
   openTasksPrompt,
   addTask,
   updateTask,
   deleteTask,
-  markAsCompleted
+  markAsCompleted,
 } = tasksSlice.actions;
 export const tasksReducer = tasksSlice.reducer;
 export const selectIsOpenTasksPrompt = (state: RootState) =>
