@@ -36,7 +36,7 @@ export const writeExcelData = <TData extends object>(
 
     for (const item of data) {
       ws.cell(++rowCount, mappingDetail.column).string(
-        item[propName]!.toString()
+        item[propName]?.toString() ?? ""
       );
     }
   }

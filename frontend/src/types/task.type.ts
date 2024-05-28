@@ -10,6 +10,6 @@ export interface ITaskItem {
   content: string;
   isCompleted: boolean;
   state: TaskAction | null;
-  attachments: Attachment[] | null
+  attachments: Attachment[] | File[] | null
   _id?: string | null;
 }

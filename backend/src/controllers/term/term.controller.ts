@@ -15,6 +15,7 @@ import { responseWithValue } from "../../helper/response.helper";
 import { createTypedRequest } from "../../helper/type.helper";
 import { ITask } from "../../db/models/task";
 import mongoose, { AnyBulkWriteOperation } from "mongoose";
+import { Attachment } from "../../db/models/common";
 
 const router = express.Router();
 
@@ -27,7 +28,7 @@ enum TaskAction {
 type TaskItem = ITask & {
   state: TaskAction | null;
   _id: string | null;
-  attachmentsMap: Express.Multer.File[];
+  attachments: (Attachment | number)[];
 };
 
 type CreateTaskRequest = {
@@ -94,7 +95,7 @@ router.post(
   "/classes/:classId/users/:userCode/tasks",
   uploadMultipleFilesMiddleware,
   async (req, res) => {
-    const { db, params, body, user } = createTypedRequest<
+    const { db, params, body, user, files } = createTypedRequest<
       CreateTaskRequest,
       {}
     >(req);
@@ -104,12 +105,25 @@ router.post(
     const classId = new mongoose.Types.ObjectId(params.classId);
 
     for (const taskItem of body.tasks.filter((item) => item.state !== null)) {
-      const { state, _id, attachmentsMap, ...actualTask } = taskItem;
+      const { state, _id, attachments, ...actualTask } = taskItem;
 
-      const uploadedFiles =
-        (attachmentsMap as Express.Multer.File[])?.map(mapAttachment) ?? [];
+      const uploadedFiles: Attachment[] = [];
 
-      switch (state) {
+      if (attachments) {
+        for (const attachment of attachments) {
+          if (typeof attachment !== "object") {
+            uploadedFiles.push(
+              mapAttachment(
+                (files as Express.Multer.File[])[Number(attachment)]
+              )
+            );
+          } else {
+            uploadedFiles.push(attachment);
+          }
+        }
+      }
+
+      switch (Number(state)) {
         case TaskAction.Add:
           actions.push({
             insertOne: {
@@ -133,7 +147,7 @@ router.post(
               update: {
                 $set: {
                   content: actualTask.content,
-                  isCompleted: actualTask.isCompleted,
+                  isCompleted: actualTask.isCompleted.toString() === "true",
                   attachments: uploadedFiles,
                 },
               },

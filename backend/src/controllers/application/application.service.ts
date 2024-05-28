@@ -145,6 +145,7 @@ export const writeEligibleList = async (req: Request, res: Response) => {
       },
       {
         $project: {
+          _id: 0,
           users: 0,
           mapped_users: 0,
         },
@@ -163,7 +164,33 @@ export const writeEligibleList = async (req: Request, res: Response) => {
       bgColor: "#FFFF00",
     },
   });
+  const tableStyle = wb.createStyle({
+    border: {
+      left: {
+        style: "thin",
+        color: "black",
+      },
+      right: {
+        style: "thin",
+        color: "black",
+      },
+      top: {
+        style: "thin",
+        color: "black",
+      },
+      bottom: {
+        style: "thin",
+        color: "black",
+      },
+      outline: false,
+    },
+  });
   ws.cell(1, 1, 1, 4).style(headerStyle);
+  ws.cell(1, 1, data.length + 1, 4).style(tableStyle);
+  ws.column(1).setWidth(25);
+  ws.column(2).setWidth(12);
+  ws.column(3).setWidth(10);
+  ws.column(4).setWidth(13);
   wb.write("Danh sách đào tạo trợ giảng.xlsx", res);
 };
 

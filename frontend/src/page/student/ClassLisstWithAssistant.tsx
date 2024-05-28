@@ -1,11 +1,11 @@
+import { useEffect, useState } from "react";
+import { Button, Table } from "react-bootstrap";
 import TasksPrompt from "@main/components/prompts/TasksPrompt";
 import { useAppDispatch, useAppSelector } from "@main/features/hooks";
 import { getTasks, setAssignee } from "@main/features/slices/tasks.slice";
 import { selectTermsData } from "@main/features/slices/terms.slice";
 import { getUsersList, selectUsersList, setRequest } from "@main/features/slices/users.slice";
 import { Role } from "@main/types/user.type";
-import React, { useEffect, useState } from "react";
-import { Button, Table } from "react-bootstrap";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 
 const ClassLisstWithAssistant = () => {

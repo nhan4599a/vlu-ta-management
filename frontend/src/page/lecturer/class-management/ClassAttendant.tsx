@@ -35,6 +35,7 @@ const ClassAttendant = () => {
               <th>Loại HP</th>
               <th>Thứ</th>
               <th>Tiết học</th>
+              <th>Trạng thái</th>
               <th></th>
             </tr>
           </thead>
@@ -48,6 +49,7 @@ const ClassAttendant = () => {
                 <td>{term.type}</td>
                 <td>{term.day}</td>
                 <td>{term.lesson}</td>
+                <td>{term.attendanceRecordFile ? 'Đã cập nhật' : 'Chưa cập nhật'}</td>
                 <td>
                   <Button
                     variant="primary"

@@ -112,7 +112,7 @@ router.post(
       {}
     >(req);
 
-    const { code, class: userClass, name } = user;
+    const { code, class: userClass, name, email } = user;
 
     const uploadedFiles =
       (files as Express.Multer.File[])?.map(mapAttachment) ?? [];
@@ -149,6 +149,7 @@ router.post(
           scheduleId: params.classId,
           code,
           name,
+          email,
           class: userClass,
           ...body,
           attachments: uploadedFiles,
