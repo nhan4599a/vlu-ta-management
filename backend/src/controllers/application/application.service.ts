@@ -333,100 +333,33 @@ export const importPassTrainingList = async (req: Request) => {
       ["desc", "desc", "asc"]
     );
 
-    let matchedCount = 1;
+    let baseItem = applications[0];
+    const candidatesGroups: IApplicationForm[][] = [[baseItem]];
+    let groupIndex = 0;
 
     for (let i = 1; i < applications.length; i++) {
-      const { termScore, avgScore, priority } = applications[i];
-
       if (
-        termScore === applications[0].termScore &&
-        avgScore === applications[0].avgScore &&
-        priority === applications[0].priority
+        baseItem.termScore === applications[i].termScore &&
+        baseItem.avgScore === applications[i].avgScore &&
+        baseItem.priority === applications[i].priority
       ) {
-        matchedCount++;
-        continue;
+        candidatesGroups[groupIndex].push(applications[i]);
+      } else {
+        baseItem = applications[i];
+        candidatesGroups.push([baseItem]);
+        groupIndex += 1;
       }
-
-      break;
     }
 
-    const { candidatesCount } =
+    let { candidatesCount: remainingSlots } =
       scheduleInfoMap.get(scheduleId)!.registrationInfo!;
 
-    if (applications.length <= candidatesCount) {
-      applicationActions.push(
-        ...applications.map((e) => {
-          return {
-            updateOne: {
-              filter: {
-                _id: e._id,
-              },
-              update: {
-                $set: {
-                  stage2Approval: true,
-                },
-              },
-            },
-          };
-        })
-      );
-      usersActions.push(
-        ...applications.map((application) => {
-          return {
-            updateOne: {
-              filter: {
-                code: application.code,
-              },
-              update: {
-                $set: {
-                  isAssistant: true,
-                },
-              },
-            },
-          };
-        })
-      );
-      termsActions.push(
-        ...applications.map((application) => {
-          return {
-            updateOne: {
-              filter: {
-                "classes.schedule._id": scheduleId,
-              },
-              update: {
-                $push: {
-                  "classes.$[].schedule.$[i].assistants": application.code,
-                },
-              },
-              arrayFilters: [
-                {
-                  "i._id": scheduleId,
-                },
-              ],
-            },
-          };
-        })
-      );
-    } else {
-      if (matchedCount > candidatesCount) {
+    for (let i = 0; i < candidatesGroups.length; i++) {
+      const candidates = candidatesGroups[i];
+
+      if (remainingSlots <= 0) {
         applicationActions.push(
-          ...applications.slice(0, matchedCount).map((e) => {
-            return {
-              updateOne: {
-                filter: {
-                  _id: e._id,
-                },
-                update: {
-                  $set: {
-                    isPending: true,
-                  },
-                },
-              },
-            };
-          })
-        );
-        applicationActions.push(
-          ...applications.slice(matchedCount).map((e) => {
+          ...candidates.map((e) => {
             return {
               updateOne: {
                 filter: {
@@ -441,9 +374,11 @@ export const importPassTrainingList = async (req: Request) => {
             };
           })
         );
-      } else {
+      }
+
+      if (candidates.length <= remainingSlots) {
         applicationActions.push(
-          ...applications.slice(0, candidatesCount).map((e) => {
+          ...candidates.map((e) => {
             return {
               updateOne: {
                 filter: {
@@ -459,11 +394,11 @@ export const importPassTrainingList = async (req: Request) => {
           })
         );
         usersActions.push(
-          ...applications.slice(0, candidatesCount).map((application) => {
+          ...candidates.map((e) => {
             return {
               updateOne: {
                 filter: {
-                  code: application.code,
+                  code: e.code,
                 },
                 update: {
                   $set: {
@@ -475,7 +410,7 @@ export const importPassTrainingList = async (req: Request) => {
           })
         );
         termsActions.push(
-          ...applications.slice(0, candidatesCount).map((application) => {
+          ...candidates.map((application) => {
             return {
               updateOne: {
                 filter: {
@@ -495,8 +430,9 @@ export const importPassTrainingList = async (req: Request) => {
             };
           })
         );
+      } else {
         applicationActions.push(
-          ...applications.slice(candidatesCount).map((e) => {
+          ...candidates.map((e) => {
             return {
               updateOne: {
                 filter: {
@@ -504,7 +440,7 @@ export const importPassTrainingList = async (req: Request) => {
                 },
                 update: {
                   $set: {
-                    stage2Approval: false,
+                    isPending: true,
                   },
                 },
               },
@@ -512,6 +448,8 @@ export const importPassTrainingList = async (req: Request) => {
           })
         );
       }
+
+      remainingSlots -= candidates.length;
     }
   }
 
