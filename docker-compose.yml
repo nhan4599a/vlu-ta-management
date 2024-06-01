@@ -1,13 +1,20 @@
 version: '1'
 
 services:
-  app:
-    container_name: app
-    build: .
+  be:
+    container_name: be
+    build: backend/.
     ports:
       - "5000:5000"
     links:
       - mongo
+  fe:
+    container_name: fe
+    build: frontend/.
+    ports:
+      - "5173:80"
+    links:
+      - be
   mongo:
     container_name: mongo
     image: mongo

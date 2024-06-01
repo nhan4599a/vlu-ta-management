@@ -9,6 +9,7 @@ import { IUser, UserSchema } from './models/user'
 import { env } from '../env'
 import { ApplicationFormSchema, IApplicationForm } from './models/application-form'
 import { ITask, TaskSchema } from './models/task'
+import { ISetting, SettingSchema } from './models/setting'
 
 export default class DbInstance {
     #dbConnection: Connection
@@ -18,6 +19,7 @@ export default class DbInstance {
     users: Model<IUser>
     applications: Model<IApplicationForm>
     tasks: Model<ITask>
+    settings: Model<ISetting>
 
     constructor() {
         this.#dbConnection = createConnection(env.CONNECTION_STRING)
@@ -25,6 +27,7 @@ export default class DbInstance {
         this.users = this.#dbConnection.model('users', UserSchema)
         this.applications = this.#dbConnection.model('applications', ApplicationFormSchema)
         this.tasks = this.#dbConnection.model('tasks', TaskSchema)
+        this.settings = this.#dbConnection.model('settings', SettingSchema)
     }
 
     async startTransaction() {

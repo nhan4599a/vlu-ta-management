@@ -230,7 +230,7 @@ export const getApplicationsList = (req: Request) => {
           pipeline: [
             {
               $match: {
-                stage1Approval: false,
+                stage1Approval: null,
               },
             },
           ],

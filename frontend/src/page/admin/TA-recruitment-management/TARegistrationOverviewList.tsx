@@ -20,21 +20,29 @@ const TARegistrationOverviewList = () => {
 
   return (
     <>
+      <h2 className="display-5 mt-2 mb-3">Danh sách sinh viên sơ tuyển</h2>
       <Accordion
         activeKey={activeKey}
         onSelect={(e) => setActiveKey(e as string)}
         alwaysOpen
       >
         {data.map((item, index) => (
-          <Accordion.Item eventKey={item.scheduleId} key={index} className="mb-2">
+          <Accordion.Item
+            eventKey={item.scheduleId}
+            key={index}
+            className="mb-2"
+          >
             <Accordion.Header>
               {item.name} - {item.day} tiết {item.lesson}
             </Accordion.Header>
             <Accordion.Body>
               <TeacherAssistantsList applications={item.applications} />
               {item.hasMore && (
-                <a href={`/ta-information-management/assistant/${item.scheduleId}`} target="_blank">
-                  View more
+                <a
+                  href={`/ta-information-management/assistant/${item.scheduleId}`}
+                  target="_blank"
+                >
+                  Xem thêm
                 </a>
               )}
             </Accordion.Body>

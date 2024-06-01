@@ -2,10 +2,15 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { post } from "@main/api";
 import { IUser } from "@main/types/user.type";
 import { RootState } from "@redux/store";
+import { ISetting } from "@main/types/setting.type";
+
+type UserInfo = IUser & {
+  currentSetting: ISetting | null;
+};
 
 type AuthenticationState = {
   accessToken?: string;
-  user?: IUser;
+  user?: UserInfo;
   isAuthenticated: boolean;
 };
 
@@ -17,7 +22,7 @@ export const postLoginCallback = createAsyncThunk(
   "authenticate/post-login",
   async (_, { rejectWithValue }) => {
     try {
-      return await post<IUser>({
+      return await post<UserInfo>({
         path: "/authenticate/post-login",
       });
     } catch (e) {
@@ -38,6 +43,9 @@ const authenticationSlice = createSlice({
       state.accessToken = undefined;
       state.isAuthenticated = false;
     },
+    updateLocallyUserInfo(state, { payload }: PayloadAction<string>) {
+      state.user!.phoneNumber = payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(postLoginCallback.fulfilled, (state, { payload }) => {
@@ -47,7 +55,7 @@ const authenticationSlice = createSlice({
   },
 });
 
-export const { setAccessToken, logout } = authenticationSlice.actions;
+export const { setAccessToken, logout, updateLocallyUserInfo } = authenticationSlice.actions;
 export const authenticationReducer = authenticationSlice.reducer;
 export const selectIsAuthenticated = (state: RootState) =>
   state.authentication.isAuthenticated;

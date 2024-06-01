@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "react-bootstrap";
@@ -18,15 +17,13 @@ const msalInstance = new PublicClientApplication(
 await msalInstance.initialize();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <PersistGate persistor={persistor}>
-        <BrowserRouter>
-          <MsalProvider instance={msalInstance}>
-            <App />
-          </MsalProvider>
-        </BrowserRouter>
-      </PersistGate>
-    </Provider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <PersistGate persistor={persistor}>
+      <BrowserRouter>
+        <MsalProvider instance={msalInstance}>
+          <App />
+        </MsalProvider>
+      </BrowserRouter>
+    </PersistGate>
+  </Provider>
 );

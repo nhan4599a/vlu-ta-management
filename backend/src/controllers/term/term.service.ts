@@ -17,11 +17,24 @@ import { paginate } from "../../helper/pagination.helper";
 import mongoose, { PipelineStage } from "mongoose";
 import { Role } from "../../constants/role.enum";
 
+const ValidSemesterTypes = ["HK1", "HK2", "HÈ"];
+
+type TermQuery = PaginationRequest & {
+  semester: number | undefined;
+  year: number;
+  assistantsAvailableOnly: boolean;
+  availableJobsOnly: boolean;
+};
+
 type TermDataItem = Omit<ITerm, "classes" | "sessions"> &
   Omit<IScheduleDetail, "startLesson" | "endLesson"> & {
     lesson: string;
     classId: string;
   };
+
+type UpdateAttendantUrlRequest = {
+  attendantUrl: string;
+};
 
 const parseNumberOptions: ParseNumberOption = {
   allowDecimal: false,
@@ -182,7 +195,28 @@ const validateTermData = (rows: Row[]) => {
   const result: ITerm[] = [];
 
   for (const row of rows) {
-    const [code, name, type, creditsStr, sessionsStr, ...restProps] = row;
+    const [
+      year,
+      semesterTypeStr,
+      code,
+      name,
+      type,
+      creditsStr,
+      sessionsStr,
+      ...restProps
+    ] = row;
+
+    if (!isNumber(year)) {
+      throwValidationError("Năm học phải là số nguyên");
+    }
+
+    const semesterType = ValidSemesterTypes.indexOf(
+      semesterTypeStr.toString().toUpperCase()
+    );
+
+    if (semesterType === -1) {
+      throwValidationError("Học kỳ không hợp lệ");
+    }
 
     if (!isNumber(creditsStr)) {
       throwValidationError("Tín chỉ phải là số nguyên");
@@ -195,6 +229,8 @@ const validateTermData = (rows: Row[]) => {
     const termClassesData = validateTermClassesData(type.toString(), restProps);
 
     result.push({
+      year: Number(year),
+      semester: semesterType,
       code: code.toString(),
       name: name.toString(),
       credits: Number(creditsStr),
@@ -213,7 +249,7 @@ const readTermData = async (file: Express.Multer.File): Promise<ITerm[]> => {
 };
 
 const getTermData = async (req: Request) => {
-  const { db, query, user } = createTypedRequest<{}, PaginationRequest>(req);
+  const { db, query, user } = createTypedRequest<{}, TermQuery>(req);
 
   const basePipeline: PipelineStage[] = [
     {
@@ -245,6 +281,7 @@ const getTermData = async (req: Request) => {
           ],
         },
         rootId: "$_id",
+        classId: "$classes._id",
       },
     },
     {
@@ -280,34 +317,85 @@ const getTermData = async (req: Request) => {
     basePipeline.push({
       $match: {
         lecture: user.code,
+        year: Number(query.year),
       },
     });
   } else if (user.role === Role.Student) {
+    basePipeline.push(
+      ...[
+        {
+          $match: {
+            isApproved: true,
+            year: Number(query.year),
+          },
+        },
+        {
+          $lookup: {
+            from: "applications",
+            localField: "classes.schedule._id",
+            foreignField: "scheduleId",
+            as: "applications",
+            pipeline: [
+              {
+                $match: {
+                  code: user.code,
+                },
+              },
+              {
+                $project: {
+                  _id: 1,
+                  stage1Approval: 1,
+                  stage2Approval: 1,
+                },
+              },
+            ],
+          },
+        },
+      ]
+    );
+
+    if (query.availableJobsOnly) {
+      basePipeline.push(
+        ...[
+          {
+            $match: {
+              applications: {
+                $size: 0,
+              },
+            },
+          },
+        ]
+      );
+    }
+  } else {
     basePipeline.push({
       $match: {
-        isApproved: true,
+        year: Number(query.year),
+      },
+    });
+  }
+
+  if (query.semester) {
+    basePipeline.push({
+      $match: {
+        semester: Number(query.semester),
+      },
+    });
+  }
+
+  if (query.assistantsAvailableOnly) {
+    basePipeline.push({
+      $set: {
+        assistantsCount: {
+          $size: "$assistants",
+        },
       },
     });
     basePipeline.push({
-      $lookup: {
-        from: "applications",
-        localField: "classes.schedule._id",
-        foreignField: "scheduleId",
-        as: "applications",
-        pipeline: [
-          {
-            $match: {
-              userId: user._id,
-            },
-          },
-          {
-            $project: {
-              _id: 1,
-              stage1Approval: 1,
-              stage2Approval: 1,
-            },
-          },
-        ],
+      $match: {
+        assistantsCount: {
+          $gt: 0,
+        },
       },
     });
   }
@@ -328,10 +416,6 @@ const getTermData = async (req: Request) => {
             },
           ],
         },
-      },
-    },
-    {
-      $set: {
         name: "$className",
         id: "$rootId",
       },
@@ -360,6 +444,8 @@ const getTermData = async (req: Request) => {
         isRegistered: 1,
         isWaiting: 1,
         applications: 1,
+        classId: 1,
+        attendanceRecordFile: 1,
         _id: 0,
       },
     },
@@ -385,14 +471,9 @@ const getTermData = async (req: Request) => {
 };
 
 const getAssitantsInfo = (req: Request) => {
-  const { db, params } = createTypedRequest(req);
+  const { db, params, query } = createTypedRequest<{}, PaginationRequest>(req);
 
-  return db.terms.aggregate([
-    {
-      $match: {
-        _id: new mongoose.Types.ObjectId(params.id),
-      },
-    },
+  return paginate(db.terms, query, [
     {
       $unwind: {
         path: "$classes",
@@ -436,11 +517,20 @@ const getAssitantsInfo = (req: Request) => {
     },
     {
       $unwind: {
-        path: "users",
+        path: "$users",
       },
     },
     {
-      $unset: ["users"],
+      $replaceRoot: {
+        newRoot: {
+          $mergeObjects: ["$users", "$$ROOT"],
+        },
+      },
+    },
+    {
+      $project: {
+        users: 0,
+      },
     },
   ]);
 };
@@ -545,4 +635,33 @@ const getTermClassInfo = async (req: Request) => {
   return result[0];
 };
 
-export { readTermData, getTermData, getAssitantsInfo, getTermClassInfo };
+const updateAttendantUrl = (req: Request) => {
+  const { db, body, params } =
+    createTypedRequest<UpdateAttendantUrlRequest>(req);
+
+  const id = new mongoose.Types.ObjectId(params.classId);
+
+  return db.terms.findOneAndUpdate(
+    {},
+    {
+      $set: {
+        "classes.$[i].attendanceRecordFile": body.attendantUrl,
+      },
+    },
+    {
+      arrayFilters: [
+        {
+          "i._id": id,
+        },
+      ],
+    }
+  );
+};
+
+export {
+  readTermData,
+  getTermData,
+  getAssitantsInfo,
+  getTermClassInfo,
+  updateAttendantUrl,
+};

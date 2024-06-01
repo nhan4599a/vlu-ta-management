@@ -3,11 +3,13 @@ import DbInstance from "../db";
 import { env } from "../env";
 import { IUser } from "../db/models/user";
 import mongoose from "mongoose";
+import { ISetting } from "../db/models/setting";
 
 export interface IBaseRequest extends Request {
     db: DbInstance,
     user: IUser & {
-        _id: mongoose.Types.ObjectId
+        _id: mongoose.Types.ObjectId,
+        currentSetting: ISetting | null
     }
 }
 
@@ -61,4 +63,13 @@ export type PaginationRequest = {
 export type PaginationResponse<TResult> = {
     data: TResult[],
     count: number
+}
+
+type ColumnMappingDetail = {
+    column: number
+    headerName?: string
+}
+
+export type ColumnMapping<TData> = {
+    [column in keyof TData]?: ColumnMappingDetail
 }

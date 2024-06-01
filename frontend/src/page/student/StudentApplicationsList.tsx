@@ -1,6 +1,12 @@
+import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
+import { PaginationControl } from "react-bootstrap-pagination-control";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
-import { selectTermsData } from "@redux/slices/terms.slice";
+import {
+  getTermsDataList,
+  selectTermsData,
+  setCurrentPage,
+} from "@redux/slices/terms.slice";
 import {
   getRecuimentInfo,
   setScheduleId,
@@ -11,11 +17,29 @@ import {
   getTermClassInfo,
   setApplicationId,
 } from "@main/features/slices/application.slice";
-import "@main/index.css";
+import {
+  setScheduleId as setTasksScheduleId,
+  setAssignee,
+  openTasksPrompt,
+  getTasks,
+} from "@main/features/slices/tasks.slice";
+import { selectCurrentUser } from "@main/features/slices/authentication.slice";
 
-const StudentSectionClassList = () => {
+import "@main/index.css";
+import TARegisterPrompt from "@main/components/prompts/TARegisterPrompt";
+import TasksPrompt from "@main/components/prompts/TasksPrompt";
+
+const StudentApplicationsList = () => {
   const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(selectCurrentUser);
   const termsResponse = useAppSelector(selectTermsData);
+
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    dispatch(setCurrentPage(page));
+    dispatch(getTermsDataList());
+  }, [dispatch, page]);
 
   const openApplyRecruimentPromt = (
     term: TermDataItem,
@@ -24,19 +48,29 @@ const StudentSectionClassList = () => {
     return async () => {
       if (applicationId) {
         dispatch(setApplicationId(applicationId));
-        await dispatch(getApplicationInfo())
+        await dispatch(getApplicationInfo());
       }
       dispatch(setScheduleId(term.scheduleId));
 
       await Promise.all([
         dispatch(getRecuimentInfo()),
-        dispatch(getTermClassInfo(term.scheduleId))
-      ])
+        dispatch(getTermClassInfo(term.scheduleId)),
+      ]);
+    };
+  };
+
+  const onOpenTasksPromptClick = (scheduleId: string) => {
+    return async () => {
+      dispatch(setTasksScheduleId(scheduleId));
+      dispatch(setAssignee(currentUser!.code));
+      await dispatch(getTasks());
+      dispatch(openTasksPrompt(true));
     };
   };
 
   return (
-    <div>
+    <>
+      <h2 className="display-5 mt-2 mb-3">Danh sách lớp học phần</h2>
       <Table responsive>
         <thead className="table-header">
           <tr>
@@ -63,13 +97,23 @@ const StudentSectionClassList = () => {
                 <td>
                   {applicationInfo
                     ? applicationInfo.stage1Approval
-                      ? "Đã xác nhận"
+                      ? applicationInfo.stage2Approval
+                        ? "Đã đậu trợ giảng"
+                        : "Đã xác nhận"
                       : "Đang chờ xác nhận"
                     : ""}
                 </td>
                 <td>
                   {applicationInfo ? (
-                    applicationInfo.stage1Approval ? null : (
+                    applicationInfo.stage1Approval ? (
+                      applicationInfo.stage2Approval ? (
+                        <Button
+                          onClick={onOpenTasksPromptClick(term.scheduleId)}
+                        >
+                          Nhiệm vụ
+                        </Button>
+                      ) : null
+                    ) : (
                       <Button
                         variant="info"
                         className="w-100 mt-1"
@@ -96,8 +140,22 @@ const StudentSectionClassList = () => {
           })}
         </tbody>
       </Table>
-    </div>
+      <div className="text-align">
+        <PaginationControl
+          page={page}
+          between={4}
+          total={termsResponse.count}
+          limit={10}
+          changePage={(page) => {
+            setPage(page);
+          }}
+          ellipsis={2}
+        />
+      </div>
+      <TARegisterPrompt />
+      <TasksPrompt />
+    </>
   );
 };
 
-export default StudentSectionClassList;
+export default StudentApplicationsList;

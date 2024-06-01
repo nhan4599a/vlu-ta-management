@@ -143,11 +143,11 @@ const TARegisterApprovalPrompt = <TResponse,>({ dataFetcherThunk }: Props<TRespo
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
+        <Button variant="light" onClick={onHide}>
           Đóng
         </Button>
-        <Button onClick={onSubmit(false)}>Reject</Button>
-        <Button onClick={onSubmit(true)}>Approve</Button>
+        <Button variant="secondary" onClick={onSubmit(false)}>Từ chối</Button>
+        <Button variant="primary" onClick={onSubmit(true)}>Chấp thuận</Button>
       </Modal.Footer>
     </Modal>
   );

@@ -32,7 +32,9 @@ export interface ITerm {
     code: string,
     credits: number,
     sessions: number,
-    classes: ITermClass[]
+    classes: ITermClass[],
+    semester: number,
+    year: number
 }
 
 const RegistrationInfoSchema = new Schema<IRegistrationInfo>({
@@ -66,5 +68,7 @@ export const TermSchema = new Schema<ITerm>({
     code: { type: String, required: true },
     credits: { type: Number, required: true },
     sessions: { type: Number, required: true },
-    classes: [TermClassSchema]
+    classes: [TermClassSchema],
+    semester: { type: Number, required: true },
+    year: { type: Number, required: true }
 })
