@@ -57,9 +57,10 @@ const TAFinalPage = lazy(
 const ClassWithTA = lazy(() => import("./page/lecturer/ClassWithTA"));
 const ClassAttendant = lazy(() => import("./page/lecturer/class-management/ClassAttendant"));
 const AttendantList = lazy(() => import("./page/student/ta/AttendantList"));
+const Feedback = lazy(() => import("./page/admin/feedback-statistic/Feedback"));
+const Statistic = lazy(() => import("./page/admin/feedback-statistic/Statistic"));
+const StudentApplicationsList = lazy(() => import("./page/student/StudentApplicationsList"));
 import "./index.css";
-import Feedback from "./page/admin/feedback-statistic/Feedback";
-import Statistic from "./page/admin/feedback-statistic/Statistic";
 
 const Layout = () => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -156,7 +157,9 @@ function App() {
             <Route path="feedbacks" element={<Feedback />} />
             <Route path="statistic" element={<Statistic />} />
           </Route>
+          <Route path="/applications" element={<StudentApplicationsList />} />
         </Route>
+
         <Route path="/login" element={<Login />} />
         <Route path="/post-login" element={<PostLogin />} />
         <Route path="/404" element={<NotFound />} />

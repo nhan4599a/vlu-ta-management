@@ -564,18 +564,25 @@ export const getImportPassTrainingResult = async (req: Request) => {
               },
             ],
           },
-          count: { $size: "$applications" },
           applications: {
             $filter: {
               input: "$applications",
-              as: "applications",
+              as: "item",
               cond: {
-                $or: [{ isPending: true }, { stage2Approval: true }],
+                $or: [
+                  { $eq: ["$$item.isPending", true] },
+                  { $eq: ["$$item.stage2Approval", true] },
+                ],
               },
             },
           },
           maxAllowedCandidates:
             "$classes.schedule.registrationInfo.candidatesCount",
+        },
+      },
+      {
+        $set: {
+          count: { $size: "$applications" },
         },
       },
       {

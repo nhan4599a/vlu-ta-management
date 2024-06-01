@@ -5,8 +5,8 @@ import { RootState } from "@redux/store";
 import { ISetting } from "@main/types/setting.type";
 
 type UserInfo = IUser & {
-    currentSetting: ISetting | null
-}
+  currentSetting: ISetting | null;
+};
 
 type AuthenticationState = {
   accessToken?: string;
@@ -43,6 +43,9 @@ const authenticationSlice = createSlice({
       state.accessToken = undefined;
       state.isAuthenticated = false;
     },
+    updateLocallyUserInfo(state, { payload }: PayloadAction<string>) {
+      state.user!.phoneNumber = payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(postLoginCallback.fulfilled, (state, { payload }) => {
@@ -52,7 +55,7 @@ const authenticationSlice = createSlice({
   },
 });
 
-export const { setAccessToken, logout } = authenticationSlice.actions;
+export const { setAccessToken, logout, updateLocallyUserInfo } = authenticationSlice.actions;
 export const authenticationReducer = authenticationSlice.reducer;
 export const selectIsAuthenticated = (state: RootState) =>
   state.authentication.isAuthenticated;

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@main/features/hooks";
+import { Table } from "react-bootstrap";
+import { PaginationControl } from "react-bootstrap-pagination-control";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import {
   getTermsDataList,
   selectTermsData,
   setCurrentPage,
-} from "@main/features/slices/terms.slice";
-import { Table } from "react-bootstrap";
-import { PaginationControl } from "react-bootstrap-pagination-control";
+} from "@redux/slices/terms.slice";
 
 const ClassWithTA = () => {
   const dispatch = useAppDispatch();
@@ -16,7 +16,9 @@ const ClassWithTA = () => {
 
   useEffect(() => {
     dispatch(setCurrentPage(page));
-    dispatch(getTermsDataList(true));
+    dispatch(getTermsDataList({
+      assistantsAvailableOnly: true
+    }));
   }, [dispatch, page]);
 
   return (

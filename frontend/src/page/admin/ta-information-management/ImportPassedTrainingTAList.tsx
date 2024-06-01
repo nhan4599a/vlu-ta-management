@@ -7,7 +7,6 @@ import "@main/index.css";
 import { useAppDispatch } from "@main/features/hooks";
 import { importStudentDataList } from "@main/features/slices/application.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { showMessageDialog } from "@main/features/slices/messages.slice";
 
 const ImportPassedTrainingTAList = () => {
   const dropzoneRef = useRef<DropzoneComponentMethodsRef>(null);
@@ -26,10 +25,7 @@ const ImportPassedTrainingTAList = () => {
     formData.append("file", files[0]);
 
     return dispatch(importStudentDataList(formData))
-      .then(unwrapResult)
-      .then(() => {
-        dispatch(showMessageDialog("Import thành công"));
-      });
+      .then(unwrapResult);
   };
 
   return (

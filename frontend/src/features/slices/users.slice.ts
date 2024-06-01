@@ -120,7 +120,7 @@ const usersSlice = createSlice({
       { payload }: PayloadAction<SelectedUser | undefined>
     ) {
       state.selectedUser = payload;
-    },
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(getUsersList.fulfilled, (state, { payload }) => {

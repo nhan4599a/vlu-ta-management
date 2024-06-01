@@ -89,16 +89,23 @@ export const saveTasks = createAsyncThunk(
                 `tasks[${i}][attachments][${fileIndex}][savedFileName]`,
                 file.savedFileName
               );
+
+              if (file.owner) {
+                formData.append(
+                  `tasks[${i}][attachments][${fileIndex}][owner]`,
+                  file.owner
+                );
+              }
             }
           }
         }
       }
+
       return await post({
         path: `/hoc-phan/classes/${tasks.currentScheduleId}/users/${tasks.currentAssignee}/tasks`,
         body: formData,
       });
     } catch (e) {
-      console.log(e);
       return rejectWithValue(e);
     }
   }

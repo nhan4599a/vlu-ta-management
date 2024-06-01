@@ -1,6 +1,7 @@
 export type Attachment = {
     savedFileName: string,
-    originalFileName: string
+    originalFileName: string,
+    owner?: string
 }
 
 export type MinimalApplicationForm = {

@@ -36,7 +36,12 @@ export const importTermsData = createAsyncThunk(
 export const getTermsDataList = createAsyncThunk(
   "terms/fetch",
   async (
-    assistantsAvailableOnly: undefined | boolean,
+    payload:
+      | {
+          assistantsAvailableOnly?: boolean;
+          availableJobsOnly?: boolean;
+        }
+      | undefined,
     { getState, rejectWithValue }
   ) => {
     const { terms, setting } = getState() as RootState;
@@ -51,7 +56,8 @@ export const getTermsDataList = createAsyncThunk(
         query: {
           page: terms.currentPage,
           ...setting.currentSetting,
-          assistantsAvailableOnly,
+          assistantsAvailableOnly: payload?.assistantsAvailableOnly,
+          availableJobsOnly: payload?.availableJobsOnly
         },
       });
     } catch (e) {
@@ -64,7 +70,7 @@ export const attachAttendanceRecordFile = createAsyncThunk(
   "terms/attendance/update",
   async (payload: string | null, { getState, rejectWithValue }) => {
     const { terms } = getState() as RootState;
-    const { classId } = terms.termsResponse.data[terms.currentSchedule!]
+    const { classId } = terms.termsResponse.data[terms.currentSchedule!];
 
     try {
       return await patch({

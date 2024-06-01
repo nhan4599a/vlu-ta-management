@@ -5,14 +5,15 @@ import {
   useImperativeHandle,
   useRef,
   useState,
-} from "react"; 
+} from "react";
 import Dropzone, { DropzoneFile } from "dropzone";
 import { v4 as uuidv4 } from "uuid";
 import { Attachment } from "@main/types/application-form.type";
 import { downloadAttachment } from "@main/api";
 import { showMessageDialog } from "@main/features/slices/messages.slice";
-import { useAppDispatch } from "@main/features/hooks";
+import { useAppDispatch, useAppSelector } from "@main/features/hooks";
 import "@main/index.css";
+import { selectCurrentUser } from "@main/features/slices/authentication.slice";
 
 export interface DropzoneComponentMethodsRef {
   getFiles: () => File[];
@@ -54,6 +55,7 @@ const DropzoneComponent = forwardRef<
   DropzoneProps
 >((props, ref) => {
   const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(selectCurrentUser)
 
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
 
@@ -131,7 +133,7 @@ const DropzoneComponent = forwardRef<
       clickable: props.allowEdit,
     });
 
-    dropzone.on("addedfile", (file) => {
+    dropzone.on("addedfile", (file: DropzoneFile & { owner?: string }) => {
       if (!props.allowEdit && file.size) {
         return;
       }
@@ -180,6 +182,11 @@ const DropzoneComponent = forwardRef<
           file.previewElement.appendChild(createDownloadButton(attachment));
         }
       }
+
+      if (file.owner && currentUser?.code && file.owner !== currentUser.code) {
+        const dzRemoveBtn = file.previewElement.querySelector('.dz-remove')
+        dzRemoveBtn?.remove()
+      }
     });
 
     dropzone.on("removedfile", () => {
@@ -192,19 +199,22 @@ const DropzoneComponent = forwardRef<
           dropzone.emit("addedfile", file);
           dropzone.emit("success", file);
           dropzone.emit("complete", file);
+          dropzone.files.push(file as DropzoneFile);
         } else {
           const dropzoneFile = {
+            ...file,
             name: file.originalFileName,
             dataURL: file.savedFileName,
             type: images_file_ext.includes(getFileExt(file.originalFileName))
               ? "images/*"
               : "unknown",
+            owner: file.owner,
           };
           dropzone.emit("addedfile", dropzoneFile);
           dropzone.emit("success", dropzoneFile);
           dropzone.emit("complete", dropzoneFile);
+          dropzone.files.push(dropzoneFile as unknown as DropzoneFile);
         }
-        dropzone.files.push(file as DropzoneFile)
       }
     }
 
@@ -217,12 +227,24 @@ const DropzoneComponent = forwardRef<
       downloadButtonUrls.clear();
       dropzone.destroy();
     };
-  }, [props, dispatch, createDownloadButton]);
+  }, [
+    props.acceptedFiles,
+    props.allowDownload,
+    props.allowEdit,
+    props.files,
+    props.maxFiles,
+    currentUser?.code,
+    dispatch,
+    createDownloadButton,
+  ]);
 
   return (
     <div
       id={elementIdRef.current}
       className="dropzone d-flex flex-wrap justify-content-center w-100"
+      style={{
+        gap: "1rem",
+      }}
     >
       <div
         className="dz-message text-center p-4"

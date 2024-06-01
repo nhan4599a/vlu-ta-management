@@ -135,10 +135,20 @@ const TasksPrompt = () => {
     setAttachments(undefined);
   };
 
-  const onSaveButtonClick = async () => {
-    await dispatch(saveTasks()).then(unwrapResult);
-    await dispatch(getTasks());
-    onHide();
+  const onSaveButtonClick = () => {
+    dispatch(saveTasks())
+      .then(unwrapResult)
+      .then(() => {
+        dispatch(
+          showMessageDialog({
+            message: "Lưu nhiệm vụ thành công",
+            onPrimaryButtonClick() {
+              dispatch(getTasks());
+              onHide();
+            },
+          })
+        );
+      });
   };
 
   return (

@@ -16,7 +16,6 @@ import { PaginationRequest } from "../../types/integration.types";
 import { paginate } from "../../helper/pagination.helper";
 import mongoose, { PipelineStage } from "mongoose";
 import { Role } from "../../constants/role.enum";
-import { IUser } from "../../db/models/user";
 
 const ValidSemesterTypes = ["HK1", "HK2", "HÈ"];
 
@@ -24,6 +23,7 @@ type TermQuery = PaginationRequest & {
   semester: number | undefined;
   year: number;
   assistantsAvailableOnly: boolean;
+  availableJobsOnly: boolean;
 };
 
 type TermDataItem = Omit<ITerm, "classes" | "sessions"> &
@@ -281,7 +281,7 @@ const getTermData = async (req: Request) => {
           ],
         },
         rootId: "$_id",
-        classId: "$classes._id"
+        classId: "$classes._id",
       },
     },
     {
@@ -353,6 +353,20 @@ const getTermData = async (req: Request) => {
         },
       ]
     );
+
+    if (query.availableJobsOnly) {
+      basePipeline.push(
+        ...[
+          {
+            $match: {
+              applications: {
+                $size: 0,
+              },
+            },
+          },
+        ]
+      );
+    }
   } else {
     basePipeline.push({
       $match: {

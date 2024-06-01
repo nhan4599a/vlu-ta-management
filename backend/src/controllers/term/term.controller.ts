@@ -13,7 +13,7 @@ import {
 } from "./term.service";
 import { responseWithValue } from "../../helper/response.helper";
 import { createTypedRequest } from "../../helper/type.helper";
-import { ITask } from "../../db/models/task";
+import { ITask, TaskAttachment } from "../../db/models/task";
 import mongoose, { AnyBulkWriteOperation } from "mongoose";
 import { Attachment } from "../../db/models/common";
 
@@ -28,7 +28,7 @@ enum TaskAction {
 type TaskItem = ITask & {
   state: TaskAction | null;
   _id: string | null;
-  attachments: (Attachment | number)[];
+  attachments: (TaskAttachment | number)[];
 };
 
 type CreateTaskRequest = {
@@ -107,16 +107,17 @@ router.post(
     for (const taskItem of body.tasks.filter((item) => item.state !== null)) {
       const { state, _id, attachments, ...actualTask } = taskItem;
 
-      const uploadedFiles: Attachment[] = [];
+      const uploadedFiles: TaskAttachment[] = [];
+
+      const multerFiles = files as Express.Multer.File[];
 
       if (attachments) {
         for (const attachment of attachments) {
           if (typeof attachment !== "object") {
-            uploadedFiles.push(
-              mapAttachment(
-                (files as Express.Multer.File[])[Number(attachment)]
-              )
-            );
+            uploadedFiles.push({
+              ...mapAttachment(multerFiles[Number(attachment)]),
+              owner: user.code!,
+            });
           } else {
             uploadedFiles.push(attachment);
           }

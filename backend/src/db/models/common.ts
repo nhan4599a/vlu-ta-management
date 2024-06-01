@@ -5,7 +5,12 @@ export type Attachment = {
   originalFileName: String;
 };
 
-export const AttachmentSchema = new Schema<Attachment>({
-  savedFileName: { type: String, isRequired: true },
-  originalFileName: { type: String, isRequired: true },
-});
+export const AttachmentSchema = new Schema<Attachment>(
+  {
+    savedFileName: { type: String, isRequired: true },
+    originalFileName: { type: String, isRequired: true },
+  },
+  {
+    _id: false,
+  }
+);
