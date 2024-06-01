@@ -26,11 +26,10 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-illustrator">
-        <h2 className="position-relative display-1 text-uppercase fw-bolder">
+        <h2 className="mt-5 ms-5 display-1 text-uppercase fw-bolder">
           Website quản lý trợ giảng
         </h2>
         <Image
-          className="position-relative"
           src="/images/main-illustrator.png"
           alt="login"
         />

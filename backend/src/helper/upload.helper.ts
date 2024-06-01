@@ -22,7 +22,7 @@ const uploadMultipleFilesMiddleware = uploadMultiple.array('files')
 export const mapAttachment = (file: Express.Multer.File) => {
     return {
         savedFileName: file.filename,
-        originalFileName: file.originalname
+        originalFileName: Buffer.from(file.originalname, 'latin1').toString('utf8')
     }
 }
 

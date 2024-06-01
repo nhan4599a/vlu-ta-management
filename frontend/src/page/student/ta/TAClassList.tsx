@@ -3,35 +3,28 @@ import { Button, Table } from "react-bootstrap";
 import { PaginationControl } from "react-bootstrap-pagination-control";
 import TasksPrompt from "@main/components/prompts/TasksPrompt";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
-import { getTasks, setAssignee } from "@redux/slices/tasks.slice";
-import {
-  getUsersList,
-  selectUsersList,
-  setRequest,
-} from "@redux/slices/users.slice";
-import { Role } from "@main/types/user.type";
+import { setScheduleId, getTasks, openTasksPrompt, setAssignee } from "@redux/slices/tasks.slice";
+import { selectCurrentUser } from "@redux/slices/authentication.slice";
+import { getTermsDataList, selectTermsData, setCurrentPage } from "@redux/slices/terms.slice";
 
 const TAClassList = () => {
   const dispatch = useAppDispatch();
-
-  const usersResponse = useAppSelector(selectUsersList);
+  const currentUser = useAppSelector(selectCurrentUser);
+  const termsResponse = useAppSelector(selectTermsData);
 
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    const request = {
-      role: Role.Student,
-      isAssistant: true,
-      page,
-    };
-    dispatch(setRequest(request));
-    dispatch(getUsersList(request));
+    dispatch(setCurrentPage(page))
+    dispatch(getTermsDataList())
   }, [dispatch, page]);
 
-  const openTaskModal = (userId: string) => {
-    return () => {
-      dispatch(setAssignee(userId));
-      dispatch(getTasks())
+  const onOpenTasksPromptClick = (scheduleId: string) => {
+    return async () => {
+      dispatch(setScheduleId(scheduleId));
+      dispatch(setAssignee(currentUser!.code));
+      await dispatch(getTasks());
+      dispatch(openTasksPrompt(true));
     };
   };
 
@@ -44,33 +37,35 @@ const TAClassList = () => {
         <thead>
           <tr className="table-header">
             <th>TT</th>
-            <th>Tên</th>
-            <th>MSSV</th>
-            <th>Lớp</th>
+            <th>Mã môn học</th>
+            <th>Môn học</th>
+            <th>Thứ</th>
+            <th>Tiết</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {usersResponse.data.map((user, index) => (
-            <tr>
-              <td>{index + 1}</td>
-              <td>{user.name}</td>
-              <td>{user.code}</td>
-              <td>{user.class}</td>
-              <td>
-                <Button variant="primary" onClick={openTaskModal(user._id)}>
-                  Nhiệm vụ
-                </Button>
-              </td>
-            </tr>
-          ))}
+        {termsResponse.data.map((term, index) => {
+            return (
+              <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{term.code}</td>
+                <td>{term.name}</td>
+                <td>{term.day}</td>
+                <td>{term.lesson}</td>
+                <td>
+                  <Button onClick={onOpenTasksPromptClick(term.scheduleId)}>Nhiệm vụ</Button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
       <div className="text-align">
         <PaginationControl
           page={page}
           between={4}
-          total={usersResponse.count}
+          total={termsResponse.count}
           limit={10}
           changePage={(page) => {
             setPage(page);

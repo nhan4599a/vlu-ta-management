@@ -1,6 +1,7 @@
 export type Attachment = {
     savedFileName: string,
-    originalFileName: string
+    originalFileName: string,
+    owner?: string
 }
 
 export type MinimalApplicationForm = {
@@ -13,6 +14,7 @@ export type ApplicationForm = MinimalApplicationForm & {
     name: string,
     code: string,
     class: string,
+    email: string,
     phoneNumber: string,
     termScore: number,
     avgScore: number,
@@ -22,6 +24,7 @@ export type ApplicationForm = MinimalApplicationForm & {
 }
 
 export type OverviewApplicationFormResponse = {
+    _id: string,
     name: string,
     day: string,
     lesson: string,

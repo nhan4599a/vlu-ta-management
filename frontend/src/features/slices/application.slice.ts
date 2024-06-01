@@ -1,4 +1,4 @@
-import { get, patch } from "@main/api";
+import { get, patch, post } from "@main/api";
 import {
   ApplicationForm,
   OverviewApplicationFormResponse,
@@ -8,6 +8,11 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "@redux/store";
 import { TermClassInfo } from "@main/types/term.type";
 
+type ApplicationFinalResponse = OverviewApplicationFormResponse & {
+  count?: number;
+  maxAllowedCandidates?: number
+};
+
 type InitialState = {
   applicationId?: string;
   applicationInfo?: ApplicationForm;
@@ -16,6 +21,7 @@ type InitialState = {
   scheduleId?: string;
   page: number;
   applicationsOverview: OverviewApplicationFormResponse[];
+  applicationsFinalData: ApplicationFinalResponse[];
 };
 
 const initialState: InitialState = {
@@ -25,6 +31,7 @@ const initialState: InitialState = {
   },
   page: 1,
   applicationsOverview: [],
+  applicationsFinalData: [],
 };
 
 export const getApplicationsOverview = createAsyncThunk(
@@ -103,6 +110,62 @@ export const getTermClassInfo = createAsyncThunk(
   }
 );
 
+export const exportEligibleList = createAsyncThunk(
+  "applications/export/eligible",
+  async (_: undefined, { rejectWithValue }) => {
+    try {
+      return await post<Blob>({
+        path: `/application/export-eligible`,
+        options: {
+          responseType: "blob",
+        },
+      });
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
+export const importStudentDataList = createAsyncThunk(
+  "/application/import-training",
+  async (payload: FormData, { rejectWithValue }) => {
+    try {
+      return await post<Blob>({
+        path: `/application/import-training`,
+        body: payload,
+      });
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
+export const getApplicationsFinalData = createAsyncThunk(
+  "applications/fetch/final",
+  async (_: undefined, { rejectWithValue }) => {
+    try {
+      return await get<ApplicationFinalResponse[]>({
+        path: `/application`,
+      });
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
+export const approveFinal = createAsyncThunk(
+  "applications/approve/stage2",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      return await post({
+        path: `/application/approve/${id}`,
+      });
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
 const applicationSlice = createSlice({
   name: "applications",
   initialState,
@@ -152,6 +215,15 @@ const applicationSlice = createSlice({
         state.termClassInfo = payload;
       }
     );
+    builder.addCase(
+      getApplicationsFinalData.fulfilled,
+      (
+        state,
+        { payload }: PayloadAction<ApplicationFinalResponse[]>
+      ) => {
+        state.applicationsFinalData = payload;
+      }
+    );
   },
 });
 
@@ -170,3 +242,5 @@ export const selectTermClassInfo = (state: RootState) =>
   state.application.termClassInfo;
 export const selectApplicationsOverview = (state: RootState) =>
   state.application.applicationsOverview;
+export const selectApplicationsFinalData = (state: RootState) =>
+  state.application.applicationsFinalData;

@@ -13,8 +13,10 @@ export type TermDataItem = TermClassInfo & {
   credits: number;
   day: number;
   scheduleId: string;
+  classId: string;
   isRegistered: boolean;
   isApproved: boolean;
   isWaiting: boolean;
   applications?: MinimalApplicationForm[];
+  attendanceRecordFile: string | null
 };

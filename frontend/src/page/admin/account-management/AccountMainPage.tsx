@@ -1,8 +1,8 @@
+import { useEffect, useState } from "react";
 import { Col, Tab, Tabs } from "react-bootstrap";
 import SearchInput from "@main/components/generic/SearchInput";
 import AccountsList from "@main/components/lists/AccountsList";
 import { PaginationControl } from "react-bootstrap-pagination-control";
-import { useEffect, useState } from "react";
 import { Role } from "@main/types/user.type";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import { getUsersList, selectUsersList, setRequest } from "@redux/slices/users.slice";
@@ -13,13 +13,13 @@ const AccountMainPage = () => {
   const usersResponse = useAppSelector(selectUsersList)
 
   const [page, setPage] = useState(1);
-  const [tab, setTab] = useState(Role.Student);
+  const [tab, setTab] = useState(Role.Teacher);
 
   useEffect(() => {
     const request = {
       page,
       role: tab === Role.Assistant ? Role.Student : tab,
-      isAssistant: tab === Role.Assistant,
+      isAssistant: tab === Role.Assistant ? true : undefined,
     };
     dispatch(setRequest(request));
     dispatch(getUsersList(request));
@@ -38,14 +38,11 @@ const AccountMainPage = () => {
           className="mb-2"
           justify
         >
-          <Tab eventKey={Role.Student} title="Sinh viên">
-            <AccountsList />
-          </Tab>
-          <Tab eventKey={Role.Teacher} title="Giảng viên">
-            <AccountsList />
+          <Tab eventKey={Role.Teacher} title="Giảng viên" >
+            <AccountsList actionEnabled={true} assistantsMode={false} />
           </Tab>
           <Tab eventKey={Role.Assistant} title="Trợ giảng">
-            <AccountsList />
+            <AccountsList actionEnabled={true} assistantsMode={false} />
           </Tab>
         </Tabs>
         <div className="text-align">

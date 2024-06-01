@@ -8,16 +8,29 @@
       },
       {
         "title": "Tuyển dụng trợ giảng - sinh viên",
-        "path": "/ta-information-management/assistant"
-      },
-      {
-        "title": "Công tác sinh viên",
-        "path": "/student-affairs"
+        "children": [
+          {
+            "title": "Sơ tuyển",
+            "path": "/ta-information-management/assistant"
+          },
+          {
+            "title": "Training",
+            "path": "/ta-information-management/eligible"
+          },
+          {
+            "title": "Final",
+            "path": "/ta-information-management/import-passed-asistant-training-list"
+          },
+          {
+            "title": "Danh sách kết quả final",
+            "path": "/ta-information-management/final"
+          }
+        ]
       }
     ]
   },
   {
-    "title": "Quản lí công tác giảng dạy",
+    "title": "Quản lí giảng dạy",
     "children": [
       {
         "title": "Import danh sách học phần",
@@ -39,6 +52,19 @@
       {
         "title": "Danh sách account",
         "path": "/account-management/accounts-list"
+      }
+    ]
+  },
+  {
+    "title": "Đánh giá & thống kê",
+    "children": [
+      {
+        "title": "Đánh giá",
+        "path": "/feedback-and-statistic/feedbacks"
+      },
+      {
+        "title": "Thống kê",
+        "path": "/feedback-and-statistic/statistic"
       }
     ]
   }

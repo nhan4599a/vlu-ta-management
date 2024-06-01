@@ -1,22 +1,41 @@
 import { Table } from "react-bootstrap";
 // import ConfirmDelete from "@main/components/prompts/ConfirmDelete";
-import { useAppDispatch, useAppSelector } from "@redux/hooks";
-import { selectUsersList, setSelectedUser } from "@redux/slices/users.slice";
+import { useAppSelector } from "@redux/hooks";
+import { selectUsersList } from "@redux/slices/users.slice";
 import { IUser } from "@main/types/user.type";
 import "@main/index.css";
 
-const AccountsList = () => {
-  const dispatch = useAppDispatch()
+type AccountsListProps = {
+  actionEnabled: boolean;
+  actionButtonText?: string;
+  onActionButtonClick?: (user: IUser) => void;
+  assistantsMode: boolean;
+};
+
+const AccountsList = ({
+  actionEnabled,
+  actionButtonText,
+  onActionButtonClick,
+  assistantsMode,
+}: AccountsListProps) => {
   const users = useAppSelector(selectUsersList);
 
-  const onActionButtonClick = ({ _id, active }: IUser) => {
+  // const onActionButtonClick = ({ _id, active }: IUser) => {
+  //   return () => {
+  //     dispatch(
+  //       setSelectedUser({
+  //         id: _id,
+  //         active,
+  //       })
+  //     );
+  //   };
+  // };
+
+  const internalOnActionButtonClick = (user: IUser) => {
     return () => {
-      dispatch(setSelectedUser({
-        id: _id,
-        active
-      }))
-    }
-  }
+      onActionButtonClick!(user);
+    };
+  };
 
   return (
     <>
@@ -28,27 +47,31 @@ const AccountsList = () => {
             <th>Họ tên</th>
             <th>MSSV</th>
             <th>Lớp</th>
-            <th></th>
+            {assistantsMode && <th>SĐT</th>}
+            {actionEnabled && <th></th>}
           </tr>
         </thead>
         <tbody>
           {users.data.map((user, index) => (
-            <tr>
+            <tr key={index}>
               <td>{index + 1}</td>
               <td>{user.email}</td>
               <td>{user.name}</td>
               <td>{user.code}</td>
               <td>{user.class}</td>
-              <td>
-                <p>
-                  <a
-                    className="link-opacity-100"
-                    onClick={onActionButtonClick(user)}
-                  >
-                    Xóa
-                  </a>
-                </p>
-              </td>
+              {assistantsMode && <td>{user.phoneNumber}</td>}
+              {actionEnabled && (
+                <td>
+                  <p>
+                    <a
+                      className="link-opacity-100"
+                      onClick={internalOnActionButtonClick(user)}
+                    >
+                      {actionButtonText}
+                    </a>
+                  </p>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

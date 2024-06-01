@@ -59,7 +59,6 @@ const TARecruitmentMainPage = () => {
           ellipsis={2}
         />
       </div>
-      
       <TARegister />
     </div>
   );

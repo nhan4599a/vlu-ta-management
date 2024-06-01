@@ -7,11 +7,13 @@ import { constants } from "../constants";
 import { Role } from "../constants/role.enum";
 import mongoose from "mongoose";
 import axios from "axios";
+import { ISetting } from "../db/models/setting";
 
 type GetUserInfoCallback = (
   err: Error | null,
   user?: IUser & {
     _id: mongoose.Types.ObjectId;
+    currentSetting: ISetting | null;
   }
 ) => void;
 
@@ -21,19 +23,17 @@ const getUserInfo = (
   callback: GetUserInfoCallback
 ) => {
   const email = payload[constants.AUTHENTICATION.EMAIL_CLAIM];
-  db.users
-    .where({
-      email: email,
-    })
-    .exec()
-    .then((users) => {
+  Promise.all([db.users.where({ email: email }).exec(), db.settings.findOne()])
+    .then(([users, setting]) => {
       const schoolUserInfo = payload["name"].split(" - ");
 
       const role = constants.AUTHENTICATION.ADMIN_ACCOUNTS.includes(email)
         ? Role.StudentAssociate
         : Role.Student;
 
-      const user = users[0] ?? {
+      const user = {
+        ...users[0],
+      } ?? {
         code: schoolUserInfo[0],
         email: email,
         role: role,
@@ -43,7 +43,10 @@ const getUserInfo = (
         isAssistant: false,
       };
 
-      callback(null, user);
+      callback(null, {
+        ...user,
+        currentSetting: setting
+      });
     })
     .catch((err) => callback(err, undefined));
 };
@@ -66,11 +69,9 @@ export const authenticate = (
   const accessToken = authHeader?.split(" ")[1];
 
   if (!authHeader || !accessToken) {
-    throw new UnauthenticatedError('Invalid access token')
+    throw new UnauthenticatedError("Invalid access token");
   }
-
-  const request = req as IBaseRequest;
-
+  
   verifyAccessToken(accessToken!)
     .then(() => {
       const request = req as IBaseRequest;
