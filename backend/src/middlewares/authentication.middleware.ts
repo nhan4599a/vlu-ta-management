@@ -73,34 +73,93 @@ export const authenticate = (
   if (!authHeader || !accessToken) {
     throw new UnauthenticatedError("Invalid access token");
   }
-  
-  verifyAccessToken(accessToken!)
-    .then(() => {
-      const request = req as IBaseRequest;
-      const decodedToken = decode(accessToken!, {
-        complete: true,
-      });
+  const request = req as IBaseRequest
 
-      getUserInfo(
-        request.db,
-        decodedToken!.payload as JwtPayload,
-        (err, user) => {
-          if (err) {
-            res.status(500).json({
-              success: false,
-              message: "Internal server error",
-            });
-          } else {
-            request.user = user!;
-            next();
-          }
-        }
-      );
-    })
-    .catch(() => {
-      res.status(401).json({
-        success: false,
-        message: "Invalid token",
-      });
-    });
+  // **** This is only for testing purpose ****
+  const id = accessToken.includes("-")
+    ? new mongoose.Types.ObjectId(accessToken.split("-")[1])
+    : new mongoose.Types.ObjectId();
+
+  request.db.settings.findOne().then((setting) => {
+    if (accessToken?.includes(Role[Role.StudentAssociate])) {
+      request.user = {
+        _id: id,
+        active: true,
+        email: "admin@vanlanguni.edu.com",
+        name: "admin",
+        role: Role.StudentAssociate,
+        class: "PM2",
+        code: "admin",
+        isAssistant: false,
+        currentSetting: setting,
+        votingCount: 0,
+        votingScores: [0, 0, 0, 0, 0]
+      };
+      next();
+      return;
+    } else if (accessToken?.includes(Role[Role.Student])) {
+      request.user = {
+        _id: id,
+        active: true,
+        email: "user@vanlanguni.edu.com",
+        name: "user",
+        role: Role.Student,
+        class: "PM2",
+        code: "user",
+        isAssistant: false,
+        currentSetting: setting,
+        votingCount: 0,
+        votingScores: [0, 0, 0, 0, 0]
+      };
+      next();
+      return;
+    } else if (accessToken?.includes(Role[Role.Teacher])) {
+      request.user = {
+        _id: id,
+        active: true,
+        email: "teacher@vanlanguni.edu.com",
+        name: "teacher",
+        role: Role.Teacher,
+        class: "PM2",
+        code: "teacher",
+        isAssistant: false,
+        currentSetting: setting,
+        votingCount: 0,
+        votingScores: [0, 0, 0, 0, 0]
+      };
+      next();
+      return;
+    }
+  });
+  // **** end testing ****
+
+//   verifyAccessToken(accessToken!)
+//     .then(() => {
+//       const request = req as IBaseRequest;
+//       const decodedToken = decode(accessToken!, {
+//         complete: true,
+//       });
+
+//       getUserInfo(
+//         request.db,
+//         decodedToken!.payload as JwtPayload,
+//         (err, user) => {
+//           if (err) {
+//             res.status(500).json({
+//               success: false,
+//               message: "Internal server error",
+//             });
+//           } else {
+//             request.user = user!;
+//             next();
+//           }
+//         }
+//       );
+//     })
+//     .catch(() => {
+//       res.status(401).json({
+//         success: false,
+//         message: "Invalid token",
+//       });
+//     });
 };

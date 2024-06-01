@@ -11,7 +11,7 @@ const ImportPassedTrainingTAList = lazy(
   () =>
     import("./page/admin/ta-information-management/ImportPassedTrainingTAList")
 );
-const Login = lazy(() => import("./page/general/login/Login"));
+const Login = lazy(() => import("./page/general/login/Login-test"));
 const NotFound = lazy(() => import("./page/general/error/404NotFound"));
 const Error500 = lazy(() => import("./page/general/error/500Error"));
 const SectionClassList = lazy(
