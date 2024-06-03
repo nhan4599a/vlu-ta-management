@@ -25,9 +25,9 @@ import {
 } from "@main/features/slices/tasks.slice";
 import { selectCurrentUser } from "@main/features/slices/authentication.slice";
 
-import "@main/index.css";
 import TARegisterPrompt from "@main/components/prompts/TARegisterPrompt";
 import TasksPrompt from "@main/components/prompts/TasksPrompt";
+import "@main/index.css";
 
 const StudentApplicationsList = () => {
   const dispatch = useAppDispatch();
@@ -99,7 +99,7 @@ const StudentApplicationsList = () => {
                     ? applicationInfo.stage1Approval
                       ? applicationInfo.stage2Approval
                         ? "Đã đậu trợ giảng"
-                        : "Đã xác nhận"
+                        : "Đã đậu sơ tuyển"
                       : "Đang chờ xác nhận"
                     : ""}
                 </td>

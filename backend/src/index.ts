@@ -10,9 +10,11 @@ import { env } from './env'
 import { errorLogging, globalErrorHandler } from './middlewares/errors.middleware'
 import { attachDbInstance, extendResponseMethods } from './middlewares/hooks.middleware'
 import { authenticate } from './middlewares/authentication.middleware'
+import compression from 'compression'
 
 const app: Express = express()
 
+app.use(compression())
 app.use(cors())
 app.use(express.json())
 
@@ -28,7 +30,9 @@ app.use('/authenticate', authenticationController)
 app.use('/users', usersController)
 app.use('/application', applicationController)
 
-app.use(errorLogging)
+if (!env.isProduction) {
+    app.use(errorLogging)
+}
 app.use(globalErrorHandler)
 
 app.listen(env.PORT, () => {
