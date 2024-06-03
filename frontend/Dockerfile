@@ -8,8 +8,6 @@ RUN npm install
 
 RUN npm run build
 
-COPY . .
-
 FROM nginx:latest AS RUN_ENV
 
 WORKDIR /app
