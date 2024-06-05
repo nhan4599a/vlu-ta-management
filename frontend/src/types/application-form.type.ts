@@ -6,8 +6,9 @@ export type Attachment = {
 
 export type MinimalApplicationForm = {
     _id: string;
-    stage1Approval: boolean;
-    stage2Approval: boolean
+    stage1Approval: boolean | null;
+    stage2Approval: boolean | null;
+    isTrainingPassed: boolean | null;
 }
 
 export type ApplicationForm = MinimalApplicationForm & {

@@ -346,6 +346,7 @@ const getTermData = async (req: Request) => {
                   _id: 1,
                   stage1Approval: 1,
                   stage2Approval: 1,
+                  isTrainingPassed: 1
                 },
               },
             ],

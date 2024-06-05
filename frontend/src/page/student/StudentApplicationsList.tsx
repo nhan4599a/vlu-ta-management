@@ -16,18 +16,42 @@ import {
   getApplicationInfo,
   getTermClassInfo,
   setApplicationId,
-} from "@main/features/slices/application.slice";
+} from "@redux/slices/application.slice";
 import {
   setScheduleId as setTasksScheduleId,
   setAssignee,
   openTasksPrompt,
   getTasks,
-} from "@main/features/slices/tasks.slice";
-import { selectCurrentUser } from "@main/features/slices/authentication.slice";
-
+} from "@redux/slices/tasks.slice";
+import { selectCurrentUser } from "@redux/slices/authentication.slice";
 import TARegisterPrompt from "@main/components/prompts/TARegisterPrompt";
 import TasksPrompt from "@main/components/prompts/TasksPrompt";
+import { MinimalApplicationForm } from "@main/types/application-form.type";
 import "@main/index.css";
+
+const getApplicationStatus = (application: MinimalApplicationForm) => {
+  if (!application) {
+    return "";
+  }
+
+  if (application.stage1Approval === null) {
+    return "Đang chờ xác nhận";
+  }
+
+  if (!application.stage1Approval) {
+    return "Đã rớt sơ tuyển";
+  }
+
+  if (application.stage2Approval === null) {
+    return "Đã đậu sơ tuyển";
+  }
+
+  if (!application.stage2Approval && !application.isTrainingPassed) {
+    return "Rớt training";
+  }
+
+  return "Đã đậu TA";
+};
 
 const StudentApplicationsList = () => {
   const dispatch = useAppDispatch();
@@ -95,13 +119,7 @@ const StudentApplicationsList = () => {
                 <td>{term.day}</td>
                 <td>{term.lesson}</td>
                 <td>
-                  {applicationInfo
-                    ? applicationInfo.stage1Approval
-                      ? applicationInfo.stage2Approval
-                        ? "Đã đậu trợ giảng"
-                        : "Đã đậu sơ tuyển"
-                      : "Đang chờ xác nhận"
-                    : ""}
+                  {getApplicationStatus(applicationInfo)}
                 </td>
                 <td>
                   {applicationInfo ? (
