@@ -259,6 +259,7 @@ export const importPassTrainingList = async (req: Request) => {
               update: {
                 $set: {
                   stage2Approval: false,
+                  isTrainingPassed: false
                 },
               },
             },
@@ -318,6 +319,7 @@ export const importPassTrainingList = async (req: Request) => {
             update: {
               $set: {
                 stage2Approval: false,
+                isTrainingPassed: true
               },
             },
           },
@@ -368,6 +370,7 @@ export const importPassTrainingList = async (req: Request) => {
                 update: {
                   $set: {
                     stage2Approval: false,
+                    isTrainingPassed: true
                   },
                 },
               },
@@ -387,6 +390,7 @@ export const importPassTrainingList = async (req: Request) => {
                 update: {
                   $set: {
                     stage2Approval: true,
+                    isTrainingPassed: true
                   },
                 },
               },
@@ -441,6 +445,7 @@ export const importPassTrainingList = async (req: Request) => {
                 update: {
                   $set: {
                     isPending: true,
+                    isTrainingPassed: true
                   },
                 },
               },

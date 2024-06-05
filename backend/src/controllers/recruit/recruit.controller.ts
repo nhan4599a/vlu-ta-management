@@ -155,6 +155,7 @@ router.post(
           attachments: uploadedFiles,
           stage1Approval: null,
           stage2Approval: null,
+          isTrainingPassed: null,
           isPending: false,
           priority: registerCount,
           year: currentSetting!.year,

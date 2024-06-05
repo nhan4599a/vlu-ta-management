@@ -18,6 +18,7 @@ export interface IApplicationForm {
   stage1Approval: boolean | null;
   stage2Approval: boolean | null;
   isPending: boolean;
+  isTrainingPassed: boolean | null;
   priority: number;
 }
 
@@ -41,5 +42,6 @@ export const ApplicationFormSchema = new Schema<IApplicationForm>({
   stage1Approval: { type: Boolean, required: true },
   stage2Approval: { type: Boolean, required: true },
   isPending: { type: Boolean, required: true },
+  isTrainingPassed: { type: Boolean, required: true },
   priority: { type: Number, required: true },
 });
