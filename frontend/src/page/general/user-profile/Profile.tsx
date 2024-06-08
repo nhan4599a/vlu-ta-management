@@ -13,9 +13,11 @@ const Profile = () => {
   const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber ?? "");
 
   const updateButtonClick = () => {
-    dispatch(updateUser(phoneNumber)).then(unwrapResult).then(() => {
-      dispatch(showMessageDialog('Cập nhật thông tin user thành công'))
-    })
+    dispatch(updateUser(phoneNumber))
+      .then(unwrapResult)
+      .then(() => {
+        dispatch(showMessageDialog("Cập nhật thông tin user thành công"));
+      });
   };
 
   return (
@@ -23,7 +25,6 @@ const Profile = () => {
       <div className="d-flex gap-4 align-items-center mb-5">
         <Image
           src={"/images/user-avatar.png"}
-          alt="User profile image"
           roundedCircle
           style={{ width: "150px" }}
         />
@@ -74,6 +75,21 @@ const Profile = () => {
             <Button variant="primary" onClick={updateButtonClick}>
               Lưu
             </Button>
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} className="mb-3 lead" controlId="mobile">
+          <Form.Label column sm="2">
+            Đánh giá
+          </Form.Label>
+          <Col sm="4">
+            <Image src={"/images/star-checked.png"} style={{ width: "30px" }} />
+            <Image src={"/images/star-checked.png"} style={{ width: "30px" }} />
+            <Image src={"/images/star-checked.png"} style={{ width: "30px" }} />
+            <Image src={"/images/star-checked.png"} style={{ width: "30px" }} />
+            <Image
+              src={"/images/star-unchecked.png"}
+              style={{ width: "30px" }}
+            />
           </Col>
         </Form.Group>
       </Form>
