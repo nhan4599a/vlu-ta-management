@@ -9,7 +9,9 @@ export interface IUser {
     active: boolean,
     name: string,
     role: Role,
-    isAssistant: boolean
+    isAssistant: boolean,
+    votingScores: number[],
+    votingCount: number
 }
 
 export const UserSchema = new Schema<IUser>({
@@ -20,5 +22,6 @@ export const UserSchema = new Schema<IUser>({
     active: { type: Boolean, required: true },
     name: { type: String, required: true },
     role: { type: Number, required: true },
-    isAssistant: { type: Boolean, required: true }
+    isAssistant: { type: Boolean, required: true },
+    votingScores: { type: [Number], required: true }
 })

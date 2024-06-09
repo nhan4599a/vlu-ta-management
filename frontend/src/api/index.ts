@@ -9,7 +9,7 @@ import {
 import { showMessageDialog } from "@redux/slices/messages.slice";
 
 const config: AxiosRequestConfig = {
-  baseURL: "http://localhost:5000/",
+  baseURL: import.meta.env.VITE_API_URL,
 };
 
 const apiClient = axios.create(config);

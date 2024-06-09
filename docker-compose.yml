@@ -4,17 +4,21 @@ services:
   be:
     container_name: be
     build: backend/.
-    ports:
-      - "5000:5000"
     links:
       - mongo
   fe:
     container_name: fe
     build: frontend/.
+    links:
+      - be
+  proxy:
+    container_name: proxy
+    build: proxy/.
     ports:
       - "5173:80"
     links:
       - be
+      - fe
   mongo:
     container_name: mongo
     image: mongo
