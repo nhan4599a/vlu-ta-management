@@ -29,6 +29,9 @@ app.use('/tuyen-dung', recruitController)
 app.use('/authenticate', authenticationController)
 app.use('/users', usersController)
 app.use('/application', applicationController)
+app.get('/about', (_, res) => {
+    res.send('ok')
+})
 
 if (!env.isProduction) {
     app.use(errorLogging)

@@ -41,6 +41,8 @@ const getUserInfo = (
         class: schoolUserInfo[2],
         active: true,
         isAssistant: false,
+        votingCount: 0,
+        votingScores: [0, 0, 0, 0, 0]
       };
 
       callback(null, {
