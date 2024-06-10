@@ -39,11 +39,11 @@
     "children": [
       {
         "title": "Đánh giá",
-        "path": "/"
+        "path": "/ta-survey"
       },
       {
         "title": "Thống kê",
-        "path": "/"
+        "path": "/statistic"
       }
     ]
   }
