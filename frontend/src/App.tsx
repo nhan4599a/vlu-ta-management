@@ -61,6 +61,7 @@ const Feedback = lazy(() => import("./page/admin/feedback-statistic/Feedback"));
 const Statistic = lazy(() => import("./page/admin/feedback-statistic/Statistic"));
 const StudentApplicationsList = lazy(() => import("./page/student/StudentApplicationsList"));
 import "./index.css";
+import TASurvey from "./page/lecturer/survey/TASurvey";
 
 const Layout = () => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -133,6 +134,7 @@ function App() {
           <Route path="" element="">
             <Route path="class-with-assistant" element={<ClassWithTA />} />
             <Route path="/class-management/assistants" element={<ClassWithTA />} />
+            <Route path="ta-survey" element={<TASurvey />} />
           </Route>
 
           <Route path="/ta-classlist" element="">
