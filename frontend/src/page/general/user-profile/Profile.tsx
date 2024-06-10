@@ -4,7 +4,7 @@ import { selectCurrentUser } from "@redux/slices/authentication.slice";
 import { showMessageDialog } from "@redux/slices/messages.slice";
 import { updateUser } from "@redux/slices/users.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Col, Form, ProgressBar, Row } from "react-bootstrap";
 import Image from "react-bootstrap/Image";
 
 const Profile = () => {
@@ -19,6 +19,8 @@ const Profile = () => {
         dispatch(showMessageDialog("Cập nhật thông tin user thành công"));
       });
   };
+
+  const [rating, setRating] = useState(5);
 
   return (
     <div className="d-flex flex-column bd-highlight mt-2">
@@ -77,19 +79,16 @@ const Profile = () => {
             </Button>
           </Col>
         </Form.Group>
-        <Form.Group as={Row} className="mb-3 lead" controlId="mobile">
+        <Form.Group
+          as={Row}
+          className="mb-3 lead d-flex align-items-center"
+          controlId="mobile"
+        >
           <Form.Label column sm="2">
             Đánh giá
           </Form.Label>
           <Col sm="4">
-            <Image src={"/images/star-checked.png"} style={{ width: "30px" }} />
-            <Image src={"/images/star-checked.png"} style={{ width: "30px" }} />
-            <Image src={"/images/star-checked.png"} style={{ width: "30px" }} />
-            <Image src={"/images/star-checked.png"} style={{ width: "30px" }} />
-            <Image
-              src={"/images/star-unchecked.png"}
-              style={{ width: "30px" }}
-            />
+            <ProgressBar now={rating} label={`${rating}/5`} max={5} />
           </Col>
         </Form.Group>
       </Form>
