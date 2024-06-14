@@ -12,6 +12,7 @@
   "dependencies": {
     "@azure/msal-browser": "^3.14.0",
     "@azure/msal-react": "^2.0.16",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@reduxjs/toolkit": "^2.2.3",
     "axios": "^1.6.8",
     "dropzone": "^6.0.0-beta.2",

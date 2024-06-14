@@ -62,6 +62,7 @@ const Statistic = lazy(() => import("./page/admin/feedback-statistic/Statistic")
 const StudentApplicationsList = lazy(() => import("./page/student/StudentApplicationsList"));
 import "./index.css";
 import TASurvey from "./page/lecturer/survey/TASurvey";
+import Chat from "./page/general/chat/Chat";
 
 const Layout = () => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -139,6 +140,10 @@ function App() {
 
           <Route path="/ta-classlist" element="">
             <Route path="task-ta" element={<TAClassList />} />
+          </Route>
+
+          <Route path="" element="">
+            <Route path="chat" element={<Chat />} />
           </Route>
 
           <Route path="/class-management" element="">
