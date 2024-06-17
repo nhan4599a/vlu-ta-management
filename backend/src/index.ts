@@ -6,6 +6,7 @@ import authenticationController from './controllers/authentication/authenticatio
 import usersController from './controllers/users/users.controller'
 import publicController from './controllers/public/public.controller'
 import applicationController from './controllers/application/application.controller'
+import surveysController from './controllers/surveys/surveys.controller'
 import { env } from './env'
 import { errorLogging, globalErrorHandler } from './middlewares/errors.middleware'
 import { attachDbInstance, extendResponseMethods } from './middlewares/hooks.middleware'
@@ -29,9 +30,7 @@ app.use('/tuyen-dung', recruitController)
 app.use('/authenticate', authenticationController)
 app.use('/users', usersController)
 app.use('/application', applicationController)
-app.get('/about', (_, res) => {
-    res.send('ok')
-})
+app.use('/surveys', surveysController)
 
 if (!env.isProduction) {
     app.use(errorLogging)

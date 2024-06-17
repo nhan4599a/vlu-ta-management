@@ -21,7 +21,8 @@ export type ApplicationForm = MinimalApplicationForm & {
     avgScore: number,
     description: string,
     attachments: Attachment[],
-    scheduleId: string
+    scheduleId: string;
+    userId: string;
 }
 
 export type OverviewApplicationFormResponse = {

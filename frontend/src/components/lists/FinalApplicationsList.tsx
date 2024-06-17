@@ -32,6 +32,7 @@ export const FinalApplicationsList = ({
           <th>Email</th>
           <th>Trạng thái</th>
           <th></th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -52,6 +53,13 @@ export const FinalApplicationsList = ({
                 </Button>
               </td>
             )}
+            <a
+              className="btn btn-primary"
+              href={`/user-profile/${application.userId}`}
+              target="_blank"
+            >
+              Xem profile
+            </a>
           </tr>
         ))}
       </tbody>

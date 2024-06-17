@@ -1,5 +1,9 @@
 import { useAppDispatch } from "@redux/hooks";
-import { getApplicationInfo, getTermClassInfo, setApplicationId } from "@redux/slices/application.slice";
+import {
+  getApplicationInfo,
+  getTermClassInfo,
+  setApplicationId,
+} from "@redux/slices/application.slice";
 import { ApplicationForm } from "@main/types/application-form.type";
 import { Button, Table } from "react-bootstrap";
 
@@ -8,21 +12,21 @@ type TeacherAssistanntsListProps = {
 };
 
 export const TeacherAssistantsList = ({
-  applications
+  applications,
 }: TeacherAssistanntsListProps) => {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const showApprovalDialog = (application: ApplicationForm) => {
     return async () => {
-      dispatch(setApplicationId(application._id))
+      dispatch(setApplicationId(application._id));
 
       await Promise.all([
         dispatch(getTermClassInfo(application.scheduleId)),
-        dispatch(getApplicationInfo())
-      ])
-    }
-  }
-  
+        dispatch(getApplicationInfo()),
+      ]);
+    };
+  };
+
   return (
     <Table responsive>
       <thead>
@@ -42,7 +46,19 @@ export const TeacherAssistantsList = ({
             <td>{application.code}</td>
             <td>{application.email}</td>
             <td>
-              <Button variant="primary" onClick={showApprovalDialog(application)}>Xem</Button>
+              <Button
+                variant="primary"
+                onClick={showApprovalDialog(application)}
+              >
+                Xem
+              </Button>
+              <a
+                className="btn btn-primary ms-2"
+                href={`/user-profile/${application.userId}`}
+                target="_blank"
+              >
+                Xem profile
+              </a>
             </td>
           </tr>
         ))}

@@ -9,6 +9,7 @@ import { IApplicationForm } from "../../db/models/application-form";
 import DbInstance from "../../db";
 import { IScheduleDetail, ITerm } from "../../db/models/term";
 import { orderBy } from "lodash";
+import { ISurveyInfo } from "../../db/models/survey";
 
 const mapping: ColumnMapping<IUser> = {
   name: { column: 1, headerName: "Tên sinh viên" },
@@ -35,6 +36,10 @@ type FinalResultOrdering = {
   status: FinalResultRecordStatus;
 };
 
+type ExtendedScheduleInfo = IScheduleDetail & {
+  lecture: string;
+};
+
 const readPassTrainingFile = async (
   file: Express.Multer.File
 ): Promise<string[]> => {
@@ -48,8 +53,8 @@ const readPassTrainingFile = async (
 const getScheduleInfo = async (
   db: DbInstance,
   scheduleId: mongoose.Types.ObjectId
-): Promise<IScheduleDetail> => {
-  const result = await db.terms.aggregate<IScheduleDetail>([
+): Promise<ExtendedScheduleInfo> => {
+  const result = await db.terms.aggregate<ExtendedScheduleInfo>([
     {
       $unwind: {
         path: "$classes",
@@ -235,7 +240,10 @@ export const importPassTrainingList = async (req: Request) => {
     ])
     .exec();
 
-  const scheduleInfoMap = new Map<mongoose.Types.ObjectId, IScheduleDetail>();
+  const scheduleInfoMap = new Map<
+    mongoose.Types.ObjectId,
+    ExtendedScheduleInfo
+  >();
   const scheduleApplicationsMap = new Map<
     mongoose.Types.ObjectId,
     IApplicationForm[]
@@ -244,6 +252,7 @@ export const importPassTrainingList = async (req: Request) => {
   const applicationActions: AnyBulkWriteOperation<IApplicationForm>[] = [];
   const usersActions: AnyBulkWriteOperation<IUser>[] = [];
   const termsActions: AnyBulkWriteOperation<ITerm>[] = [];
+  const surveyInfoActions: AnyBulkWriteOperation<ISurveyInfo>[] = [];
 
   await db.startTransaction();
 
@@ -259,7 +268,7 @@ export const importPassTrainingList = async (req: Request) => {
               update: {
                 $set: {
                   stage2Approval: false,
-                  isTrainingPassed: false
+                  isTrainingPassed: false,
                 },
               },
             },
@@ -319,7 +328,7 @@ export const importPassTrainingList = async (req: Request) => {
             update: {
               $set: {
                 stage2Approval: false,
-                isTrainingPassed: true
+                isTrainingPassed: true,
               },
             },
           },
@@ -353,8 +362,11 @@ export const importPassTrainingList = async (req: Request) => {
       }
     }
 
-    let { candidatesCount: remainingSlots } =
-      scheduleInfoMap.get(scheduleId)!.registrationInfo!;
+    const { registrationInfo, lecture } = scheduleInfoMap.get(scheduleId)!;
+
+    let { candidatesCount: remainingSlots } = registrationInfo!;
+
+    console.log(candidatesGroups.length);
 
     for (let i = 0; i < candidatesGroups.length; i++) {
       const candidates = candidatesGroups[i];
@@ -370,7 +382,7 @@ export const importPassTrainingList = async (req: Request) => {
                 update: {
                   $set: {
                     stage2Approval: false,
-                    isTrainingPassed: true
+                    isTrainingPassed: true,
                   },
                 },
               },
@@ -390,7 +402,7 @@ export const importPassTrainingList = async (req: Request) => {
                 update: {
                   $set: {
                     stage2Approval: true,
-                    isTrainingPassed: true
+                    isTrainingPassed: true,
                   },
                 },
               },
@@ -416,7 +428,7 @@ export const importPassTrainingList = async (req: Request) => {
         termsActions.push(
           ...candidates.map((application) => {
             return {
-              updateOne: {
+              updateMany: {
                 filter: {
                   "classes.schedule._id": scheduleId,
                 },
@@ -434,6 +446,21 @@ export const importPassTrainingList = async (req: Request) => {
             };
           })
         );
+        surveyInfoActions.push(
+          ...candidates.map((e) => {
+            return {
+              insertOne: {
+                document: {
+                  semester: user.currentSetting!.semester,
+                  year: user.currentSetting!.year,
+                  lecture,
+                  assistant: e.code,
+                  isSubmited: false,
+                },
+              },
+            };
+          })
+        );
       } else {
         applicationActions.push(
           ...candidates.map((e) => {
@@ -445,7 +472,7 @@ export const importPassTrainingList = async (req: Request) => {
                 update: {
                   $set: {
                     isPending: true,
-                    isTrainingPassed: true
+                    isTrainingPassed: true,
                   },
                 },
               },
@@ -455,6 +482,8 @@ export const importPassTrainingList = async (req: Request) => {
       }
 
       remainingSlots -= candidates.length;
+
+      console.log(remainingSlots);
     }
   }
 
@@ -462,6 +491,7 @@ export const importPassTrainingList = async (req: Request) => {
     db.applications.bulkWrite(applicationActions),
     db.users.bulkWrite(usersActions),
     db.terms.bulkWrite(termsActions),
+    db.surveyInfo.bulkWrite(surveyInfoActions),
   ]);
 
   await db.commitTransaction();
@@ -621,7 +651,7 @@ export const getImportPassTrainingResult = async (req: Request) => {
 };
 
 export const approveFinal = async (req: Request) => {
-  const { db, params } = createTypedRequest(req);
+  const { db, params, user } = createTypedRequest(req);
 
   const id = new mongoose.Types.ObjectId(params.id);
 
@@ -630,6 +660,9 @@ export const approveFinal = async (req: Request) => {
   const applicationActions: AnyBulkWriteOperation<IApplicationForm>[] = [];
   const usersActions: AnyBulkWriteOperation<IUser>[] = [];
   const termsActions: AnyBulkWriteOperation<ITerm>[] = [];
+  const surveysActions: AnyBulkWriteOperation<ISurveyInfo>[] = [];
+
+  const { lecture } = await getScheduleInfo(db, application!.scheduleId);
 
   await db.startTransaction();
 
@@ -659,7 +692,7 @@ export const approveFinal = async (req: Request) => {
     },
   });
   termsActions.push({
-    updateOne: {
+    updateMany: {
       filter: {
         "classes.schedule._id": application!.scheduleId,
       },
@@ -675,11 +708,23 @@ export const approveFinal = async (req: Request) => {
       ],
     },
   });
+  surveysActions.push({
+    insertOne: {
+      document: {
+        lecture,
+        semester: user.currentSetting!.semester,
+        year: user.currentSetting!.year,
+        assistant: application!.code,
+        isSubmited: false,
+      },
+    },
+  });
 
   await Promise.all([
     db.applications.bulkWrite(applicationActions),
     db.users.bulkWrite(usersActions),
     db.terms.bulkWrite(termsActions),
+    db.surveyInfo.bulkWrite(surveysActions),
   ]);
 
   await db.commitTransaction();

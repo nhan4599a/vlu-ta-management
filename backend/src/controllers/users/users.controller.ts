@@ -14,10 +14,6 @@ type UpdateUserInfoRequest = {
   phoneNumber: string;
 };
 
-type VoteUserScoreRequest = {
-  votingScores: number[];
-};
-
 router.get("/", async (req, res) => {
   const users = await getUsersList(req);
 
@@ -56,43 +52,6 @@ router.get("/:userId", async (req, res) => {
   );
 
   responseWithValue(res, user);
-});
-
-router.patch("/:userId/vote", async (req, res) => {
-  const { db, body, params } = createTypedRequest<VoteUserScoreRequest>(req);
-
-  const user = await db.users.findOne(
-    {
-      _id: new mongoose.Types.ObjectId(params.userId),
-    },
-    {
-      votingCount: 1,
-      votingScores: 1,
-      _id: 0,
-    }
-  );
-
-  const votingUpdateRequest = user!.votingScores.map((score, index) => {
-    return {
-      [`votingScores.$[${index}]`]:
-        (score + body.votingScores[index]) / (user!.votingCount + 1),
-    };
-  });
-
-  votingUpdateRequest.push({
-    votingCount: user!.votingCount + 1,
-  });
-
-  await db.users.updateOne(
-    {
-      _id: new mongoose.Types.ObjectId(params.userId),
-    },
-    {
-      $set: Object.assign({}, ...votingUpdateRequest),
-    }
-  );
-
-  responseWithValue(res, null)
 });
 
 export default router;

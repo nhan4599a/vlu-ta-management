@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import {
   getTermsDataList,
   selectTermsData,
+  setAvailableJobsOnlyMode,
   setCurrentPage,
 } from "@redux/slices/terms.slice";
 import { useAdaptiveRoleComponent } from "@main/hooks/useAdaptiveRoleComponent";
@@ -20,6 +21,7 @@ const RecruimentRegisterPrompt = lazy(
 const ApproveRecruimentPrompt = lazy(
   () => import("@main/components/prompts/ApproveRecruimentPrompt")
 );
+const TARegisterPrompt = lazy(()  => import("@main/components/prompts/TARegisterPrompt"));
 import "@main/index.css";
 
 const SectionClassList = () => {
@@ -36,9 +38,15 @@ const SectionClassList = () => {
   });
 
   const PromptComponent = useAdaptiveRoleComponent({
+    0: <TARegisterPrompt />,
     1: <RecruimentRegisterPrompt />,
-    2: <ApproveRecruimentPrompt />
+    2: <ApproveRecruimentPrompt />,
+    3: <TARegisterPrompt />
   });
+
+  useEffect(() => {
+    dispatch(setAvailableJobsOnlyMode(true))
+  }, [dispatch])
 
   useEffect(() => {
     dispatch(setCurrentPage(page));

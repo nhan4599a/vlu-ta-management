@@ -108,6 +108,19 @@ export const updateUser = createAsyncThunk(
   }
 );
 
+export const getUserInfo = createAsyncThunk(
+  "users/fetch/single",
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      return await get<IUser>({
+        path: `/users/${userId}`
+      });
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
 const usersSlice = createSlice({
   name: "users",
   initialState,
@@ -120,7 +133,7 @@ const usersSlice = createSlice({
       { payload }: PayloadAction<SelectedUser | undefined>
     ) {
       state.selectedUser = payload;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getUsersList.fulfilled, (state, { payload }) => {

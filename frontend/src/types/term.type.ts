@@ -1,10 +1,16 @@
 import { MinimalApplicationForm } from "./application-form.type";
 
+export const SemesterMap = [
+    '1',
+    '2',
+    'Hè'
+]
+
 export type TermClassInfo = {
-    name: string,
-    day: string,
-    lesson: string
-}
+  name: string;
+  day: string;
+  lesson: string;
+};
 
 export type TermDataItem = TermClassInfo & {
   id: string;
@@ -18,5 +24,5 @@ export type TermDataItem = TermClassInfo & {
   isApproved: boolean;
   isWaiting: boolean;
   applications?: MinimalApplicationForm[];
-  attendanceRecordFile: string | null
+  attendanceRecordFile: string | null;
 };

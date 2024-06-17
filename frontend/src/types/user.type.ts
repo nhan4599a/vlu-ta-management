@@ -6,7 +6,8 @@ export interface IUser {
 	name?: string,
 	email?: string,
 	active: boolean,
-	role: Role
+	role: Role,
+    votingScores: number[]
 }
 
 export enum Role {

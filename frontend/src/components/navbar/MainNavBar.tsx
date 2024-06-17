@@ -8,7 +8,7 @@ import {
 import LinkItem from "../LinkItem";
 import { useAppSelector } from "@redux/hooks";
 import { selectCurrentUser } from "@redux/slices/authentication.slice";
-import "../../index.css";
+import "@main/index.css";
 // import { useMsal } from "@azure/msal-react";
 
 const UserMenu = (
@@ -50,7 +50,7 @@ const MainNavBar = () => {
         <Nav className="user-action">
           <NavDropdown align="end" title={UserMenu}>
             <NavDropdown.Item>
-              <LinkItem to="/user-profile">
+              <LinkItem to={`/user-profile/${user?._id}`}>
                 <svg
                   width="15"
                   height="15"

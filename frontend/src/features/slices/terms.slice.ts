@@ -9,6 +9,7 @@ type InitialState = {
   termsResponse: PaginationResponse<TermDataItem>;
   currentSchedule?: number;
   currentPage: number;
+  availableJobsOnlyMode: boolean;
 };
 
 const initialState: InitialState = {
@@ -17,6 +18,7 @@ const initialState: InitialState = {
     count: 0,
   },
   currentPage: 1,
+  availableJobsOnlyMode: true,
 };
 
 export const importTermsData = createAsyncThunk(
@@ -57,7 +59,8 @@ export const getTermsDataList = createAsyncThunk(
           page: terms.currentPage,
           ...setting.currentSetting,
           assistantsAvailableOnly: payload?.assistantsAvailableOnly,
-          availableJobsOnly: payload?.availableJobsOnly
+          availableJobsOnly:
+            payload?.availableJobsOnly ?? (terms.availableJobsOnlyMode ? true : undefined),
         },
       });
     } catch (e) {
@@ -95,6 +98,9 @@ const termsSlice = createSlice({
     setCurrentSchedule(state, { payload }: PayloadAction<number | undefined>) {
       state.currentSchedule = payload;
     },
+    setAvailableJobsOnlyMode(state, { payload }: PayloadAction<boolean>) {
+      state.availableJobsOnlyMode = payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getTermsDataList.fulfilled, (state, { payload }) => {
@@ -103,7 +109,8 @@ const termsSlice = createSlice({
   },
 });
 
-export const { setCurrentPage, setCurrentSchedule } = termsSlice.actions;
+export const { setCurrentPage, setCurrentSchedule, setAvailableJobsOnlyMode } =
+  termsSlice.actions;
 export const termsReducer = termsSlice.reducer;
 export const selectTermsData = (state: RootState) => state.terms.termsResponse;
 export const selectActiveSchedule = (state: RootState) =>
