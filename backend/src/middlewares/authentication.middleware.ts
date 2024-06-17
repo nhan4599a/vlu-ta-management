@@ -8,10 +8,7 @@ import { Role } from "../constants/role.enum";
 import mongoose from "mongoose";
 import axios from "axios";
 
-type GetUserInfoCallback = (
-  err: Error | null,
-  user?: ExtendedUser
-) => void;
+type GetUserInfoCallback = (err: Error | null, user?: ExtendedUser) => void;
 
 const getUserInfo = (
   db: DbInstance,
@@ -19,6 +16,7 @@ const getUserInfo = (
   callback: GetUserInfoCallback
 ) => {
   const email = payload[constants.AUTHENTICATION.EMAIL_CLAIM];
+  
   Promise.all([db.users.findOne({ email: email }).lean().exec(), db.settings.findOne().lean().exec()])
     .then(([userData, setting]) => {
       const schoolUserInfo = payload["name"].split(" - ");
@@ -27,10 +25,10 @@ const getUserInfo = (
         ? Role.StudentAssociate
         : Role.Student;
 
-      let user: Omit<ExtendedUser, 'currentSetting'> | undefined = undefined;
+      let user: Omit<ExtendedUser, "currentSetting"> | undefined = undefined;
 
       if (userData) {
-        user = userData;
+        user = userData
       } else {
         user = {
           _id: new mongoose.Types.ObjectId(),
@@ -79,33 +77,87 @@ export const authenticate = (
   }
   const request = req as IBaseRequest;
 
-  verifyAccessToken(accessToken!)
-    .then(() => {
-      const request = req as IBaseRequest;
-      const decodedToken = decode(accessToken!, {
-        complete: true,
-      });
+  // **** This is only for testing purpose ****
+  const id = accessToken.includes("-")
+    ? new mongoose.Types.ObjectId(accessToken.split("-")[1])
+    : new mongoose.Types.ObjectId();
 
-      getUserInfo(
-        request.db,
-        decodedToken!.payload as JwtPayload,
-        (err, user) => {
-          if (err) {
-            res.status(500).json({
-              success: false,
-              message: "Internal server error",
-            });
-          } else {
-            request.user = user!;
-            next();
-          }
-        }
-      );
-    })
-    .catch(() => {
-      res.status(401).json({
-        success: false,
-        message: "Invalid token",
-      });
-    });
+  request.db.settings.findOne().then((setting) => {
+    if (accessToken?.includes(Role[Role.StudentAssociate])) {
+      request.user = {
+        _id: id,
+        active: true,
+        email: "admin@vanlanguni.edu.com",
+        name: "admin",
+        role: Role.StudentAssociate,
+        class: "PM2",
+        code: "admin",
+        isAssistant: false,
+        currentSetting: setting
+      };
+      next();
+      return;
+    } else if (accessToken?.includes(Role[Role.Student])) {
+      request.user = {
+        _id: id,
+        active: true,
+        email: "user@vanlanguni.edu.com",
+        name: "user",
+        role: Role.Student,
+        class: "PM2",
+        code: "user",
+        isAssistant: false,
+        currentSetting: setting,
+        votingCount: 0,
+        votingScores: [0, 0, 0, 0]
+      };
+      next();
+      return;
+    } else if (accessToken?.includes(Role[Role.Teacher])) {
+      request.user = {
+        _id: id,
+        active: true,
+        email: "teacher@vanlanguni.edu.com",
+        name: "teacher",
+        role: Role.Teacher,
+        class: "PM2",
+        code: "teacher",
+        isAssistant: false,
+        currentSetting: setting
+      };
+      next();
+      return;
+    }
+  });
+  // **** end testing ****
+  
+//   verifyAccessToken(accessToken!)
+//     .then(() => {
+//       const request = req as IBaseRequest;
+//       const decodedToken = decode(accessToken!, {
+//         complete: true,
+//       });
+
+//       getUserInfo(
+//         request.db,
+//         decodedToken!.payload as JwtPayload,
+//         (err, user) => {
+//           if (err) {
+//             res.status(500).json({
+//               success: false,
+//               message: "Internal server error",
+//             });
+//           } else {
+//             request.user = user!;
+//             next();
+//           }
+//         }
+//       );
+//     })
+//     .catch(() => {
+//       res.status(401).json({
+//         success: false,
+//         message: "Invalid token",
+//       });
+//     });
 };
