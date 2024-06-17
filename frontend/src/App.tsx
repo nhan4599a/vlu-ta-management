@@ -1,6 +1,10 @@
 import { useEffect } from "react";
 import { Suspense, lazy } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import {
+  Col,
+  Container,
+  Row,
+} from "react-bootstrap";
 import MainNavBar from "./components/navbar/MainNavBar";
 import { Routes, Route, Outlet, useNavigate } from "react-router-dom";
 const Profile = lazy(() => import("./page/general/user-profile/Profile"));
@@ -55,11 +59,19 @@ const TAFinalPage = lazy(
   () => import("./page/admin/TA-recruitment-management/TAFinalPage")
 );
 const ClassWithTA = lazy(() => import("./page/lecturer/ClassWithTA"));
-const ClassAttendant = lazy(() => import("./page/lecturer/class-management/ClassAttendant"));
+const ClassAttendant = lazy(
+  () => import("./page/lecturer/class-management/ClassAttendant")
+);
 const AttendantList = lazy(() => import("./page/student/ta/AttendantList"));
 const Feedback = lazy(() => import("./page/admin/feedback-statistic/Feedback"));
-const Statistic = lazy(() => import("./page/admin/feedback-statistic/Statistic"));
-const StudentApplicationsList = lazy(() => import("./page/student/StudentApplicationsList"));
+const Statistic = lazy(
+  () => import("./page/admin/feedback-statistic/Statistic")
+);
+const StudentApplicationsList = lazy(
+  () => import("./page/student/StudentApplicationsList")
+);
+const SurveyList = lazy(() => import("./page/lecturer/survey/SurveyList"));
+const Chat = lazy(() => import("./page/general/chat/Chat"));
 import "./index.css";
 
 const Layout = () => {
@@ -105,7 +117,7 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Welcome />} />
-          <Route path="/user-profile" element={<Profile />} />
+          <Route path="/user-profile/:userId" element={<Profile />} />
           <Route path="/ta-information-management">
             <Route path="teacher" element={<SectionClassList />} />
             <Route path="assistant" element={<TARegistrationOverviewList />} />
@@ -132,11 +144,19 @@ function App() {
 
           <Route path="" element="">
             <Route path="class-with-assistant" element={<ClassWithTA />} />
-            <Route path="/class-management/assistants" element={<ClassWithTA />} />
+            <Route
+              path="/class-management/assistants"
+              element={<ClassWithTA />}
+            />
+            <Route path="ta-survey" element={<SurveyList />} />
           </Route>
 
           <Route path="/ta-classlist" element="">
             <Route path="task-ta" element={<TAClassList />} />
+          </Route>
+
+          <Route path="" element="">
+            <Route path="chat" element={<Chat />} />
           </Route>
 
           <Route path="/class-management" element="">

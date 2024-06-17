@@ -8,6 +8,7 @@ import { applicationReducer } from "../slices/application.slice";
 import { usersReducer } from "../slices/users.slice";
 import { tasksReducer } from "../slices/tasks.slice";
 import { settingReducer } from "../slices/setting.slice";
+import { surveyReducer } from "../slices/survey.slice";
 import persistStore from "redux-persist/es/persistStore";
 import storage from "redux-persist/lib/storage";
 import persistReducer from "redux-persist/es/persistReducer";
@@ -21,7 +22,8 @@ const rootReducer = combineReducers({
   users: usersReducer,
   tasks: tasksReducer,
   application: applicationReducer,
-  setting: settingReducer
+  setting: settingReducer,
+  survey: surveyReducer
 });
 
 const peristConfig = {

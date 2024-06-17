@@ -10,6 +10,7 @@ import { env } from '../env'
 import { ApplicationFormSchema, IApplicationForm } from './models/application-form'
 import { ITask, TaskSchema } from './models/task'
 import { ISetting, SettingSchema } from './models/setting'
+import { ISurveyInfo, SurveyInfoSchema } from './models/survey'
 
 export default class DbInstance {
     #dbConnection: Connection
@@ -20,6 +21,7 @@ export default class DbInstance {
     applications: Model<IApplicationForm>
     tasks: Model<ITask>
     settings: Model<ISetting>
+    surveyInfo: Model<ISurveyInfo>
 
     constructor() {
         this.#dbConnection = createConnection(env.CONNECTION_STRING)
@@ -28,6 +30,7 @@ export default class DbInstance {
         this.applications = this.#dbConnection.model('applications', ApplicationFormSchema)
         this.tasks = this.#dbConnection.model('tasks', TaskSchema)
         this.settings = this.#dbConnection.model('settings', SettingSchema)
+        this.surveyInfo = this.#dbConnection.model('survey', SurveyInfoSchema)
     }
 
     async startTransaction() {

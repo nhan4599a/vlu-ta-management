@@ -7,7 +7,6 @@ import { showMessageDialog } from "@redux/slices/messages.slice";
 import { logout } from "@main/features/slices/authentication.slice";
 import "@main/index.css";
 
-
 const Login = () => {
   const { instance } = useMsal()
   const dispatch = useAppDispatch()

@@ -60,7 +60,9 @@ router.post("/classes/:classId", async (req, res) => {
   );
 
   await db.terms.updateOne(
-    {},
+    {
+      "classes.schedule._id": new mongoose.Types.ObjectId(params.classId),
+    },
     {
       $set: {
         "classes.$[].schedule.$[i].registrationInfo": {
@@ -112,7 +114,7 @@ router.post(
       {}
     >(req);
 
-    const { code, class: userClass, name, email } = user;
+    const { code, class: userClass, name, email, _id } = user;
 
     const uploadedFiles =
       (files as Express.Multer.File[])?.map(mapAttachment) ?? [];
@@ -150,6 +152,7 @@ router.post(
           code,
           name,
           email,
+          userId: _id,
           class: userClass,
           ...body,
           attachments: uploadedFiles,
@@ -159,7 +162,7 @@ router.post(
           isPending: false,
           priority: registerCount,
           year: currentSetting!.year,
-          semester: currentSetting!.semester
+          semester: currentSetting!.semester,
         },
       },
       {

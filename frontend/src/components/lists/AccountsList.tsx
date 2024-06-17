@@ -20,17 +20,6 @@ const AccountsList = ({
 }: AccountsListProps) => {
   const users = useAppSelector(selectUsersList);
 
-  // const onActionButtonClick = ({ _id, active }: IUser) => {
-  //   return () => {
-  //     dispatch(
-  //       setSelectedUser({
-  //         id: _id,
-  //         active,
-  //       })
-  //     );
-  //   };
-  // };
-
   const internalOnActionButtonClick = (user: IUser) => {
     return () => {
       onActionButtonClick!(user);
@@ -49,6 +38,7 @@ const AccountsList = ({
             <th>Lớp</th>
             {assistantsMode && <th>SĐT</th>}
             {actionEnabled && <th></th>}
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -72,6 +62,13 @@ const AccountsList = ({
                   </p>
                 </td>
               )}
+              <a
+                className="btn btn-primary"
+                href={`/user-profile/${user._id}`}
+                target="_blank"
+              >
+                Xem profile
+              </a>
             </tr>
           ))}
         </tbody>

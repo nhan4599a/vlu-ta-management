@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import {
   getTermsDataList,
   selectTermsData,
+  setAvailableJobsOnlyMode,
   setCurrentPage,
 } from "@redux/slices/terms.slice";
 import {
@@ -59,6 +60,10 @@ const StudentApplicationsList = () => {
   const termsResponse = useAppSelector(selectTermsData);
 
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    dispatch(setAvailableJobsOnlyMode(false))
+  }, [dispatch])
 
   useEffect(() => {
     dispatch(setCurrentPage(page));

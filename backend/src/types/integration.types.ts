@@ -1,16 +1,11 @@
 import { Request, Response } from "express";
 import DbInstance from "../db";
 import { env } from "../env";
-import { IUser } from "../db/models/user";
-import mongoose from "mongoose";
-import { ISetting } from "../db/models/setting";
+import { ExtendedUser } from "../db/models/user";
 
 export interface IBaseRequest extends Request {
     db: DbInstance,
-    user: IUser & {
-        _id: mongoose.Types.ObjectId,
-        currentSetting: ISetting | null
-    }
+    user: ExtendedUser
 }
 
 export interface ITypedRequest<TBody extends {} = {}, TQuery extends {} = {}> extends IBaseRequest {
