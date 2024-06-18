@@ -52,13 +52,15 @@ export const TeacherAssistantsList = ({
               >
                 Xem
               </Button>
-              <a
-                className="btn btn-primary ms-2"
-                href={`/user-profile/${application.userId}`}
-                target="_blank"
+              <Button
+                variant="primary"
+                onClick={() =>
+                  window.open(`/user-profile/${application.userId}`, "_blank")
+                }
+                className="ms-2"
               >
-                Xem profile
-              </a>
+                Profile
+              </Button>
             </td>
           </tr>
         ))}

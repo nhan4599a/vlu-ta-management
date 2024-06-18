@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import {
   getTermsDataList,
   selectTermsData,
+  setAvailableJobsOnlyMode,
   setCurrentPage,
 } from "@redux/slices/terms.slice";
 
@@ -15,6 +16,7 @@ const AttendantList = () => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
+    dispatch(setAvailableJobsOnlyMode(false))
     dispatch(setCurrentPage(page));
     dispatch(getTermsDataList());
   }, [dispatch, page]);

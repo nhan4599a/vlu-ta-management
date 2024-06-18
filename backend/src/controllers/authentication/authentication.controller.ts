@@ -12,7 +12,8 @@ router.post("/post-login", async (req, res) => {
   });
 
   if (!isUserExisted) {
-    await db.users.create(user);
+    const { currentSetting, ...actualUserInfo } = user
+    await db.users.create(actualUserInfo);
   }
 
   responseWithValue(res, user)

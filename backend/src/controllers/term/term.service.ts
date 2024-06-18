@@ -530,7 +530,12 @@ const getAssitantsInfo = (req: Request) => {
     },
     {
       $project: {
-        users: 0,
+        _id: '$users._id',
+        email: 1,
+        name: 1,
+        code: 1,
+        class: 1,
+        phoneNumber: 1
       },
     },
   ]);

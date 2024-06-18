@@ -10,15 +10,13 @@
     "title": "Quản lí nhiệm vụ trợ giảng",
     "children": [
       { "title": "Điểm danh sinh viên", "path": "/task-mission-management/attendant" },
-      { "title": "Nhiệm vụ trợ giảng", "path": "/ta-classlist/task-ta" },
-      { "title": "Tài liệu", "path": "/ta-documents" }
+      { "title": "Nhiệm vụ trợ giảng", "path": "/ta-classlist/task-ta" }
     ]
   },
   {
     "title": "Liên lạc",
     "children": [
-      { "title": "Chat trực tiếp với giảng viên", "path": "/live-chat-lecturer" },
-      { "title": "Gửi mail cho giảng viên", "path": "/email-lecturer" }
+      { "title": "Chat trực tiếp với giảng viên", "path": "/chat" }
     ]
   }
 ]

@@ -32,7 +32,6 @@ export const FinalApplicationsList = ({
           <th>Email</th>
           <th>Trạng thái</th>
           <th></th>
-          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -43,23 +42,25 @@ export const FinalApplicationsList = ({
             <td>{application.code}</td>
             <td>{application.description}</td>
             <td>{application.stage2Approval ? "Đã đậu" : "Chờ liên hệ"}</td>
-            {!application.stage2Approval && (
-              <td>
+            <td>
+              <Button
+                variant="primary"
+                onClick={() =>
+                  window.open(`/user-profile/${application.userId}`, "_blank")
+                }
+              >
+                Profile
+              </Button>
+              {!application.stage2Approval && (
                 <Button
                   variant="primary"
                   onClick={showApprovalDialog(application._id)}
+                  className="ms-2"
                 >
                   Approve
                 </Button>
-              </td>
-            )}
-            <a
-              className="btn btn-primary"
-              href={`/user-profile/${application.userId}`}
-              target="_blank"
-            >
-              Xem profile
-            </a>
+              )}
+            </td>
           </tr>
         ))}
       </tbody>

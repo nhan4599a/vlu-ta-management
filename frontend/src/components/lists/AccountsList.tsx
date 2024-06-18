@@ -37,7 +37,6 @@ const AccountsList = ({
             <th>MSSV</th>
             <th>Lớp</th>
             {assistantsMode && <th>SĐT</th>}
-            {actionEnabled && <th></th>}
             <th></th>
           </tr>
         </thead>
@@ -50,25 +49,23 @@ const AccountsList = ({
               <td>{user.code}</td>
               <td>{user.class}</td>
               {assistantsMode && <td>{user.phoneNumber}</td>}
-              {actionEnabled && (
-                <td>
-                  <p>
-                    <a
-                      className="link-opacity-100"
-                      onClick={internalOnActionButtonClick(user)}
-                    >
-                      {actionButtonText}
-                    </a>
-                  </p>
-                </td>
-              )}
-              <a
-                className="btn btn-primary"
-                href={`/user-profile/${user._id}`}
-                target="_blank"
-              >
-                Xem profile
-              </a>
+              <td>
+                {actionEnabled && (
+                  <a
+                    className="link-opacity-100 me-2"
+                    onClick={internalOnActionButtonClick(user)}
+                  >
+                    {actionButtonText}
+                  </a>
+                )}
+                <a
+                  className="btn btn-primary"
+                  href={`/user-profile/${user._id}`}
+                  target="_blank"
+                >
+                  Profile
+                </a>
+              </td>
             </tr>
           ))}
         </tbody>
