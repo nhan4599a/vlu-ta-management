@@ -168,7 +168,7 @@ const Profile = () => {
         {user?.role === Role.Student && (
           <>
             {surveyData.map(({ title }, index) => (
-              <ScoringLine key={index} title={`${index}. ${title}`} score={user!.votingScores[index]} />
+              <ScoringLine key={index} title={`${index + 1}. ${title}`} score={user!.votingScores[index]} />
             ))}
             <ScoringLine title="Tổng quát" score={average(user!.votingScores)} />
           </>

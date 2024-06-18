@@ -193,11 +193,11 @@ const TasksPrompt = () => {
               .map((task, index) => (
                 <Row
                   style={{
-                    background: task.isCompleted ? "lightgray" : "none",
+                    background: task.isCompleted ? "lightgray" : "#dee2e6",
                   }}
                   key={task._id}
                 >
-                  <Col sm={1}>
+                  <Col sm={1} className="d-flex align-items-center">
                     <Form.Check
                       aria-label="option"
                       disabled={role === Role.Teacher}
@@ -205,7 +205,7 @@ const TasksPrompt = () => {
                       onChange={markAsCompleted(task._id!)}
                     />
                   </Col>
-                  <Col sm={8}>
+                  <Col sm={8} className="d-flex align-items-center">
                     {role === Role.Teacher &&
                     edittingTask === task._id &&
                     edittingTask !== undefined ? (

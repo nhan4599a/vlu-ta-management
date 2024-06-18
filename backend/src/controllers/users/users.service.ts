@@ -51,8 +51,11 @@ export const getUsersList = (req: Request) => {
       },
       {
         $project: {
-          users: 0,
-          mapped_users: 0
+          _id: "$mapped_users._id",
+          email: 1,
+          name: 1,
+          code: 1,
+          class: 1,
         },
       },
     ]);
