@@ -1,4 +1,4 @@
-import { Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 // import ConfirmDelete from "@main/components/prompts/ConfirmDelete";
 import { useAppSelector } from "@redux/hooks";
 import { selectUsersList } from "@redux/slices/users.slice";
@@ -51,12 +51,9 @@ const AccountsList = ({
               {assistantsMode && <td>{user.phoneNumber}</td>}
               <td>
                 {actionEnabled && (
-                  <a
-                    className="link-opacity-100 me-2"
-                    onClick={internalOnActionButtonClick(user)}
-                  >
+                  <Button variant="primary" className="me-2" onClick={internalOnActionButtonClick(user)}>
                     {actionButtonText}
-                  </a>
+                  </Button>
                 )}
                 <a
                   className="btn btn-primary"

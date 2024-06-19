@@ -63,5 +63,11 @@
         "path": "/feedback-and-statistic/statistic"
       }
     ]
+  },
+  {
+    "title": "Liên lạc",
+    "children": [
+      { "title": "Chat", "path": "/chat" }
+    ]
   }
 ]

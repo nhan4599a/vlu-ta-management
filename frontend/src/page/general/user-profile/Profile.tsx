@@ -153,24 +153,37 @@ const Profile = () => {
             <Form.Control
               size="lg"
               value={phoneNumber}
+              disabled={userId !== user?._id}
               onChange={(e) => setPhoneNumber(e.target.value)}
             />
           </Col>
         </Form.Group>
-        <Form.Group as={Row} className="mb-3 lead" controlId="action">
-          <Form.Label column sm="2"></Form.Label>
-          <Col sm="10">
-            <Button variant="primary" onClick={updateButtonClick}>
-              Lưu
-            </Button>
-          </Col>
-        </Form.Group>
+        {userId !== user?._id ? (
+          <Form.Group as={Row} className="mb-3 lead" controlId="action">
+            <Form.Label column sm="2"></Form.Label>
+            <Col sm="10">
+              <Button variant="primary" onClick={updateButtonClick}>
+                Lưu
+              </Button>
+            </Col>
+          </Form.Group>
+        ) : (
+          <></>
+        )}
+
         {user?.role === Role.Student && (
           <>
             {surveyData.map(({ title }, index) => (
-              <ScoringLine key={index} title={`${index + 1}. ${title}`} score={user!.votingScores[index]} />
+              <ScoringLine
+                key={index}
+                title={`${index + 1}. ${title}`}
+                score={user!.votingScores[index]}
+              />
             ))}
-            <ScoringLine title="Tổng quát" score={average(user!.votingScores)} />
+            <ScoringLine
+              title="Tổng quát"
+              score={average(user!.votingScores)}
+            />
           </>
         )}
       </Form>

@@ -16,7 +16,7 @@
   {
     "title": "Liên lạc",
     "children": [
-      { "title": "Chat trực tiếp với giảng viên", "path": "/chat" }
+      { "title": "Chat", "path": "/chat" }
     ]
   }
 ]
