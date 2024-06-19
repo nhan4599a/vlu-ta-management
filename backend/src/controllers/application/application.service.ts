@@ -25,15 +25,16 @@ type GroupedResult = {
 
 enum FinalResultRecordStatus {
   Redundant,
-  Slack,
-  Fit,
+  Lack,
   None,
+  Fit,
 }
 
 type FinalResultOrdering = {
   count?: number;
   maxAllowedCandidates?: number;
   status: FinalResultRecordStatus;
+  remaining: number
 };
 
 type ExtendedScheduleInfo = IScheduleDetail & {
@@ -641,13 +642,15 @@ export const getImportPassTrainingResult = async (req: Request) => {
     if (item.count > item.maxAllowedCandidates) {
       item.status = FinalResultRecordStatus.Redundant;
     } else if (item.count < item.maxAllowedCandidates) {
-      item.status = FinalResultRecordStatus.Slack;
+      item.status = FinalResultRecordStatus.Lack;
     } else {
       item.status = FinalResultRecordStatus.Fit;
     }
+
+    item.remaining = item.maxAllowedCandidates - item.count;
   }
 
-  return orderBy(data, ["status"], ["asc"]);
+  return orderBy(data, ["status", 'remaining'], ["asc", 'desc']);
 };
 
 export const approveFinal = async (req: Request) => {

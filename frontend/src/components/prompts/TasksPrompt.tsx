@@ -195,6 +195,7 @@ const TasksPrompt = () => {
                   style={{
                     background: task.isCompleted ? "lightgray" : "#dee2e6",
                   }}
+                  className="mb-1"
                   key={task._id}
                 >
                   <Col sm={1} className="d-flex align-items-center">
