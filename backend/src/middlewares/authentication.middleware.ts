@@ -19,8 +19,8 @@ const getUserInfo = (
   callback: GetUserInfoCallback
 ) => {
   const email = payload[constants.AUTHENTICATION.EMAIL_CLAIM];
-  Promise.all([db.users.where({ email: email }).exec(), db.settings.findOne()])
-    .then(([users, setting]) => {
+  Promise.all([db.users.findOne({ email: email }).lean().exec(), db.settings.findOne().lean().exec()])
+    .then(([userData, setting]) => {
       const schoolUserInfo = payload["name"].split(" - ");
 
       const role = constants.AUTHENTICATION.ADMIN_ACCOUNTS.includes(email)
@@ -29,8 +29,8 @@ const getUserInfo = (
 
       let user: Omit<ExtendedUser, 'currentSetting'> | undefined = undefined;
 
-      if (users[0]) {
-        user = { ...users[0] };
+      if (userData) {
+        user = userData;
       } else {
         user = {
           _id: new mongoose.Types.ObjectId(),
