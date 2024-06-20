@@ -7,6 +7,7 @@ import {
   showLoadingDialog,
 } from "@redux/slices/loading.slice";
 import { showMessageDialog } from "@redux/slices/messages.slice";
+import { setRedirectUrl } from "@main/features/slices/authentication.slice";
 
 const config: AxiosRequestConfig = {
   baseURL: import.meta.env.VITE_API_URL,
@@ -54,6 +55,16 @@ apiClient.interceptors.response.use(
 
     if (err.response?.data?.error) {
       store.dispatch(showMessageDialog(err.response?.data?.error));
+    } else if (err.response?.status === 401) {
+      store.dispatch(setRedirectUrl(window.location.href));
+      store.dispatch(
+        showMessageDialog({
+          message: "Session is going to end!. Please login again",
+          onPrimaryButtonClick: () => {
+            window.location.href = "/login";
+          },
+        })
+      );
     } else {
       store.dispatch(showMessageDialog("Cannot connect to server"));
     }
@@ -68,9 +79,14 @@ const createQueryString = (query?: Record<string, unknown>) => {
   }
 
   return Object.entries(query).reduce((accumulate, [key, value]) => {
-    let result = accumulate === "" ? "?" : ((key && (value !== null && value !== undefined)) ? "&" : "");
+    let result =
+      accumulate === ""
+        ? "?"
+        : key && value !== null && value !== undefined
+        ? "&"
+        : "";
 
-    if (key && (value !== null && value !== undefined)) {
+    if (key && value !== null && value !== undefined) {
       result += `${key}=${value}`;
     }
 

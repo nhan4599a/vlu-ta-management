@@ -1,19 +1,24 @@
 import { useEffect } from "react";
 import { constant } from "@main/constants";
 import { useMsal } from "@azure/msal-react";
-import { useAppDispatch } from "@redux/hooks";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
 import {
   postLoginCallback,
+  selectRedirectUrl,
   setAccessToken,
 } from "@redux/slices/authentication.slice";
 import { showMessageDialog } from "@redux/slices/messages.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { setCurrentSetting } from "@main/features/slices/setting.slice";
+import MainNavBar from "@main/components/navbar/MainNavBar";
+import Loading from "@main/components/loading/Loading";
 
 const PostLogin = () => {
-  const { instance, accounts, inProgress } = useMsal();
+  const { instance, accounts } = useMsal();
 
   const dispatch = useAppDispatch();
+
+  const redirectUrl = useAppSelector(selectRedirectUrl)
 
   useEffect(() => {
     if (accounts[0]) {
@@ -29,8 +34,8 @@ const PostLogin = () => {
           dispatch(postLoginCallback())
             .then(unwrapResult)
             .then((user) => {
-              window.location.href = "/";
-              dispatch(setCurrentSetting(user.currentSetting))
+              window.location.href = redirectUrl;
+              dispatch(setCurrentSetting(user.currentSetting));
             })
             .catch((err) => {
               dispatch(showMessageDialog(err));
@@ -40,9 +45,14 @@ const PostLogin = () => {
           dispatch(showMessageDialog(err));
         });
     }
-  }, [inProgress, instance, accounts, dispatch]);
+  }, [instance, redirectUrl, accounts, dispatch]);
 
-  return <></>;
+  return (
+    <>
+      <MainNavBar />
+      <Loading />
+    </>
+  );
 };
 
-export default PostLogin
+export default PostLogin;

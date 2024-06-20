@@ -113,7 +113,7 @@ export const getUserInfo = createAsyncThunk(
   async (userId: string, { rejectWithValue }) => {
     try {
       return await get<IUser>({
-        path: `/users/${userId}`
+        path: `/users/${userId}`,
       });
     } catch (e) {
       return rejectWithValue(e);
