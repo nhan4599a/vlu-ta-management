@@ -35,8 +35,8 @@ const AccountMainPage = lazy(
   () => import("./page/admin/account-management/AccountMainPage")
 );
 const PostLogin = lazy(() => import("./page/general/login/PostLogin"));
-import { useAppSelector } from "@redux/hooks";
-import { selectIsAuthenticated } from "@redux/slices/authentication.slice";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
+import { getCurrentUserInfo, selectIsAuthenticated } from "@redux/slices/authentication.slice";
 const TAClassList = lazy(() => import("./page/student/ta/TAClassList"));
 import { useAdaptiveRoleComponent } from "./hooks/useAdaptiveRoleComponent";
 const BaseClassList = lazy(
@@ -75,6 +75,7 @@ const Chat = lazy(() => import("./page/general/chat/Chat"));
 import "./index.css";
 
 const Layout = () => {
+  const dispatch = useAppDispatch()
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
   const navigate = useNavigate();
@@ -82,8 +83,10 @@ const Layout = () => {
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
+    } else {
+      dispatch(getCurrentUserInfo)
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, dispatch, navigate]);
 
   const Sidebar = useAdaptiveRoleComponent({
     0: <StudentSidebar />,

@@ -54,4 +54,18 @@ router.get("/:userId", async (req, res) => {
   responseWithValue(res, user);
 });
 
+router.get("/info", async (req, res) => {
+  const { db, user } = createTypedRequest(req);
+
+  const data = await Promise.all([
+    db.users.findOne({ code: user.code }).lean().exec(),
+    db.settings.findOne().lean().exec(),
+  ]);
+
+  responseWithValue(res, {
+    user: data[0],
+    setting: data[1],
+  });
+});
+
 export default router;

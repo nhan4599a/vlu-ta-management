@@ -158,7 +158,7 @@ const Profile = () => {
             />
           </Col>
         </Form.Group>
-        {userId !== user?._id ? (
+        {userId === user?._id ? (
           <Form.Group as={Row} className="mb-3 lead" controlId="action">
             <Form.Label column sm="2"></Form.Label>
             <Col sm="10">
