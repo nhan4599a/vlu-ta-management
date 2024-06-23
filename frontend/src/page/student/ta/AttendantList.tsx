@@ -18,7 +18,9 @@ const AttendantList = () => {
   useEffect(() => {
     dispatch(setAvailableJobsOnlyMode(false))
     dispatch(setCurrentPage(page));
-    dispatch(getTermsDataList());
+    dispatch(getTermsDataList({
+      myself: true
+    }));
   }, [dispatch, page]);
 
   return (
