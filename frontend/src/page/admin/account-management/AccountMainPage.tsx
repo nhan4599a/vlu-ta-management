@@ -39,10 +39,10 @@ const AccountMainPage = () => {
           justify
         >
           <Tab eventKey={Role.Teacher} title="Giảng viên" >
-            <AccountsList actionEnabled={true} assistantsMode={false} />
+            <AccountsList actionEnabled={false} assistantsMode={false} />
           </Tab>
           <Tab eventKey={Role.Assistant} title="Trợ giảng">
-            <AccountsList actionEnabled={true} assistantsMode={false} />
+            <AccountsList actionEnabled={false} assistantsMode={false} />
           </Tab>
         </Tabs>
         <div className="text-align">

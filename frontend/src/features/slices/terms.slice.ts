@@ -42,6 +42,7 @@ export const getTermsDataList = createAsyncThunk(
       | {
           assistantsAvailableOnly?: boolean;
           availableJobsOnly?: boolean;
+          myself?: boolean;
         }
       | undefined,
     { getState, rejectWithValue }
@@ -60,7 +61,9 @@ export const getTermsDataList = createAsyncThunk(
           ...setting.currentSetting,
           assistantsAvailableOnly: payload?.assistantsAvailableOnly,
           availableJobsOnly:
-            payload?.availableJobsOnly ?? (terms.availableJobsOnlyMode ? true : undefined),
+            payload?.availableJobsOnly ??
+            (terms.availableJobsOnlyMode ? true : undefined),
+          myself: payload?.myself,
         },
       });
     } catch (e) {

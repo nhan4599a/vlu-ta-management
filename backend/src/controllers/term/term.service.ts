@@ -24,6 +24,7 @@ type TermQuery = PaginationRequest & {
   year: number;
   assistantsAvailableOnly: boolean;
   availableJobsOnly: boolean;
+  myself: boolean;
 };
 
 type TermDataItem = Omit<ITerm, "classes" | "sessions"> &
@@ -346,7 +347,7 @@ const getTermData = async (req: Request) => {
                   _id: 1,
                   stage1Approval: 1,
                   stage2Approval: 1,
-                  isTrainingPassed: 1
+                  isTrainingPassed: 1,
                 },
               },
             ],
@@ -354,6 +355,14 @@ const getTermData = async (req: Request) => {
         },
       ]
     );
+
+    if (query.myself) {
+      basePipeline.push({
+        $match: {
+          assistants: user.code,
+        },
+      });
+    }
 
     if (query.availableJobsOnly) {
       basePipeline.push(
@@ -530,12 +539,12 @@ const getAssitantsInfo = (req: Request) => {
     },
     {
       $project: {
-        _id: '$users._id',
+        _id: "$users._id",
         email: 1,
         name: 1,
         code: 1,
         class: 1,
-        phoneNumber: 1
+        phoneNumber: 1,
       },
     },
   ]);
@@ -647,8 +656,8 @@ const updateAttendantUrl = (req: Request) => {
 
   const id = new mongoose.Types.ObjectId(params.classId);
 
-  return db.terms.findOneAndUpdate(
-    {},
+  return db.terms.updateMany(
+    { "classes._id": id },
     {
       $set: {
         "classes.$[i].attendanceRecordFile": body.attendantUrl,
